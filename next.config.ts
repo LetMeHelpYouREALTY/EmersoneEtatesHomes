@@ -45,6 +45,14 @@ const nextConfig: NextConfig = {
     scrollRestoration: true,
     optimizeCss: true,
   },
+
+  // Dev configuration
+  ...(process.env.NODE_ENV === 'development' && {
+    onDemandEntries: {
+      maxInactiveAge: 25 * 1000,
+      pagesBufferLength: 2,
+    },
+  }),
   
   // Bundle analyzer for production builds
   ...(process.env.ANALYZE === 'true' && {

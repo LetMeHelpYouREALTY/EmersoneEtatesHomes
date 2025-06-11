@@ -24,11 +24,7 @@ const Layout: React.FC<LayoutProps> = ({
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isContactModalOpen, setIsContactModalOpen] = useState(showContactModal);
   const [isScrolled, setIsScrolled] = useState(false);
-  const [mounted, setMounted] = useState(false);
-
   useEffect(() => {
-    setMounted(true);
-
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
     };
@@ -83,8 +79,6 @@ const Layout: React.FC<LayoutProps> = ({
   const closeContactModal = () => {
     setIsContactModalOpen(false);
   };
-
-  if (!mounted) return null;
 
   return (
     <>
