@@ -13,7 +13,7 @@ interface LayoutProps {
   className?: string;
 }
 
-const Layout: React.FC<LayoutProps> = ({
+const Layout: React.FC<LayoutProps> = React.memo(({
   children,
   title = 'Emerson Estates - Luxury Homes in Las Vegas',
   description = 'Discover luxury living at Emerson Estates with Dr. Jan Duffy, your trusted real estate expert in Las Vegas.',
@@ -61,7 +61,7 @@ const Layout: React.FC<LayoutProps> = ({
     };
   }, [isMenuOpen]);
 
-  const navigation = [
+  const navigation = React.useMemo(() => [
     { name: 'Home', href: '/' },
     { name: 'Available Homes', href: '/homes' },
     { name: 'About', href: '/about' },
@@ -71,7 +71,7 @@ const Layout: React.FC<LayoutProps> = ({
     { name: 'Amenities', href: '/amenities' },
     { name: 'Market Insights', href: '/blog' },
     { name: 'Contact', href: '/contact' }
-  ];
+  ], []);
 
   const isActivePage = (href: string) => {
     return router.pathname === href;
@@ -929,6 +929,8 @@ const Layout: React.FC<LayoutProps> = ({
       `}</style>
     </>
   );
-};
+});
+
+Layout.displayName = 'Layout';
 
 export default Layout;

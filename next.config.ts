@@ -8,7 +8,12 @@ const nextConfig: NextConfig = {
   
   // Image optimization
   images: {
-    domains: ['drjanlasvegas.wpengine.com'],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'drjanlasvegas.wpengine.com',
+      },
+    ],
     formats: ['image/webp', 'image/avif'],
     minimumCacheTTL: 60,
   },
@@ -41,10 +46,22 @@ const nextConfig: NextConfig = {
   },
   
   // Experimental features
-  experimental: {
-    scrollRestoration: true,
-    optimizeCss: true,
-  },
+  ...(process.env.NODE_ENV === 'development' ? {
+    experimental: {
+      scrollRestoration: true,
+    },
+    allowedDevOrigins: [
+      '*.replit.dev',
+      '*.repl.it',
+      'localhost:5000',
+      '0.0.0.0:5000'
+    ],
+  } : {
+    experimental: {
+      scrollRestoration: true,
+      optimizeCss: true,
+    },
+  }),
 
   // Dev configuration
   ...(process.env.NODE_ENV === 'development' && {
@@ -52,9 +69,8 @@ const nextConfig: NextConfig = {
       maxInactiveAge: 25 * 1000,
       pagesBufferLength: 2,
     },
-    experimental: {
-      turbo: false,
-    },
+    swcMinify: false,
+    fastRefresh: true,
   }),
   
   // Bundle analyzer for production builds
