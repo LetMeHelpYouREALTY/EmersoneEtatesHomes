@@ -1,6 +1,7 @@
 
 import type { NextPage } from "next";
 import Head from "next/head";
+import Script from "next/script";
 import styles from "../styles/Home.module.css";
 
 const Home: NextPage = () => {
@@ -10,7 +11,6 @@ const Home: NextPage = () => {
         <title>Emerson Estates Homes - Las Vegas Real Estate</title>
         <meta name="description" content="Discover luxury homes in Emerson Estates, Las Vegas. Your premier destination for upscale living in Nevada." />
         <link rel="icon" href="/favicon.ico" />
-        <script src="https://em.realscout.com/widgets/realscout-web-components.umd.js" type="module"></script>
         <style>{`
           realscout-office-listings {
             --rs-listing-divider-color: rgb(101, 141, 172);
@@ -19,16 +19,22 @@ const Home: NextPage = () => {
         `}</style>
       </Head>
 
+      <Script 
+        src="https://em.realscout.com/widgets/realscout-web-components.umd.js" 
+        strategy="beforeInteractive"
+      />
+
       <header className={styles.header}>
         <nav className={styles.nav}>
           <div className={styles.logo}>
             <h2>Emerson Estates</h2>
           </div>
           <ul className={styles.navLinks}>
-            <li><a href="#homes">Available Homes</a></li>
-            <li><a href="#community">Community</a></li>
-            <li><a href="#amenities">Amenities</a></li>
-            <li><a href="#contact">Contact</a></li>
+            <li><a href="/">Home</a></li>
+            <li><a href="/homes">Available Homes</a></li>
+            <li><a href="/community">Community</a></li>
+            <li><a href="/amenities">Amenities</a></li>
+            <li><a href="/contact">Contact</a></li>
           </ul>
         </nav>
       </header>
