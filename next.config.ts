@@ -46,21 +46,21 @@ const nextConfig: NextConfig = {
   },
   
   // Experimental features
-  ...(process.env.NODE_ENV === 'development' ? {
-    experimental: {
-      scrollRestoration: true,
-    },
+  experimental: {
+    scrollRestoration: true,
+    ...(process.env.NODE_ENV === 'production' && {
+      optimizeCss: true,
+    }),
+  },
+
+  // Development origins
+  ...(process.env.NODE_ENV === 'development' && {
     allowedDevOrigins: [
       '*.replit.dev',
       '*.repl.it',
       'localhost:5000',
       '0.0.0.0:5000'
     ],
-  } : {
-    experimental: {
-      scrollRestoration: true,
-      optimizeCss: true,
-    },
   }),
 
   // Dev configuration
@@ -69,8 +69,15 @@ const nextConfig: NextConfig = {
       maxInactiveAge: 25 * 1000,
       pagesBufferLength: 2,
     },
-    swcMinify: false,
-    fastRefresh: true,
+    webpack: (config: any, { dev, isServer }: any) => {
+      if (dev && !isServer) {
+        config.watchOptions = {
+          poll: 1000,
+          aggregateTimeout: 300,
+        };
+      }
+      return config;
+    },
   }),
   
   // Bundle analyzer for production builds

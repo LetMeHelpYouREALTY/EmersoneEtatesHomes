@@ -2,10 +2,16 @@ import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
 export function middleware(request: NextRequest) {
-  // Skip middleware for development hot reload files
-  if (request.nextUrl.pathname.includes('_next/webpack-hmr') || 
-      request.nextUrl.pathname.includes('hot-update')) {
-    return NextResponse.next()
+  // Skip middleware for development hot reload files and static assets
+  if (process.env.NODE_ENV === 'development') {
+    const pathname = request.nextUrl.pathname;
+    if (pathname.includes('_next/webpack-hmr') || 
+        pathname.includes('hot-update') ||
+        pathname.includes('_next/static') ||
+        pathname.includes('_next/image') ||
+        pathname.startsWith('/_next/')) {
+      return NextResponse.next()
+    }
   }
 
   // Add security headers
@@ -26,11 +32,11 @@ export const config = {
     /*
      * Match all request paths except for the ones starting with:
      * - api (API routes)
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
+     * - _next (Next.js internal files)
      * - favicon.ico (favicon file)
-     * - _next/webpack-hmr (development hot reload)
+     * - robots.txt (robots file)
+     * - sitemap.xml (sitemap file)
      */
-    '/((?!api|_next/static|_next/image|_next/webpack-hmr|favicon.ico).*)',
+    '/((?!api|_next|favicon.ico|robots.txt|sitemap|.*\\.(?:png|jpg|jpeg|gif|webp|svg|ico)$).*)',
   ],
 }
