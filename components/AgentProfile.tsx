@@ -16,6 +16,11 @@ export default function AgentProfile() {
             height={200}
             className="agent-photo"
             priority
+            unoptimized
+            onError={(e) => {
+              const target = e.target as HTMLImageElement;
+              target.src = '/bhhs-logo.jpg';
+            }}
           />
         </div>
         

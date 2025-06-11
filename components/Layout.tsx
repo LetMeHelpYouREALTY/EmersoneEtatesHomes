@@ -69,13 +69,17 @@ export default function Layout({
         <div className="header-container">
           <div className="logo-section">
             <Link href="/" className="logo">
-              <Image 
-                src="/bhhs-logo.jpg" 
-                alt="Berkshire Hathaway HomeServices" 
-                className="logo-img"
+              <Image
+                src="/bhhs-logo.jpg"
+                alt="Berkshire Hathaway HomeServices"
                 width={50}
                 height={50}
-                priority
+                className="logo-img"
+                unoptimized
+                onError={(e) => {
+                  const target = e.target as HTMLImageElement;
+                  target.style.display = 'none';
+                }}
               />
               <span className="logo-text">Emerson Estates</span>
             </Link>
