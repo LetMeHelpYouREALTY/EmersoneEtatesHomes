@@ -7,6 +7,15 @@ interface Props {
   onError?: (error: Error, errorInfo: ErrorInfo) => void;
 }
 
+import React, { Component, ReactNode, ErrorInfo } from 'react';
+import Link from 'next/link';
+
+interface Props {
+  children: ReactNode;
+  fallback?: ReactNode;
+  onError?: (error: Error, errorInfo: ErrorInfo) => void;
+}
+
 interface State {
   hasError: boolean;
   error: Error | null;
@@ -271,4 +280,4 @@ class ErrorBoundary extends Component<Props, State> {
   }
 }
 
-export default ErrorBoundary;
+export default ErrorBoundary;ary;
