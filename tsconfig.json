@@ -28,8 +28,8 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "jsxImportSource": "react",
-    "target": "ES2020",
-    "typeRoots": ["./node_modules/@types"],
+    "target": "ES2022",
+    "typeRoots": ["./node_modules/@types", "./types"],
     "baseUrl": ".",
     "paths": {
       "@/*": ["./*"],
@@ -38,7 +38,6 @@
       "@/types/*": ["./types/*"],
       "@/styles/*": ["./styles/*"]
     },
-    // Additional strict checks
     "noFallthroughCasesInSwitch": true,
     "noImplicitAny": true,
     "strictNullChecks": true,
@@ -47,7 +46,15 @@
     "strictPropertyInitialization": true,
     "alwaysStrict": true,
     "useUnknownInCatchVariables": true,
-    "verbatimModuleSyntax": false
+    "verbatimModuleSyntax": false,
+    "noImplicitThis": true,
+    "declaration": false,
+    "declarationMap": false,
+    "sourceMap": true,
+    "removeComments": false,
+    "noEmitOnError": true,
+    "preserveConstEnums": true,
+    "suppressImplicitAnyIndexErrors": false
   },
   "include": [
     "next-env.d.ts",
@@ -60,6 +67,11 @@
   "exclude": [
     "node_modules",
     ".next",
-    "out"
-  ]
+    "out",
+    "build",
+    "dist"
+  ],
+  "ts-node": {
+    "esm": true
+  }
 }
