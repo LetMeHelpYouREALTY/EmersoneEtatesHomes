@@ -8,10 +8,7 @@ function MyApp({ Component, pageProps }: AppProps) {
   useEffect(() => {
     // Client-side initialization
     console.log('App initialized on client')
-  }, []) here
-      console.log('App initialized on client');
-    }
-  }, []);
+  }, [])
 
   return (
     <>
