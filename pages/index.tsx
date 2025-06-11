@@ -85,6 +85,36 @@ const Home: NextPage = () => {
           </div>
         </section>
 
+        <section id="market-insights" className={styles.section}>
+          <h2 className={styles.sectionTitle}>Market Insights</h2>
+          <p className={styles.sectionDescription}>
+            Stay informed about the Las Vegas real estate market with expert analysis and trends.
+          </p>
+          <div className={styles.insightsGrid}>
+            <div className={styles.insightCard}>
+              <h3>📊 Market Analysis</h3>
+              <p>Get detailed insights into Las Vegas luxury real estate trends and pricing.</p>
+              <Link href="/market-trends">
+                <button className={styles.insightButton}>View Trends</button>
+              </Link>
+            </div>
+            <div className={styles.insightCard}>
+              <h3>📝 Expert Blog</h3>
+              <p>Read the latest market updates and investment insights from industry experts.</p>
+              <Link href="/blog">
+                <button className={styles.insightButton}>Read Blog</button>
+              </Link>
+            </div>
+            <div className={styles.insightCard}>
+              <h3>💡 Investment Tips</h3>
+              <p>Discover strategies for successful luxury real estate investment in Nevada.</p>
+              <Link href="/contact">
+                <button className={styles.insightButton}>Get Advice</button>
+              </Link>
+            </div>
+          </div>
+        </section>
+
         <section id="contact" className={styles.section}>
           <h2 className={styles.sectionTitle}>Contact Us</h2>
           <div className={styles.contactInfo}>

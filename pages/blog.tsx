@@ -301,3 +301,472 @@ const BlogPage: NextPage = () => {
 };
 
 export default BlogPage;
+import type { NextPage, GetStaticProps } from "next";
+import { useState, useEffect } from "react";
+import Layout from "../components/Layout";
+import SEOHead from "../components/SEOHead";
+import Link from "next/link";
+import styles from "../styles/Home.module.css";
+
+interface BlogPost {
+  title: string;
+  description: string;
+  link: string;
+  pubDate: string;
+  category?: string;
+  guid: string;
+  contentSnippet: string;
+}
+
+interface BlogProps {
+  posts: BlogPost[];
+  error?: string;
+}
+
+const Blog: NextPage<BlogProps> = ({ posts, error }) => {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filteredPosts, setFilteredPosts] = useState(posts);
+  const [selectedCategory, setSelectedCategory] = useState("all");
+
+  useEffect(() => {
+    let filtered = posts;
+
+    // Filter by search term
+    if (searchTerm) {
+      filtered = filtered.filter(post =>
+        post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        post.description.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+
+    // Filter by category
+    if (selectedCategory !== "all") {
+      filtered = filtered.filter(post => post.category === selectedCategory);
+    }
+
+    setFilteredPosts(filtered);
+  }, [searchTerm, selectedCategory, posts]);
+
+  const categories = Array.from(new Set(posts.map(post => post.category).filter(Boolean)));
+
+  const formatDate = (dateString: string) => {
+    try {
+      return new Date(dateString).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      });
+    } catch {
+      return dateString;
+    }
+  };
+
+  if (error) {
+    return (
+      <Layout
+        title="Market Insights Blog - Emerson Estates"
+        description="Stay informed about Las Vegas real estate market trends and insights with our latest blog posts."
+      >
+        <SEOHead
+          title="Market Insights Blog - Emerson Estates"
+          description="Stay informed about Las Vegas real estate market trends and insights with our latest blog posts."
+          keywords="Las Vegas real estate blog, market insights, property trends, real estate news"
+          pathname="/blog"
+        />
+        
+        <main className={styles.main}>
+          <section className={styles.hero}>
+            <div className={styles.heroContent}>
+              <h1 className={styles.title}>Market Insights Blog</h1>
+              <p className={styles.subtitle}>Stay Informed About Real Estate Trends</p>
+              <div className="error-message">
+                <p>Sorry, we're having trouble loading the latest market insights. Please try again later.</p>
+                <p className="error-details">{error}</p>
+              </div>
+            </div>
+          </section>
+        </main>
+
+        <style jsx>{`
+          .error-message {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            color: #dc2626;
+            margin: 20px 0;
+          }
+          .error-details {
+            font-size: 14px;
+            color: #6b7280;
+            margin-top: 8px;
+          }
+        `}</style>
+      </Layout>
+    );
+  }
+
+  return (
+    <Layout
+      title="Market Insights Blog - Emerson Estates"
+      description="Stay informed about Las Vegas real estate market trends and insights with our latest blog posts."
+    >
+      <SEOHead
+        title="Market Insights Blog - Emerson Estates"
+        description="Stay informed about Las Vegas real estate market trends and insights with our latest blog posts."
+        keywords="Las Vegas real estate blog, market insights, property trends, real estate news"
+        pathname="/blog"
+      />
+      
+      <main className={styles.main}>
+        <section className={styles.hero}>
+          <div className={styles.heroContent}>
+            <h1 className={styles.title}>Market Insights Blog</h1>
+            <p className={styles.subtitle}>Stay Informed About Real Estate Trends</p>
+            <p className={styles.description}>
+              Get the latest insights on the Las Vegas real estate market with expert analysis, 
+              trends, and valuable information to help you make informed decisions.
+            </p>
+          </div>
+        </section>
+
+        <section className={styles.section}>
+          <div className="blog-container">
+            {/* Search and Filter Controls */}
+            <div className="blog-controls">
+              <div className="search-container">
+                <input
+                  type="text"
+                  placeholder="Search blog posts..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="search-input"
+                />
+              </div>
+              
+              {categories.length > 0 && (
+                <div className="filter-container">
+                  <select
+                    value={selectedCategory}
+                    onChange={(e) => setSelectedCategory(e.target.value)}
+                    className="category-filter"
+                  >
+                    <option value="all">All Categories</option>
+                    {categories.map(category => (
+                      <option key={category} value={category}>{category}</option>
+                    ))}
+                  </select>
+                </div>
+              )}
+            </div>
+
+            {/* Blog Posts Grid */}
+            <div className="blog-posts-grid">
+              {filteredPosts.length > 0 ? (
+                filteredPosts.map((post, index) => (
+                  <article key={post.guid || index} className="blog-post-card">
+                    <div className="post-content">
+                      <div className="post-meta">
+                        <time className="post-date">{formatDate(post.pubDate)}</time>
+                        {post.category && (
+                          <span className="post-category">{post.category}</span>
+                        )}
+                      </div>
+                      
+                      <h2 className="post-title">
+                        <a
+                          href={post.link}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="post-link"
+                        >
+                          {post.title}
+                        </a>
+                      </h2>
+                      
+                      <p className="post-excerpt">
+                        {post.contentSnippet || post.description}
+                      </p>
+                      
+                      <div className="post-actions">
+                        <a
+                          href={post.link}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="read-more-btn"
+                        >
+                          Read Full Article →
+                        </a>
+                      </div>
+                    </div>
+                  </article>
+                ))
+              ) : (
+                <div className="no-results">
+                  <h3>No posts found</h3>
+                  <p>Try adjusting your search terms or filters.</p>
+                </div>
+              )}
+            </div>
+
+            {/* RSS Attribution */}
+            <div className="rss-attribution">
+              <p>
+                Market insights powered by{" "}
+                <a
+                  href="https://www.simplifyingthemarket.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="attribution-link"
+                >
+                  Simplifying The Market
+                </a>
+              </p>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <style jsx>{`
+        .blog-container {
+          max-width: 1200px;
+          margin: 0 auto;
+          padding: 0 20px;
+        }
+
+        .blog-controls {
+          display: flex;
+          gap: 20px;
+          margin-bottom: 40px;
+          flex-wrap: wrap;
+          align-items: center;
+        }
+
+        .search-container {
+          flex: 1;
+          min-width: 250px;
+        }
+
+        .search-input {
+          width: 100%;
+          padding: 12px 16px;
+          border: 2px solid #e5e7eb;
+          border-radius: 8px;
+          font-size: 16px;
+          transition: border-color 0.2s ease;
+        }
+
+        .search-input:focus {
+          outline: none;
+          border-color: #2563eb;
+        }
+
+        .filter-container {
+          min-width: 180px;
+        }
+
+        .category-filter {
+          width: 100%;
+          padding: 12px 16px;
+          border: 2px solid #e5e7eb;
+          border-radius: 8px;
+          font-size: 16px;
+          background: white;
+          cursor: pointer;
+        }
+
+        .blog-posts-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+          gap: 30px;
+          margin-bottom: 60px;
+        }
+
+        .blog-post-card {
+          background: white;
+          border-radius: 12px;
+          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+          overflow: hidden;
+          transition: all 0.3s ease;
+          border: 1px solid #e5e7eb;
+        }
+
+        .blog-post-card:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .post-content {
+          padding: 24px;
+        }
+
+        .post-meta {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 12px;
+          font-size: 14px;
+        }
+
+        .post-date {
+          color: #6b7280;
+        }
+
+        .post-category {
+          background: #dbeafe;
+          color: #1d4ed8;
+          padding: 4px 8px;
+          border-radius: 4px;
+          font-size: 12px;
+          font-weight: 500;
+        }
+
+        .post-title {
+          font-size: 20px;
+          font-weight: 700;
+          line-height: 1.3;
+          margin-bottom: 12px;
+          color: #1a365d;
+        }
+
+        .post-link {
+          color: inherit;
+          text-decoration: none;
+          transition: color 0.2s ease;
+        }
+
+        .post-link:hover {
+          color: #2563eb;
+        }
+
+        .post-excerpt {
+          color: #4b5563;
+          line-height: 1.6;
+          margin-bottom: 20px;
+          display: -webkit-box;
+          -webkit-line-clamp: 3;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
+        }
+
+        .post-actions {
+          margin-top: auto;
+        }
+
+        .read-more-btn {
+          color: #2563eb;
+          text-decoration: none;
+          font-weight: 600;
+          font-size: 14px;
+          display: inline-flex;
+          align-items: center;
+          transition: all 0.2s ease;
+        }
+
+        .read-more-btn:hover {
+          color: #1d4ed8;
+          transform: translateX(2px);
+        }
+
+        .no-results {
+          grid-column: 1 / -1;
+          text-align: center;
+          padding: 60px 20px;
+          color: #6b7280;
+        }
+
+        .no-results h3 {
+          font-size: 24px;
+          margin-bottom: 12px;
+          color: #374151;
+        }
+
+        .rss-attribution {
+          text-align: center;
+          padding: 30px 20px;
+          border-top: 1px solid #e5e7eb;
+          color: #6b7280;
+          font-size: 14px;
+        }
+
+        .attribution-link {
+          color: #2563eb;
+          text-decoration: none;
+          font-weight: 500;
+        }
+
+        .attribution-link:hover {
+          text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+          .blog-controls {
+            flex-direction: column;
+            align-items: stretch;
+          }
+
+          .search-container,
+          .filter-container {
+            min-width: 100%;
+          }
+
+          .blog-posts-grid {
+            grid-template-columns: 1fr;
+            gap: 20px;
+          }
+
+          .post-content {
+            padding: 20px;
+          }
+
+          .post-title {
+            font-size: 18px;
+          }
+        }
+      `}</style>
+    </Layout>
+  );
+};
+
+export const getStaticProps: GetStaticProps = async () => {
+  try {
+    const Parser = require('rss-parser');
+    const parser = new Parser({
+      customFields: {
+        item: ['category', 'contentSnippet']
+      }
+    });
+
+    const feed = await parser.parseURL('https://www.simplifyingthemarket.com/en/feed?a=956758-ef2edda2f940e018328655620ea05f18');
+    
+    const posts: BlogPost[] = feed.items.slice(0, 20).map((item: any) => ({
+      title: item.title || 'Untitled Post',
+      description: item.contentSnippet || item.content || item.description || '',
+      link: item.link || '#',
+      pubDate: item.pubDate || item.isoDate || new Date().toISOString(),
+      category: item.category || item.categories?.[0] || 'Market Insights',
+      guid: item.guid || item.link || Math.random().toString(),
+      contentSnippet: item.contentSnippet || item.content || item.description || ''
+    }));
+
+    return {
+      props: {
+        posts
+      },
+      revalidate: 3600 // Revalidate every hour
+    };
+  } catch (error) {
+    console.error('Error fetching RSS feed:', error);
+    
+    return {
+      props: {
+        posts: [],
+        error: 'Unable to load market insights at this time.'
+      },
+      revalidate: 300 // Try again in 5 minutes on error
+    };
+  }
+};
+
+export default Blog;

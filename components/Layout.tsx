@@ -59,8 +59,7 @@ const Layout: React.FC<LayoutProps> = ({
     { name: 'Neighborhoods', href: '/neighborhoods' },
     { name: 'Community', href: '/community' },
     { name: 'Amenities', href: '/amenities' },
-    { name: 'Market Insights', href: '/market-insights' },
-    { name: 'Blog', href: '/blog' },
+    { name: 'Market Insights', href: '/blog' },
     { name: 'Contact', href: '/contact' }
   ];
 
