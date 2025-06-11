@@ -31,16 +31,19 @@ const Home: NextPage = () => {
           </div>
         </section>
 
-        <AgentProfile />
-
-        <MarketStats />
-
         <section id="homes" className={styles.section}>
           <h2 className={styles.sectionTitle}>Featured Properties</h2>
+          <p className={styles.sectionDescription}>
+            Browse our exclusive collection of luxury homes. Click on any property to view detailed information, schedule a showing, or get more details.
+          </p>
           <div className={styles.widgetContainer}>
             <RealScoutWidget />
           </div>
         </section>
+
+        <AgentProfile />
+
+        <MarketStats />
 
         <section id="community" className={styles.section}>
           <h2 className={styles.sectionTitle}>Community Highlights</h2>
