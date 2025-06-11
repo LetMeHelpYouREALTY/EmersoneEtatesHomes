@@ -9,7 +9,6 @@ interface LayoutProps {
   description?: string
   keywords?: string
   canonical?: string
-  className?: string
   noIndex?: boolean;
 }
 
@@ -52,7 +51,6 @@ export default function Layout({
   children, 
   title = "Emerson Estates - Luxury Living in Las Vegas",
   description = "Discover luxury homes at Emerson Estates, located at 2583 Regency Cove Ct, Las Vegas, NV 89121.",
-  className,
   noIndex
 }: LayoutProps) {
   return (

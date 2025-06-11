@@ -21,7 +21,7 @@ export default function ContactForm() {
     priceRange: '500k-1m'
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitStatus, setSubmitStatus<'idle' | 'success' | 'error'>>('idle');
+  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();

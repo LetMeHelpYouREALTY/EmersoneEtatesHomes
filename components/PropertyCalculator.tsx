@@ -17,7 +17,7 @@ const PropertyCalculator: React.FC<PropertyCalculatorProps> = ({ className = '' 
   const [results, setResults] = useState<CalculationResults | null>(null);
 
   const handleInputChange = (
-    setter: React.Dispatch<React.SetStateAction<string>>>
+    setter: React.Dispatch<React.SetStateAction<string>>
   ) => (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setter(e.target.value);
   };
