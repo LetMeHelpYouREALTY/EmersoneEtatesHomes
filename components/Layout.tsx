@@ -910,6 +910,3 @@ const Layout: React.FC<LayoutProps> = ({
       `}</style>
     </>
   );
-};
-
-export default Layout;

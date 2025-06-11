@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
 
 interface GalleryImage {
@@ -122,10 +122,14 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({
     }
   };
 
-  useEffect(() => {
-    document.addEventListener('keydown', handleKeyPress);
-    return () => document.removeEventListener('keydown', handleKeyPress);
+  const handleKeyPressCallback = useCallback((e: KeyboardEvent) => {
+    handleKeyPress(e);
   }, [handleKeyPress]);
+
+  useEffect(() => {
+    document.addEventListener('keydown', handleKeyPressCallback);
+    return () => document.removeEventListener('keydown', handleKeyPressCallback);
+  }, [handleKeyPressCallback]);
 
   return (
     <section className={`image-gallery ${className}`}>

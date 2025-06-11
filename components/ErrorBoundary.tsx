@@ -57,9 +57,8 @@ class ErrorBoundary extends Component<Props, State> {
         }
       });
     }
-  }
 
-  private handleRetry = () => {
+    private handleRetry = () => {
     this.setState({
       hasError: false,
       error: null,
