@@ -1,407 +1,186 @@
-import Head from 'next/head'
+import { ReactNode } from 'react'
 import Link from 'next/link'
-import Image from 'next/image'
-import { ReactNode, Component, ErrorInfo } from 'react'
+import { useRouter } from 'next/router'
+import { FaHome, FaBuilding, FaUsers, FaSwimmingPool, FaPhone, FaEnvelope, FaMapMarkerAlt, FaFacebook, FaTwitter, FaInstagram, FaLinkedin } from 'react-icons/fa'
+import { motion } from 'framer-motion'
 
 interface LayoutProps {
   children: ReactNode
-  title?: string
-  description?: string
-  keywords?: string
-  canonical?: string
-  className?: string
-  noIndex?: boolean;
 }
 
-interface ErrorBoundaryState {
-  hasError: boolean
-  error?: Error
-  errorInfo?: ErrorInfo
-}
+const Layout = ({ children }: LayoutProps) => {
+  const router = useRouter()
 
-class ErrorBoundary extends Component<{children: ReactNode}, ErrorBoundaryState> {
-  constructor(props: {children: ReactNode}) {
-    super(props)
-    this.state = { hasError: false }
-  }
+  const navigation = [
+    { name: 'Home', href: '/', icon: FaHome },
+    { name: 'Available Homes', href: '/homes', icon: FaBuilding },
+    { name: 'Community', href: '/community', icon: FaUsers },
+    { name: 'Amenities', href: '/amenities', icon: FaSwimmingPool },
+    { name: 'Contact', href: '/contact', icon: FaPhone },
+  ]
 
-  static getDerivedStateFromError(error: Error): ErrorBoundaryState {
-    return { hasError: true, error }
-  }
+  const isActive = (path: string) => router.pathname === path
 
-  componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    console.error('Layout Error Boundary:', error, errorInfo)
-    this.setState({ errorInfo: errorInfo })
-  }
-
-  render() {
-    if (this.state.hasError) {
-      return (
-        <div className="error-fallback">
-          <h2>Something went wrong loading this page.</h2>
-          <p>Please refresh the page or contact support if the issue persists.</p>
-        </div>
-      )
-    }
-
-    return this.props.children
-  }
-}
-
-export default function Layout({ 
-  children, 
-  title = "Emerson Estates - Luxury Living in Las Vegas",
-  description = "Discover luxury homes at Emerson Estates, located at 2583 Regency Cove Ct, Las Vegas, NV 89121.",
-  className,
-  noIndex
-}: LayoutProps) {
   return (
-    <>
-      <Head>
-        <title>{title}</title>
-        <meta name="description" content={description} />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <meta name="robots" content={noIndex ? "noindex, nofollow" : "index, follow"} />
-        <link rel="canonical" href="https://www.emersonestateshomes.com" />
-      </Head>
-
-      <header className="header" role="banner">
-        <div className="header-container">
-          <div className="logo-section">
-            <Link href="/" className="logo">
-              <Image
-                src="/bhhs-logo.jpg"
-                alt="Berkshire Hathaway HomeServices"
-                width={50}
-                height={50}
-                className="logo-img"
-                unoptimized
-                onError={(e) => {
-                  const target = e.target as HTMLImageElement;
-                  target.style.display = 'none';
-                }}
-              />
-              <span className="logo-text">Emerson Estates</span>
+    <div className="min-h-screen flex flex-col">
+      {/* Header */}
+      <header className="bg-white shadow-lg sticky top-0 z-50">
+        <nav className="container mx-auto px-4">
+          <div className="flex items-center justify-between h-20">
+            {/* Logo */}
+            <Link href="/" className="flex items-center space-x-3">
+              <div className="w-12 h-12 bg-gradient-to-br from-amber-500 to-orange-600 rounded-lg flex items-center justify-center">
+                <FaHome className="text-white text-xl" />
+              </div>
+              <div>
+                <h1 className="text-2xl font-bold text-gray-900">Emerson Estates</h1>
+                <p className="text-sm text-gray-600">Luxury Living in Las Vegas</p>
+              </div>
             </Link>
-          </div>
 
-          <nav className="nav" role="navigation" aria-label="Main navigation">
-            <div className="nav-links">
-              <Link href="/" className="nav-link" aria-label="Go to homepage">
-                <span className="nav-icon">🏠</span>
-                <span className="nav-text">Home</span>
-              </Link>
-              <Link href="/homes" className="nav-link" aria-label="View available homes">
-                <span className="nav-icon">🏘️</span>
-                <span className="nav-text">Available Homes</span>
-              </Link>
-              <Link href="/community" className="nav-link" aria-label="Learn about community">
-                <span className="nav-icon">🌟</span>
-                <span className="nav-text">Community</span>
-              </Link>
-              <Link href="/amenities" className="nav-link" aria-label="Explore amenities">
-                <span className="nav-icon">🏊</span>
-                <span className="nav-text">Amenities</span>
-              </Link>
-              <Link href="/contact" className="nav-link" aria-label="Contact us">
-                <span className="nav-icon">📞</span>
-                <span className="nav-text">Contact</span>
-              </Link>
+            {/* Desktop Navigation */}
+            <div className="hidden md:flex items-center space-x-8">
+              {navigation.map((item) => {
+                const Icon = item.icon
+                return (
+                  <Link
+                    key={item.name}
+                    href={item.href}
+                    className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-all duration-300 ${
+                      isActive(item.href)
+                        ? 'bg-amber-500 text-white'
+                        : 'text-gray-700 hover:bg-amber-50 hover:text-amber-600'
+                    }`}
+                  >
+                    <Icon className="text-sm" />
+                    <span className="font-medium">{item.name}</span>
+                  </Link>
+                )
+              })}
             </div>
-          </nav>
 
-          <div className="menu-section">
-            <button 
-              className="mobile-menu-toggle"
-              aria-label="Toggle mobile menu"
-              onClick={() => {
-                const navLinks = document.querySelector('.nav-links');
-                navLinks?.classList.toggle('active');
-              }}
-            >
-              <span></span>
-              <span></span>
-              <span></span>
+            {/* Mobile Menu Button */}
+            <button className="md:hidden p-2 rounded-lg text-gray-700 hover:bg-gray-100">
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
             </button>
           </div>
-        </div>
+
+          {/* Mobile Navigation */}
+          <div className="md:hidden border-t border-gray-200">
+            <div className="py-4 space-y-2">
+              {navigation.map((item) => {
+                const Icon = item.icon
+                return (
+                  <Link
+                    key={item.name}
+                    href={item.href}
+                    className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-300 ${
+                      isActive(item.href)
+                        ? 'bg-amber-500 text-white'
+                        : 'text-gray-700 hover:bg-amber-50 hover:text-amber-600'
+                    }`}
+                  >
+                    <Icon className="text-lg" />
+                    <span className="font-medium">{item.name}</span>
+                  </Link>
+                )
+              })}
+            </div>
+          </div>
+        </nav>
       </header>
 
-      <main className="main" role="main">
-        <ErrorBoundary>
-          {children}
-        </ErrorBoundary>
+      {/* Main Content */}
+      <main className="flex-1">
+        {children}
       </main>
 
-      <footer className="footer" role="contentinfo">
-        <div className="footer-container">
-          <div className="footer-content">
-            <div className="footer-section">
-              <h3>Emerson Estates</h3>
-              <address>
-                2583 Regency Cove Ct<br />
-                Las Vegas, NV 89121
-              </address>
-            </div>
-
-            <div className="footer-section">
-              <h3>Contact</h3>
-              <p>
-                <a href="tel:+17025551234">Phone: (702) 555-1234</a><br />
-                <a href="mailto:info@emersonestateshomes.com">Email: info@emersonestateshomes.com</a>
+      {/* Footer */}
+      <footer className="bg-gray-900 text-white">
+        <div className="container mx-auto px-4 py-16">
+          <div className="grid md:grid-cols-4 gap-8">
+            {/* Company Info */}
+            <div className="col-span-2">
+              <div className="flex items-center space-x-3 mb-6">
+                <div className="w-12 h-12 bg-gradient-to-br from-amber-500 to-orange-600 rounded-lg flex items-center justify-center">
+                  <FaHome className="text-white text-xl" />
+                </div>
+                <div>
+                  <h3 className="text-2xl font-bold">Emerson Estates</h3>
+                  <p className="text-gray-400">Luxury Living in Las Vegas</p>
+                </div>
+              </div>
+              <p className="text-gray-300 mb-6 max-w-md">
+                Experience the finest in luxury living at Emerson Estates. Our premium homes offer 
+                modern amenities, stunning views, and an exclusive community lifestyle in the heart of Las Vegas.
               </p>
+              <div className="flex space-x-4">
+                <a href="#" className="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-amber-500 transition-colors duration-300">
+                  <FaFacebook />
+                </a>
+                <a href="#" className="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-amber-500 transition-colors duration-300">
+                  <FaTwitter />
+                </a>
+                <a href="#" className="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-amber-500 transition-colors duration-300">
+                  <FaInstagram />
+                </a>
+                <a href="#" className="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-amber-500 transition-colors duration-300">
+                  <FaLinkedin />
+                </a>
+              </div>
             </div>
 
-            <div className="footer-section">
-              <h3>Follow Us</h3>
-              <p>Connect with us on social media for updates and new listings.</p>
+            {/* Quick Links */}
+            <div>
+              <h4 className="text-lg font-semibold mb-6">Quick Links</h4>
+              <ul className="space-y-3">
+                {navigation.map((item) => (
+                  <li key={item.name}>
+                    <Link href={item.href} className="text-gray-300 hover:text-amber-400 transition-colors duration-300">
+                      {item.name}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Contact Info */}
+            <div>
+              <h4 className="text-lg font-semibold mb-6">Contact Information</h4>
+              <div className="space-y-4">
+                <div className="flex items-start space-x-3">
+                  <FaMapMarkerAlt className="text-amber-400 mt-1" />
+                  <div>
+                    <p className="text-gray-300">2583 Regency Cove Ct</p>
+                    <p className="text-gray-300">Las Vegas, NV 89121</p>
+                  </div>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <FaPhone className="text-amber-400" />
+                  <p className="text-gray-300">(702) 555-0123</p>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <FaEnvelope className="text-amber-400" />
+                  <p className="text-gray-300">info@emersonestateshomes.com</p>
+                </div>
+              </div>
             </div>
           </div>
 
-          <div className="footer-bottom">
-            <p>&copy; 2024 Emerson Estates. All rights reserved.</p>
+          {/* Bottom Bar */}
+          <div className="border-t border-gray-800 mt-12 pt-8 text-center">
+            <p className="text-gray-400">
+              © 2024 Emerson Estates. All rights reserved. | 
+              <Link href="#" className="text-amber-400 hover:text-amber-300 ml-1">Privacy Policy</Link> | 
+              <Link href="#" className="text-amber-400 hover:text-amber-300 ml-1">Terms of Service</Link>
+            </p>
           </div>
         </div>
       </footer>
-
-      <style jsx>{`
-        .header {
-          background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
-          box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-          position: sticky;
-          top: 0;
-          z-index: 1000;
-        }
-
-        .header-container {
-          max-width: 1200px;
-          margin: 0 auto;
-          display: grid;
-          grid-template-columns: auto 1fr auto;
-          align-items: center;
-          padding: 1rem 2rem;
-          gap: 1rem;
-        }
-
-        .logo-section {
-          justify-self: start;
-          min-width: 200px;
-        }
-
-        .nav {
-          justify-self: center;
-        }
-
-        .menu-section {
-          justify-self: end;
-        }
-
-        .logo {
-          display: flex;
-          align-items: center;
-          gap: 0.75rem;
-          text-decoration: none;
-          color: white;
-          font-size: 1.5rem;
-          font-weight: 700;
-          transition: transform 0.3s ease;
-          white-space: nowrap;
-          position: relative;
-        }
-
-        .logo:hover {
-          transform: scale(1.02);
-        }
-
-        .logo-img {
-          border-radius: 6px;
-          box-shadow: 0 2px 10px rgba(0,0,0,0.3);
-          flex-shrink: 0;
-          background: white;
-          padding: 2px;
-        }
-
-        .logo-text {
-          display: inline-block;
-        }
-
-        .nav-links {
-          display: flex;
-          gap: 2rem;
-          align-items: center;
-        }
-
-        .nav-link {
-          color: white;
-          text-decoration: none;
-          font-weight: 500;
-          padding: 0.75rem 1.25rem;
-          border-radius: 25px;
-          transition: all 0.3s ease;
-          position: relative;
-        }
-
-        .nav-link:hover {
-          background: rgba(255,255,255,0.15);
-          transform: translateY(-2px);
-          box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        }
-
-        .mobile-menu-toggle {
-          display: none;
-          background: none;
-          border: none;
-          color: white;
-          cursor: pointer;
-          padding: 0.5rem;
-          border-radius: 4px;
-          transition: background-color 0.3s ease;
-          flex-direction: column;
-          width: 30px;
-          height: 30px;
-          justify-content: center;
-          align-items: center;
-        }
-
-        .mobile-menu-toggle span {
-          display: block;
-          width: 20px;
-          height: 2px;
-          background: white;
-          margin: 2px 0;
-          transition: 0.3s;
-        }
-
-        .mobile-menu-toggle:hover {
-          background: rgba(255,255,255,0.1);
-        }
-
-        .footer {
-          background: linear-gradient(135deg, #1f2937 0%, #374151 100%);
-          color: white;
-          margin-top: auto;
-        }
-
-        .footer-container {
-          max-width: 1200px;
-          margin: 0 auto;
-          padding: 3rem 2rem 1rem;
-        }
-
-        .footer-content {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-          gap: 2rem;
-          margin-bottom: 2rem;
-        }
-
-        .footer-section h3 {
-          color: #fbbf24;
-          margin-bottom: 1rem;
-          font-size: 1.25rem;
-        }
-
-        .footer-section p,
-        .footer-section address {
-          line-height: 1.6;
-          color: rgba(255,255,255,0.8);
-          font-style: normal;
-        }
-
-        .footer-section a {
-          color: #60a5fa;
-          text-decoration: none;
-          transition: color 0.3s ease;
-        }
-
-        .footer-section a:hover {
-          color: #fbbf24;
-        }
-
-        .footer-bottom {
-          text-align: center;
-          padding-top: 2rem;
-          border-top: 1px solid rgba(255,255,255,0.1);
-          color: rgba(255,255,255,0.6);
-        }
-
-        .error-fallback {
-          padding: 2rem;
-          text-align: center;
-          background: #fee;
-          border: 1px solid #fcc;
-          border-radius: 4px;
-          margin: 1rem;
-        }
-
-        @media (max-width: 768px) {
-          .header-container {
-            grid-template-columns: 1fr auto;
-            padding: 0.75rem 1rem;
-            gap: 0.5rem;
-          }
-
-          .logo-section {
-            min-width: 0;
-          }
-
-          .menu-section {
-            grid-column: 2;
-          }
-
-          .nav {
-            grid-column: 1 / -1;
-            grid-row: 2;
-            position: relative;
-          }
-
-          .nav-links {
-            display: none;
-            position: absolute;
-            top: 100%;
-            left: 0;
-            right: 0;
-            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
-            flex-direction: column;
-            padding: 1rem;
-            gap: 0.5rem;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-            border-radius: 8px;
-            margin-top: 0.5rem;
-            z-index: 1000;
-          }
-
-          .nav-links.active {
-            display: flex;
-          }
-
-          .nav-link {
-            padding: 1rem;
-            border-radius: 8px;
-            justify-content: center;
-          }
-
-          .mobile-menu-toggle {
-            display: flex;
-          }
-
-          .logo {
-            font-size: 1.1rem;
-            gap: 0.5rem;
-          }
-
-          .logo-text {
-            overflow: hidden;
-            text-overflow: ellipsis;
-          }
-
-          .footer-content {
-            grid-template-columns: 1fr;
-            text-align: center;
-            gap: 1.5rem;
-          }
-        }
-      `}</style>
-    </>
+    </div>
   )
 }
+
+export default Layout
