@@ -7,6 +7,10 @@ interface LayoutProps {
   children: ReactNode
   title?: string
   description?: string
+  keywords?: string
+  canonical?: string
+  className?: string
+  noIndex?: boolean;
 }
 
 interface ErrorBoundaryState {
@@ -47,7 +51,9 @@ class ErrorBoundary extends Component<{children: ReactNode}, ErrorBoundaryState>
 export default function Layout({ 
   children, 
   title = "Emerson Estates - Luxury Living in Las Vegas",
-  description = "Discover luxury homes at Emerson Estates, located at 2583 Regency Cove Ct, Las Vegas, NV 89121."
+  description = "Discover luxury homes at Emerson Estates, located at 2583 Regency Cove Ct, Las Vegas, NV 89121.",
+  className,
+  noIndex
 }: LayoutProps) {
   return (
     <>
@@ -55,7 +61,7 @@ export default function Layout({
         <title>{title}</title>
         <meta name="description" content={description} />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <meta name="robots" content="index, follow" />
+        <meta name="robots" content={noIndex ? "noindex, nofollow" : "index, follow"} />
         <link rel="canonical" href="https://www.emersonestateshomes.com" />
       </Head>
 

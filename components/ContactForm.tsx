@@ -1,4 +1,3 @@
-
 import React, { useState, FormEvent } from 'react';
 import { ContactFormData } from '@/types';
 import styles from '../styles/Home.module.css';
@@ -24,10 +23,10 @@ export default function ContactForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsSubmitting(true);
-    
+
     try {
       const response = await fetch('/api/contact', {
         method: 'POST',
@@ -289,7 +288,7 @@ export default function ContactForm() {
           .form-row {
             grid-template-columns: 1fr;
           }
-          
+
           .contact-form {
             padding: 2rem;
           }
