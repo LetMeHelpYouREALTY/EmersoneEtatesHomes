@@ -20,6 +20,14 @@ const nextConfig: NextConfig = {
     scrollRestoration: true
   },
   
+  // Allow development origins for Replit
+  allowedDevOrigins: [
+    'replit.dev',
+    '*.replit.dev',
+    'localhost:3000',
+    '0.0.0.0:3000'
+  ],
+  
   // Development configuration
   async rewrites() {
     return []
@@ -36,7 +44,7 @@ const nextConfig: NextConfig = {
           },
           {
             key: 'X-Frame-Options',
-            value: 'DENY',
+            value: 'SAMEORIGIN',
           },
           {
             key: 'X-XSS-Protection',
@@ -59,6 +67,13 @@ const nextConfig: NextConfig = {
       config.watchOptions = {
         poll: 1000,
         aggregateTimeout: 300,
+      };
+      
+      // Fix middleware manifest issue
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        fs: false,
+        path: false,
       };
     }
     return config;
