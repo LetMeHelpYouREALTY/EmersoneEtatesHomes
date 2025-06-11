@@ -1,16 +1,6 @@
+import { useEffect, useState } from 'react';
 
-import Script from "next/script";
-import { useEffect, useState } from "react";
-
-interface RealScoutWidgetProps {
-  widgetId?: string;
-  height?: string;
-}
-
-export default function RealScoutWidget({ 
-  widgetId = "lv_emerson_estates", 
-  height = "600px" 
-}: RealScoutWidgetProps) {
+const RealScoutWidget = () => {
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
@@ -18,18 +8,23 @@ export default function RealScoutWidget({
   }, []);
 
   if (!isClient) {
-    return <div style={{ height, background: "#f5f5f5" }}>Loading properties...</div>;
+    return (
+      <div style={{ width: '100%', height: '600px', backgroundColor: '#f5f5f5', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <p>Loading property listings...</p>
+      </div>
+    );
   }
 
   return (
-    <>
-      <Script
-        src="https://em.realscout.com/widgets/realscout-web-components.umd.js"
-        strategy="lazyOnload"
+    <div style={{ width: '100%', height: '600px' }}>
+      <realscout-widget
+        search-type="list"
+        entity-type="new-home-community"
+        entity-id="COMMUNITY_ID"
+        style={{ width: '100%', height: '100%' }}
       />
-      <div style={{ height }}>
-        <realscout-listings widget-id={widgetId}></realscout-listings>
-      </div>
-    </>
+    </div>
   );
-}
+};
+
+export default RealScoutWidget;

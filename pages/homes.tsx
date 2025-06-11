@@ -1,38 +1,18 @@
-
 import type { NextPage } from "next";
 import Head from "next/head";
-import Script from "next/script";
 import Link from "next/link";
+import Layout from "../components/Layout";
+import RealScoutWidget from "../components/RealScoutWidget";
 import styles from "../styles/Home.module.css";
 
 const Homes: NextPage = () => {
   return (
-    <div className={styles.container}>
+    <Layout>
       <Head>
         <title>Available Homes - Emerson Estates</title>
         <meta name="description" content="Browse available luxury homes in Emerson Estates, Las Vegas. Find your perfect home today." />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-
-      <Script
-        src="https://em.realscout.com/widgets/realscout-web-components.umd.js"
-        strategy="beforeInteractive"
-      />
-
-      <header className={styles.header}>
-        <nav className={styles.nav}>
-          <div className={styles.logo}>
-            <h2>Emerson Estates</h2>
-          </div>
-          <ul className={styles.navLinks}>
-            <li><Link href="/">Home</Link></li>
-            <li><Link href="/homes">Available Homes</Link></li>
-            <li><Link href="/community">Community</Link></li>
-            <li><Link href="/amenities">Amenities</Link></li>
-            <li><Link href="/contact">Contact</Link></li>
-          </ul>
-        </nav>
-      </header>
 
       <main className={styles.main}>
         <section className={styles.hero}>
@@ -87,11 +67,7 @@ const Homes: NextPage = () => {
           </div>
         </section>
       </main>
-
-      <footer className={styles.footer}>
-        <p>&copy; 2024 Emerson Estates. All rights reserved.</p>
-      </footer>
-    </div>
+    </Layout>
   );
 };
 

@@ -1,6 +1,6 @@
-
 import Head from "next/head";
 import Link from "next/link";
+import Script from "next/script";
 import styles from "../styles/Home.module.css";
 
 interface LayoutProps {
@@ -21,6 +21,11 @@ export default function Layout({
         <meta name="description" content={description} />
         <link rel="icon" href="/favicon.ico" />
       </Head>
+
+      <Script
+        src="https://em.realscout.com/widgets/realscout-web-components.umd.js"
+        strategy="beforeInteractive"
+      />
 
       <header className={styles.header}>
         <nav className={styles.nav}>
