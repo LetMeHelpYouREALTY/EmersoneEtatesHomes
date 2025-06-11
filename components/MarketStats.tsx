@@ -128,3 +128,60 @@ export default function MarketStats({ className = "" }: MarketStatsProps) {
     </section>
   );
 }
+import { useState, useEffect } from 'react';
+import styles from '../styles/Home.module.css';
+
+export default function MarketStats() {
+  const [stats, setStats] = useState({
+    averagePrice: 850000,
+    medianPrice: 795000,
+    daysOnMarket: 18,
+    soldLastMonth: 12
+  });
+
+  return (
+    <section className={styles.section} id="market">
+      <h2 className={styles.sectionTitle}>Las Vegas Luxury Market</h2>
+      <p className={styles.subtitle}>Current trends in premium real estate</p>
+      
+      <div className={styles.statsGrid}>
+        <div className={styles.statCard}>
+          <div className={styles.statNumber}>
+            ${(stats.averagePrice / 1000).toFixed(0)}K
+          </div>
+          <div className={styles.statLabel}>Average Home Price</div>
+          <div className={styles.statTrend}>↗️ +5.2% YoY</div>
+        </div>
+        
+        <div className={styles.statCard}>
+          <div className={styles.statNumber}>
+            ${(stats.medianPrice / 1000).toFixed(0)}K
+          </div>
+          <div className={styles.statLabel}>Median Price</div>
+          <div className={styles.statTrend}>↗️ +3.8% YoY</div>
+        </div>
+        
+        <div className={styles.statCard}>
+          <div className={styles.statNumber}>{stats.daysOnMarket}</div>
+          <div className={styles.statLabel}>Avg. Days on Market</div>
+          <div className={styles.statTrend}>↘️ Fast Sales</div>
+        </div>
+        
+        <div className={styles.statCard}>
+          <div className={styles.statNumber}>{stats.soldLastMonth}</div>
+          <div className={styles.statLabel}>Sold This Month</div>
+          <div className={styles.statTrend}>🔥 Hot Market</div>
+        </div>
+      </div>
+      
+      <div className={styles.marketInsight}>
+        <h3>Market Insight</h3>
+        <p>
+          The Las Vegas luxury market continues to show strong performance with 
+          high demand for premium properties in gated communities. Emerson Estates 
+          represents exceptional value in this competitive market.
+        </p>
+      </div>
+    </section>
+  );
+}

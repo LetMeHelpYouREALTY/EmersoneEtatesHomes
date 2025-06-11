@@ -190,3 +190,61 @@ export default function AgentProfile({ className = "" }: AgentProfileProps) {
     </section>
   );
 }
+import Image from 'next/image';
+import styles from '../styles/Home.module.css';
+
+export default function AgentProfile() {
+  return (
+    <section className={styles.section} id="agent">
+      <div className={styles.agentProfile}>
+        <div className={styles.agentImageContainer}>
+          <Image
+            src="/professional-headshot.jpg"
+            alt="Real Estate Agent"
+            width={200}
+            height={200}
+            className={styles.agentImage}
+            priority
+          />
+        </div>
+        
+        <div className={styles.agentInfo}>
+          <h2>Your Luxury Home Specialist</h2>
+          <h3>Expert in Las Vegas Premium Properties</h3>
+          
+          <div className={styles.agentDetails}>
+            <p>
+              With over 10 years of experience in Las Vegas luxury real estate, 
+              I specialize in helping clients find their perfect home in exclusive 
+              communities like Emerson Estates.
+            </p>
+            
+            <div className={styles.agentStats}>
+              <div className={styles.stat}>
+                <strong>$50M+</strong>
+                <span>In Sales Volume</span>
+              </div>
+              <div className={styles.stat}>
+                <strong>200+</strong>
+                <span>Happy Families</span>
+              </div>
+              <div className={styles.stat}>
+                <strong>4.9★</strong>
+                <span>Client Rating</span>
+              </div>
+            </div>
+            
+            <div className={styles.agentContact}>
+              <a href="tel:+17025551234" className={styles.contactButton}>
+                📞 (702) 555-1234
+              </a>
+              <a href="mailto:agent@emersonestateshomes.com" className={styles.contactButton}>
+                ✉️ Get In Touch
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
