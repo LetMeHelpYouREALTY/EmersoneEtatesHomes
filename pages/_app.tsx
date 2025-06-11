@@ -1,6 +1,6 @@
-
-import type { AppProps } from 'next/app'
-import '../styles/globals.css'
+import type { AppProps } from 'next/app';
+import ErrorBoundary from '@/components/ErrorBoundary';
+import '../styles/globals.css';
 import { useEffect } from 'react'
 
 export default function MyApp({ Component, pageProps }: AppProps) {
@@ -9,5 +9,9 @@ export default function MyApp({ Component, pageProps }: AppProps) {
     console.log('App initialized on client');
   }, []);
 
-  return <Component {...pageProps} />
+  return (
+    <ErrorBoundary>
+      <Component {...pageProps} />
+    </ErrorBoundary>
+  );
 }
