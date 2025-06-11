@@ -6,18 +6,18 @@ interface RealScoutWidgetProps {
   className?: string;
 }
 
-const RealScoutWidget: React.FC<RealScoutWidgetProps> = ({ 
+function RealScoutWidget({ 
   widgetId = "realscout-widget", 
   className = "" 
-}) => {
-  return (
-    <div className={className}>
-      <realscout-widget-embed
-        id={widgetId}
-        widget-id="64c8c5f4b4c8e50014a8b4e2"
-      />
-    </div>
+}: RealScoutWidgetProps) {
+  return React.createElement(
+    'div', 
+    { className: className },
+    React.createElement('realscout-widget-embed', {
+      id: widgetId,
+      'widget-id': '64c8c5f4b4c8e50014a8b4e2'
+    })
   );
-};
+}
 
 export default RealScoutWidget;
