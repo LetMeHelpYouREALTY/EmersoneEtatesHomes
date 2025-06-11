@@ -51,7 +51,8 @@ const nextConfig: NextConfig = {
   ...(process.env.NODE_ENV === 'development' && {
     experimental: {
       allowedRevalidateHeaderKeys: ['content-type'],
-      scrollRestoration: true
+      scrollRestoration: true,
+      allowedDevOrigins: ['*.replit.dev', '*.repl.co']
     }
   }),
   

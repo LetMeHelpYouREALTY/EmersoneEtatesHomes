@@ -3,6 +3,8 @@ import Head from "next/head";
 import Link from "next/link";
 import Layout from "../components/Layout";
 import RealScoutWidget from "../components/RealScoutWidget";
+import AgentProfile from "../components/AgentProfile";
+import MarketStats from "../components/MarketStats";
 import styles from "../styles/Home.module.css";
 
 const Home: NextPage = () => {
@@ -28,6 +30,10 @@ const Home: NextPage = () => {
             </Link>
           </div>
         </section>
+
+        <AgentProfile />
+
+        <MarketStats />
 
         <section id="homes" className={styles.section}>
           <h2 className={styles.sectionTitle}>Featured Properties</h2>

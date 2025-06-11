@@ -4,6 +4,7 @@ import Link from "next/link";
 import Layout from "../components/Layout";
 import RealScoutWidget from "../components/RealScoutWidget";
 import styles from "../styles/Home.module.css";
+import PropertyCalculator from "../components/PropertyCalculator";
 
 const Homes: NextPage = () => {
   return (
@@ -32,6 +33,8 @@ const Homes: NextPage = () => {
             <RealScoutWidget />
           </div>
         </section>
+
+        <PropertyCalculator />
 
         <section className={styles.section}>
           <h2 className={styles.sectionTitle}>Home Features</h2>

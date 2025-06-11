@@ -53,7 +53,7 @@ export default function Layout({
         <meta name="description" content={description} />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="robots" content="index, follow" />
-        <link rel="canonical" href={`https://www.emersonestateshomes.com${typeof window !== 'undefined' ? window.location.pathname : ''}`} />
+        <link rel="canonical" href="https://www.emersonestateshomes.com" />
       </Head>
 
       <header className="header">
