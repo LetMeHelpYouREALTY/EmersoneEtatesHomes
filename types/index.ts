@@ -54,7 +54,23 @@ export interface SEOHeadProps {
   description: string;
   keywords?: string;
   canonical?: string;
+  url?: string;
+  pathname?: string;
 }
+
+export interface ApiErrorResponse {
+  message: string;
+  success: false;
+  error?: string;
+}
+
+export interface ApiSuccessResponse<T = any> {
+  message: string;
+  success: true;
+  data?: T;
+}
+
+export type ApiResponse<T = any> = ApiSuccessResponse<T> | ApiErrorResponse;
 
 export interface LayoutProps {
   children: React.ReactNode;

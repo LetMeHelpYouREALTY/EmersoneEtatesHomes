@@ -6,11 +6,22 @@ interface ContactApiRequest extends NextApiRequest {
   body: ContactFormData;
 }
 
-interface ApiResponse {
+interface ApiErrorResponse {
   message: string;
-  success: boolean;
-  data?: any;
+  success: false;
+  error?: string;
 }
+
+interface ApiSuccessResponse {
+  message: string;
+  success: true;
+  data?: {
+    submittedAt: string;
+    name: string;
+  };
+}
+
+type ApiResponse = ApiSuccessResponse | ApiErrorResponse;
 
 export default function handler(
   req: ContactApiRequest,

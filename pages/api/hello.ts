@@ -13,7 +13,7 @@ export default function handler(
 ) {
   if (req.method === 'POST') {
     // Handle inquiry submission
-    const { name, email, phone, message } = req.body;
+    const { name } = req.body;
     
     // In a real application, you would save this to a database
     // and send notifications to the sales team
