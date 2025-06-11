@@ -7,6 +7,7 @@ interface SEOHeadProps {
   keywords?: string;
   ogImage?: string;
   pathname?: string;
+  url?: string;
 }
 
 export default function SEOHead({
@@ -14,10 +15,11 @@ export default function SEOHead({
   description = "Discover luxury living at Emerson Estates. Premium homes, world-class amenities, and an exclusive community in Las Vegas, Nevada.",
   keywords = "luxury homes las vegas, emerson estates, real estate nevada, gated community, premium properties",
   ogImage = "/bhhs-logo.jpg",
-  pathname = ""
+  pathname = "",
+  url
 }: SEOHeadProps) {
   const siteUrl = "https://www.emersonestateshomes.com";
-  const fullUrl = `${siteUrl}${pathname}`;
+  const fullUrl = url || `${siteUrl}${pathname}`;
 
   return (
     <Head>
