@@ -1,13 +1,5 @@
+
 import React, { Component, ErrorInfo, ReactNode } from 'react';
-import Link from 'next/link';
-
-interface Props {
-  children: ReactNode;
-  fallback?: ReactNode;
-  onError?: (error: Error, errorInfo: ErrorInfo) => void;
-}
-
-import React, { Component, ReactNode, ErrorInfo } from 'react';
 import Link from 'next/link';
 
 interface Props {
@@ -280,4 +272,4 @@ class ErrorBoundary extends Component<Props, State> {
   }
 }
 
-export default ErrorBoundary;ary;
+export default ErrorBoundary;
