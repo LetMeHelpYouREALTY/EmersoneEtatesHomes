@@ -1,6 +1,4 @@
-
 import React from 'react';
-import Script from 'next/script';
 
 interface RealScoutWidgetProps {
   agentEncodedId?: string;
@@ -18,28 +16,14 @@ function RealScoutWidget({
   className = ""
 }: RealScoutWidgetProps) {
   return (
-    <>
-      <Script
-        src="https://em.realscout.com/widgets/realscout-web-components.umd.js"
-        strategy="beforeInteractive"
-      />
-      
-      <style jsx>{`
-        realscout-office-listings {
-          --rs-listing-divider-color: rgb(101, 141, 172);
-          width: 100%;
-        }
-      `}</style>
-
-      <div className={className}>
-        {React.createElement('realscout-office-listings', {
-          'agent-encoded-id': agentEncodedId,
-          'sort-order': sortOrder,
-          'listing-status': listingStatus,
-          'property-types': propertyTypes
-        })}
-      </div>
-    </>
+    <div className={className}>
+      {React.createElement('realscout-office-listings', {
+        'agent-encoded-id': agentEncodedId,
+        'sort-order': sortOrder,
+        'listing-status': listingStatus,
+        'property-types': propertyTypes
+      })}
+    </div>
   );
 }
 

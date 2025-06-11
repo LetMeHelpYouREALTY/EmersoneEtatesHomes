@@ -32,19 +32,7 @@ const Home: NextPage = () => {
         <section id="homes" className={styles.section}>
           <h2 className={styles.sectionTitle}>Featured Properties</h2>
           <div className={styles.widgetContainer}>
-            <style jsx>{`
-              realscout-office-listings {
-                --rs-listing-divider-color: rgb(101, 141, 172);
-                width: 100%;
-                display: block;
-              }
-            `}</style>
-            <realscout-office-listings 
-              agent-encoded-id="QWdlbnQtMjI1MDUw" 
-              sort-order="STATUS_AND_SIGNIFICANT_CHANGE" 
-              listing-status="For Sale" 
-              property-types="SFR,MF">
-            </realscout-office-listings>
+            <RealScoutWidget />
           </div>
         </section>
 

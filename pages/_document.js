@@ -43,6 +43,17 @@ export default function Document() {
         <meta httpEquiv="X-Content-Type-Options" content="nosniff" />
         <meta httpEquiv="X-Frame-Options" content="DENY" />
         <meta httpEquiv="X-XSS-Protection" content="1; mode=block" />
+        
+        {/* RealScout Widget Script - Required once for all widgets */}
+        <script src="https://em.realscout.com/widgets/realscout-web-components.umd.js" type="module"></script>
+        <style dangerouslySetInnerHTML={{
+          __html: `
+            realscout-office-listings {
+              --rs-listing-divider-color: rgb(101, 141, 172);
+              width: 100%;
+            }
+          `
+        }} />
       </Head>
       <body>
         <Main />
