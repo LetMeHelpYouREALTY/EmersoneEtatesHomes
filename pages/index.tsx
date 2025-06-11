@@ -1,6 +1,7 @@
 import type { NextPage } from "next";
 import Head from "next/head";
 import Script from "next/script";
+import Link from "next/link";
 import styles from "../styles/Home.module.css";
 
 const Home: NextPage = () => {
@@ -10,12 +11,6 @@ const Home: NextPage = () => {
         <title>Emerson Estates Homes - Las Vegas Real Estate</title>
         <meta name="description" content="Discover luxury homes in Emerson Estates, Las Vegas. Your premier destination for upscale living in Nevada." />
         <link rel="icon" href="/favicon.ico" />
-        <style>{`
-          realscout-office-listings {
-            --rs-listing-divider-color: rgb(101, 141, 172);
-            width: 100%;
-          }
-        `}</style>
       </Head>
 
       <Script
@@ -29,11 +24,11 @@ const Home: NextPage = () => {
             <h2>Emerson Estates</h2>
           </div>
           <ul className={styles.navLinks}>
-            <li><a href="/">Home</a></li>
-            <li><a href="/homes">Available Homes</a></li>
-            <li><a href="/community">Community</a></li>
-            <li><a href="/amenities">Amenities</a></li>
-            <li><a href="/contact">Contact</a></li>
+            <li><Link href="/">Home</Link></li>
+            <li><Link href="/homes">Available Homes</Link></li>
+            <li><Link href="/community">Community</Link></li>
+            <li><Link href="/amenities">Amenities</Link></li>
+            <li><Link href="/contact">Contact</Link></li>
           </ul>
         </nav>
       </header>
@@ -47,13 +42,22 @@ const Home: NextPage = () => {
               Discover your dream home in one of Las Vegas&apos; most prestigious communities. 
               Emerson Estates offers elegant residences with modern amenities and stunning desert views.
             </p>
-            <button className={styles.ctaButton}>View Available Homes</button>
+            <Link href="/homes">
+              <button className={styles.ctaButton}>View Available Homes</button>
+            </Link>
           </div>
         </section>
 
         <section id="homes" className={styles.section}>
           <h2 className={styles.sectionTitle}>Featured Properties</h2>
           <div className={styles.widgetContainer}>
+            <style jsx>{`
+              realscout-office-listings {
+                --rs-listing-divider-color: rgb(101, 141, 172);
+                width: 100%;
+                display: block;
+              }
+            `}</style>
             <realscout-office-listings 
               agent-encoded-id="QWdlbnQtMjI1MDUw" 
               sort-order="STATUS_AND_SIGNIFICANT_CHANGE" 

@@ -1,6 +1,8 @@
+
 import type { NextPage } from "next";
 import Head from "next/head";
 import Script from "next/script";
+import Link from "next/link";
 import styles from "../styles/Home.module.css";
 
 const Homes: NextPage = () => {
@@ -10,12 +12,6 @@ const Homes: NextPage = () => {
         <title>Available Homes - Emerson Estates</title>
         <meta name="description" content="Browse available luxury homes in Emerson Estates, Las Vegas. Find your perfect home today." />
         <link rel="icon" href="/favicon.ico" />
-        <style>{`
-          realscout-office-listings {
-            --rs-listing-divider-color: rgb(101, 141, 172);
-            width: 100%;
-          }
-        `}</style>
       </Head>
 
       <Script
@@ -29,11 +25,11 @@ const Homes: NextPage = () => {
             <h2>Emerson Estates</h2>
           </div>
           <ul className={styles.navLinks}>
-            <li><a href="/">Home</a></li>
-            <li><a href="/homes">Available Homes</a></li>
-            <li><a href="/community">Community</a></li>
-            <li><a href="/amenities">Amenities</a></li>
-            <li><a href="/contact">Contact</a></li>
+            <li><Link href="/">Home</Link></li>
+            <li><Link href="/homes">Available Homes</Link></li>
+            <li><Link href="/community">Community</Link></li>
+            <li><Link href="/amenities">Amenities</Link></li>
+            <li><Link href="/contact">Contact</Link></li>
           </ul>
         </nav>
       </header>
@@ -53,6 +49,13 @@ const Homes: NextPage = () => {
         <section className={styles.section}>
           <h2 className={styles.sectionTitle}>Current Listings</h2>
           <div className={styles.widgetContainer}>
+            <style jsx>{`
+              realscout-office-listings {
+                --rs-listing-divider-color: rgb(101, 141, 172);
+                width: 100%;
+                display: block;
+              }
+            `}</style>
             <realscout-office-listings 
               agent-encoded-id="QWdlbnQtMjI1MDUw" 
               sort-order="STATUS_AND_SIGNIFICANT_CHANGE" 
