@@ -65,19 +65,21 @@ export default function Layout({
         <link rel="canonical" href="https://www.emersonestateshomes.com" />
       </Head>
 
-      <header className="header">
+      <header className="header" role="banner">
         <div className="header-container">
-          <Link href="/" className="logo">
-            <Image 
-              src="/bhhs-logo.jpg" 
-              alt="Berkshire Hathaway HomeServices" 
-              className="logo-img"
-              width={50}
-              height={50}
-              priority
-            />
-            <span className="logo-text">Emerson Estates</span>
-          </Link>
+          <div className="logo-section">
+            <Link href="/" className="logo">
+              <Image 
+                src="/bhhs-logo.jpg" 
+                alt="Berkshire Hathaway HomeServices" 
+                className="logo-img"
+                width={50}
+                height={50}
+                priority
+              />
+              <span className="logo-text">Emerson Estates</span>
+            </Link>
+          </div>
 
           <nav className="nav" role="navigation" aria-label="Main navigation">
             <div className="nav-links">
@@ -102,6 +104,9 @@ export default function Layout({
                 <span className="nav-text">Contact</span>
               </Link>
             </div>
+          </nav>
+
+          <div className="menu-section">
             <button 
               className="mobile-menu-toggle"
               aria-label="Toggle mobile menu"
@@ -114,20 +119,7 @@ export default function Layout({
               <span></span>
               <span></span>
             </button>
-          </nav>
-
-          <button 
-            className="mobile-menu-toggle"
-            aria-label="Toggle mobile menu"
-            onClick={() => {
-              const nav = document.querySelector('.nav');
-              nav?.classList.toggle('nav-open');
-            }}
-          >
-            <span></span>
-            <span></span>
-            <span></span>
-          </button>
+          </div>
         </div>
       </header>
 
@@ -180,10 +172,23 @@ export default function Layout({
         .header-container {
           max-width: 1200px;
           margin: 0 auto;
-          display: flex;
-          justify-content: space-between;
+          display: grid;
+          grid-template-columns: 1fr 2fr 1fr;
           align-items: center;
           padding: 1rem 2rem;
+          gap: 1rem;
+        }
+
+        .logo-section {
+          justify-self: start;
+        }
+
+        .nav {
+          justify-self: center;
+        }
+
+        .menu-section {
+          justify-self: end;
         }
 
         .logo {
@@ -233,11 +238,24 @@ export default function Layout({
           background: none;
           border: none;
           color: white;
-          font-size: 1.5rem;
           cursor: pointer;
           padding: 0.5rem;
           border-radius: 4px;
           transition: background-color 0.3s ease;
+          flex-direction: column;
+          width: 30px;
+          height: 30px;
+          justify-content: center;
+          align-items: center;
+        }
+
+        .mobile-menu-toggle span {
+          display: block;
+          width: 20px;
+          height: 2px;
+          background: white;
+          margin: 2px 0;
+          transition: 0.3s;
         }
 
         .mobile-menu-toggle:hover {
@@ -304,7 +322,18 @@ export default function Layout({
 
         @media (max-width: 768px) {
           .header-container {
+            grid-template-columns: 1fr auto;
             padding: 1rem;
+          }
+
+          .menu-section {
+            grid-column: 2;
+          }
+
+          .nav {
+            grid-column: 1 / -1;
+            grid-row: 2;
+            position: relative;
           }
 
           .nav-links {
@@ -318,14 +347,23 @@ export default function Layout({
             padding: 1rem;
             gap: 0.5rem;
             box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            border-radius: 8px;
+            margin-top: 0.5rem;
+            z-index: 1000;
           }
 
           .nav-links.active {
             display: flex;
           }
 
+          .nav-link {
+            padding: 1rem;
+            border-radius: 8px;
+            justify-content: center;
+          }
+
           .mobile-menu-toggle {
-            display: block;
+            display: flex;
           }
 
           .logo {
