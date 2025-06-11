@@ -47,12 +47,13 @@ const Layout: React.FC<LayoutProps> = ({
             textDecoration: 'none'
           }}>
             <img 
-              src="/bhhs-logo.jpg" 
-              alt="Berkshire Hathaway HomeServices" 
+              src="/new-logo.jpg" 
+              alt="Emerson Estates" 
               style={{
                 height: '60px',
-                width: 'auto',
-                objectFit: 'contain'
+                width: '60px',
+                objectFit: 'cover',
+                borderRadius: '50%'
               }}
             />
           </Link>
