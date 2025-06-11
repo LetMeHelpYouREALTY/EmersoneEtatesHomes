@@ -1,0 +1,63 @@
+You have two issues to resolve:
+Issue 1: Synchronous Script Error (Blocking Build)
+The error is in pages/_document.js line 28. You have a synchronous script that needs to be fixed.
+Find line 28 in pages/_document.js and look for something like:
+js<script src="..."></script>
+Fix it by adding async or defer:
+js<script src="..." async></script>
+// or
+<script src="..." defer></script>
+Issue 2: Image Optimization Warning
+In components/Layout.tsx line 49, replace:
+tsx<img src="..." alt="..." />
+With Next.js optimized Image:
+tsximport Image from 'next/image';
+
+<Image src="..." alt="..." width={...} height={...} />
+Quick Fix for Document Scripts
+If you're not sure which script is causing the issue, here's a more specific solution:_document.js Script Fix ExamplesCode // Before (causes error):
+<script src="https://example.com/script.js"></script>
+
+// After (fixed):
+<script src="https://example.com/script.js" async></script>
+
+// Or if order matters:
+<script src="https://example.com/script.js" defer></script>
+
+// OrDiagnosed build errors and crafted targeted troubleshooting solutions.2sThe user is getting build errors, but they're not related to the RealScout widget we just implemented. The errors are:
+
+A synchronous script in _document.js (line 28)
+An <img> tag warning in Layout.tsx (line 49)
+
+I should provide specific solutions for these issues. The main blocker is the synchronous script error.
+Let me give them actionable steps to fix these issues quickly.Immediate Action Required
+Step 1: Fix Synchronous Script (Critical)
+
+Open pages/_document.js
+Find line 28 (the script causing the error)
+Add async or defer to that script tag
+
+Step 2: Optional Image Fix
+
+Open components/Layout.tsx
+Find line 49 (the <img> tag)
+Replace with Next.js <Image> component
+
+Can You Share the Script?
+If you can show me line 28 from your _document.js file, I can give you the exact fix. Common problematic scripts include:
+
+Google Analytics scripts without async
+Third-party widgets loaded synchronously
+Font loading scripts
+Analytics or tracking codes
+
+Alternative: Disable the Rule Temporarily
+If you need to deploy immediately, add this to your next.config.js:
+jsmodule.exports = {
+  eslint: {
+    rules: {
+      '@next/next/no-sync-scripts': 'warn' // Changes error to warning
+    }
+  }
+}
+But fixing the actual script is the better long-term solution.
