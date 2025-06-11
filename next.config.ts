@@ -8,6 +8,12 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
   reactStrictMode: true,
   
+  // ESLint configuration
+  eslint: {
+    ignoreDuringBuilds: false,
+    dirs: ['pages', 'components', 'types']
+  },
+  
   // Fix cross-origin issues in development
   async headers() {
     return [

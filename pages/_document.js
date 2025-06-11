@@ -9,6 +9,7 @@ export default function Document() {
         <script 
           src="https://em.realscout.com/widgets/realscout-web-components.umd.js" 
           type="module"
+          async
         />
         <style dangerouslySetInnerHTML={{
           __html: `
@@ -37,7 +38,6 @@ export default function Document() {
         <meta property="twitter:description" content="Discover luxury homes at Emerson Estates, located at 2583 Regency Cove Ct, Las Vegas, NV 89121. Premium properties with modern amenities and community features." />
 
         {/* Favicon */}
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
 
         {/* Security Headers */}
         <meta httpEquiv="X-Content-Type-Options" content="nosniff" />
