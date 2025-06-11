@@ -52,10 +52,9 @@ const nextConfig: NextConfig = {
     experimental: {
       allowedRevalidateHeaderKeys: ['content-type'],
       scrollRestoration: true,
-      allowedDevOrigins: ['*.replit.dev', '*.repl.co']
     }
   }),
-  
+
   async rewrites() {
     return []
   },

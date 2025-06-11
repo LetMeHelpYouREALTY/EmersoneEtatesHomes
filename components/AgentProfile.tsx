@@ -1,4 +1,3 @@
-
 import React from 'react';
 
 interface AgentProfileProps {
@@ -22,7 +21,7 @@ export default function AgentProfile({ className = "" }: AgentProfileProps) {
           <h2>Meet Your Luxury Real Estate Expert</h2>
           <h3>Dr. Duffy</h3>
           <p className="agent-title">Senior Real Estate Advisor | Berkshire Hathaway HomeServices</p>
-          
+
           <div className="agent-credentials">
             <div className="credential">
               <strong>Specialization:</strong> Luxury Properties & Investment Real Estate
@@ -35,18 +34,12 @@ export default function AgentProfile({ className = "" }: AgentProfileProps) {
             </div>
           </div>
 
-          <p className="agent-description">
-            With deep expertise in the Las Vegas luxury market, Dr. Duffy brings unparalleled 
-            knowledge and personalized service to every client. Specializing in high-end properties 
-            and investment opportunities, Dr. Duffy ensures you find not just a house, but your perfect home.
-          </p>
-
           <div className="agent-contact">
-            <a href="tel:+17025551234" className="contact-btn primary">
-              📞 Schedule Consultation
+            <a href="tel:+17025551234" className="contact-button">
+              📞 Call Dr. Duffy
             </a>
-            <a href="mailto:dr.duffy@emersonestateshomes.com" className="contact-btn secondary">
-              ✉️ Send Message
+            <a href="mailto:drduffy@emersonestateshomes.com" className="contact-button">
+              ✉️ Send Email
             </a>
           </div>
         </div>
@@ -56,6 +49,7 @@ export default function AgentProfile({ className = "" }: AgentProfileProps) {
         .agent-profile {
           background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
           padding: 4rem 2rem;
+          border-radius: 12px;
           margin: 2rem 0;
         }
 
@@ -63,106 +57,63 @@ export default function AgentProfile({ className = "" }: AgentProfileProps) {
           max-width: 1200px;
           margin: 0 auto;
           display: grid;
-          grid-template-columns: 1fr 2fr;
+          grid-template-columns: 300px 1fr;
           gap: 3rem;
           align-items: center;
         }
 
         .agent-image img {
+          border-radius: 12px;
+          box-shadow: 0 8px 24px rgba(0,0,0,0.1);
           width: 100%;
           height: auto;
-          border-radius: 15px;
-          box-shadow: 0 15px 35px rgba(0,0,0,0.1);
-          transition: transform 0.3s ease;
-        }
-
-        .agent-image img:hover {
-          transform: scale(1.05);
         }
 
         .agent-info h2 {
           color: #2c3e50;
-          font-size: 2.5rem;
           margin-bottom: 0.5rem;
-          font-weight: 700;
+          font-size: 2rem;
         }
 
         .agent-info h3 {
-          color: #1e3a8a;
-          font-size: 2rem;
+          color: #e74c3c;
           margin-bottom: 0.5rem;
+          font-size: 1.5rem;
         }
 
         .agent-title {
-          color: #6b7280;
+          color: #666;
+          margin-bottom: 2rem;
           font-size: 1.1rem;
-          margin-bottom: 1.5rem;
-          font-style: italic;
         }
 
         .agent-credentials {
-          background: white;
-          padding: 1.5rem;
-          border-radius: 10px;
-          margin: 1.5rem 0;
-          box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+          margin-bottom: 2rem;
         }
 
         .credential {
-          margin-bottom: 0.75rem;
-          padding-bottom: 0.75rem;
-          border-bottom: 1px solid #e5e7eb;
-        }
-
-        .credential:last-child {
-          border-bottom: none;
-          margin-bottom: 0;
-          padding-bottom: 0;
-        }
-
-        .agent-description {
-          font-size: 1.1rem;
-          line-height: 1.7;
-          color: #374151;
-          margin: 1.5rem 0;
+          margin-bottom: 1rem;
+          color: #2c3e50;
         }
 
         .agent-contact {
           display: flex;
           gap: 1rem;
-          margin-top: 2rem;
+          flex-wrap: wrap;
         }
 
-        .contact-btn {
-          padding: 1rem 2rem;
+        .contact-button {
+          background: #e74c3c;
+          color: white;
+          padding: 1rem 1.5rem;
           border-radius: 8px;
           text-decoration: none;
           font-weight: 600;
           transition: all 0.3s ease;
-          display: inline-flex;
-          align-items: center;
-          gap: 0.5rem;
         }
 
-        .contact-btn.primary {
-          background: #1e3a8a;
-          color: white;
-        }
-
-        .contact-btn.primary:hover {
-          background: #1e40af;
-          transform: translateY(-2px);
-        }
-
-        .contact-btn.secondary {
-          background: white;
-          color: #1e3a8a;
-          border: 2px solid #1e3a8a;
-        }
-
-        .contact-btn.secondary:hover {
-          background: #1e3a8a;
-          color: white;
+        .contact-button:hover {
+          background: #c0392b;
           transform: translateY(-2px);
         }
 
@@ -173,78 +124,11 @@ export default function AgentProfile({ className = "" }: AgentProfileProps) {
             text-align: center;
           }
 
-          .agent-info h2 {
-            font-size: 2rem;
-          }
-
-          .contact-btn {
-            width: 100%;
-            justify-content: center;
-          }
-
-          .agent-contact {
-            flex-direction: column;
+          .agent-profile {
+            padding: 2rem 1rem;
           }
         }
       `}</style>
-    </section>
-  );
-}
-import Image from 'next/image';
-import styles from '../styles/Home.module.css';
-
-export default function AgentProfile() {
-  return (
-    <section className={styles.section} id="agent">
-      <div className={styles.agentProfile}>
-        <div className={styles.agentImageContainer}>
-          <Image
-            src="/professional-headshot.jpg"
-            alt="Real Estate Agent"
-            width={200}
-            height={200}
-            className={styles.agentImage}
-            priority
-          />
-        </div>
-        
-        <div className={styles.agentInfo}>
-          <h2>Your Luxury Home Specialist</h2>
-          <h3>Expert in Las Vegas Premium Properties</h3>
-          
-          <div className={styles.agentDetails}>
-            <p>
-              With over 10 years of experience in Las Vegas luxury real estate, 
-              I specialize in helping clients find their perfect home in exclusive 
-              communities like Emerson Estates.
-            </p>
-            
-            <div className={styles.agentStats}>
-              <div className={styles.stat}>
-                <strong>$50M+</strong>
-                <span>In Sales Volume</span>
-              </div>
-              <div className={styles.stat}>
-                <strong>200+</strong>
-                <span>Happy Families</span>
-              </div>
-              <div className={styles.stat}>
-                <strong>4.9★</strong>
-                <span>Client Rating</span>
-              </div>
-            </div>
-            
-            <div className={styles.agentContact}>
-              <a href="tel:+17025551234" className={styles.contactButton}>
-                📞 (702) 555-1234
-              </a>
-              <a href="mailto:agent@emersonestateshomes.com" className={styles.contactButton}>
-                ✉️ Get In Touch
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
     </section>
   );
 }
