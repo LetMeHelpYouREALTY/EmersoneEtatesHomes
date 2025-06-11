@@ -6,10 +6,10 @@ interface RealScoutWidgetProps {
   className?: string;
 }
 
-function RealScoutWidget({ 
+const RealScoutWidget = ({ 
   widgetId = "realscout-widget", 
   className = "" 
-}: RealScoutWidgetProps) {
+}: RealScoutWidgetProps) => {
   return React.createElement(
     'div', 
     { className: className },
@@ -18,6 +18,6 @@ function RealScoutWidget({
       'widget-id': '64c8c5f4b4c8e50014a8b4e2'
     })
   );
-}
+};
 
 export default RealScoutWidget;
