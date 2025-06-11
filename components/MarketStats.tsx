@@ -1,50 +1,79 @@
 
 import React from 'react';
+import styles from '../styles/Home.module.css';
 
-interface MarketStatsProps {
-  className?: string;
-}
-
-export default function MarketStats({ className = "" }: MarketStatsProps) {
-  const stats = [
-    { label: "Average Home Value", value: "$850K", change: "+12%" },
-    { label: "Days on Market", value: "28", change: "-15%" },
-    { label: "Properties Sold", value: "142", change: "+8%" },
-    { label: "Market Growth", value: "18%", change: "+3%" }
-  ];
+export default function MarketStats() {
+  const stats = {
+    averagePrice: 850000,
+    medianPrice: 695000,
+    daysOnMarket: 28,
+    priceChange: '+8.5%',
+    totalSales: 145,
+    luxuryInventory: 23
+  };
 
   return (
-    <section className={`market-stats ${className}`}>
-      <div className="stats-container">
+    <section className={styles.section} style={{ background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)', color: 'white' }}>
+      <div className="market-stats">
         <div className="stats-header">
           <h2>Las Vegas Luxury Market Insights</h2>
-          <p>Current market trends for premium properties</p>
+          <p>Current market data for premium properties in the Las Vegas area</p>
         </div>
-        
+
         <div className="stats-grid">
-          {stats.map((stat, index) => (
-            <div key={index} className="stat-card">
-              <div className="stat-value">{stat.value}</div>
-              <div className="stat-label">{stat.label}</div>
-              <div className={`stat-change ${stat.change.startsWith('+') ? 'positive' : 'negative'}`}>
-                {stat.change} vs last year
-              </div>
-            </div>
-          ))}
+          <div className="stat-card">
+            <div className="stat-value">${(stats.averagePrice / 1000).toFixed(0)}K</div>
+            <div className="stat-label">Average Luxury Home Price</div>
+            <div className="stat-change positive">{stats.priceChange} YoY</div>
+          </div>
+
+          <div className="stat-card">
+            <div className="stat-value">${(stats.medianPrice / 1000).toFixed(0)}K</div>
+            <div className="stat-label">Median Sale Price</div>
+            <div className="stat-change positive">+12.3% YoY</div>
+          </div>
+
+          <div className="stat-card">
+            <div className="stat-value">{stats.daysOnMarket}</div>
+            <div className="stat-label">Avg Days on Market</div>
+            <div className="stat-change positive">-15% vs National</div>
+          </div>
+
+          <div className="stat-card">
+            <div className="stat-value">{stats.totalSales}</div>
+            <div className="stat-label">Luxury Sales (Q4)</div>
+            <div className="stat-change positive">+22% vs Q3</div>
+          </div>
+
+          <div className="stat-card">
+            <div className="stat-value">{stats.luxuryInventory}</div>
+            <div className="stat-label">Premium Listings Available</div>
+            <div className="stat-change">Low Inventory</div>
+          </div>
+
+          <div className="stat-card">
+            <div className="stat-value">96%</div>
+            <div className="stat-label">Price to List Ratio</div>
+            <div className="stat-change positive">Strong Market</div>
+          </div>
+        </div>
+
+        <div className="market-insight">
+          <h3>Market Analysis</h3>
+          <p>
+            The Las Vegas luxury market continues to show strong performance with limited inventory 
+            driving competitive pricing. Properties in premium communities like Emerson Estates are 
+            experiencing high demand from both local and out-of-state buyers seeking luxury living 
+            in Nevada&apos;s tax-favorable environment.
+          </p>
         </div>
       </div>
 
       <style jsx>{`
         .market-stats {
-          background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
-          color: white;
-          padding: 4rem 2rem;
-          margin: 2rem 0;
-        }
-
-        .stats-container {
           max-width: 1200px;
           margin: 0 auto;
+          padding: 4rem 2rem;
         }
 
         .stats-header {
@@ -67,6 +96,7 @@ export default function MarketStats({ className = "" }: MarketStatsProps) {
           display: grid;
           grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
           gap: 2rem;
+          margin-bottom: 3rem;
         }
 
         .stat-card {
@@ -110,78 +140,40 @@ export default function MarketStats({ className = "" }: MarketStatsProps) {
           color: #22c55e;
         }
 
-        .stat-change.negative {
-          background: rgba(239, 68, 68, 0.2);
-          color: #ef4444;
+        .market-insight {
+          background: rgba(255, 255, 255, 0.05);
+          padding: 2rem;
+          border-radius: 12px;
+          border-left: 4px solid #fbbf24;
+        }
+
+        .market-insight h3 {
+          margin: 0 0 1rem 0;
+          color: #fbbf24;
+          font-size: 1.5rem;
+        }
+
+        .market-insight p {
+          margin: 0;
+          line-height: 1.6;
+          opacity: 0.9;
         }
 
         @media (max-width: 768px) {
-          .stats-header h2 {
-            font-size: 2rem;
+          .stats-grid {
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
           }
-
+          
+          .stat-card {
+            padding: 1.5rem;
+          }
+          
           .stat-value {
             font-size: 2.5rem;
           }
         }
       `}</style>
-    </section>
-  );
-}
-import { useState, useEffect } from 'react';
-import styles from '../styles/Home.module.css';
-
-export default function MarketStats() {
-  const [stats, setStats] = useState({
-    averagePrice: 850000,
-    medianPrice: 795000,
-    daysOnMarket: 18,
-    soldLastMonth: 12
-  });
-
-  return (
-    <section className={styles.section} id="market">
-      <h2 className={styles.sectionTitle}>Las Vegas Luxury Market</h2>
-      <p className={styles.subtitle}>Current trends in premium real estate</p>
-      
-      <div className={styles.statsGrid}>
-        <div className={styles.statCard}>
-          <div className={styles.statNumber}>
-            ${(stats.averagePrice / 1000).toFixed(0)}K
-          </div>
-          <div className={styles.statLabel}>Average Home Price</div>
-          <div className={styles.statTrend}>↗️ +5.2% YoY</div>
-        </div>
-        
-        <div className={styles.statCard}>
-          <div className={styles.statNumber}>
-            ${(stats.medianPrice / 1000).toFixed(0)}K
-          </div>
-          <div className={styles.statLabel}>Median Price</div>
-          <div className={styles.statTrend}>↗️ +3.8% YoY</div>
-        </div>
-        
-        <div className={styles.statCard}>
-          <div className={styles.statNumber}>{stats.daysOnMarket}</div>
-          <div className={styles.statLabel}>Avg. Days on Market</div>
-          <div className={styles.statTrend}>↘️ Fast Sales</div>
-        </div>
-        
-        <div className={styles.statCard}>
-          <div className={styles.statNumber}>{stats.soldLastMonth}</div>
-          <div className={styles.statLabel}>Sold This Month</div>
-          <div className={styles.statTrend}>🔥 Hot Market</div>
-        </div>
-      </div>
-      
-      <div className={styles.marketInsight}>
-        <h3>Market Insight</h3>
-        <p>
-          The Las Vegas luxury market continues to show strong performance with 
-          high demand for premium properties in gated communities. Emerson Estates 
-          represents exceptional value in this competitive market.
-        </p>
-      </div>
     </section>
   );
 }

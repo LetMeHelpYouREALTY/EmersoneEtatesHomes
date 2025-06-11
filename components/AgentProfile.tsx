@@ -1,45 +1,55 @@
+
 import React from 'react';
+import Image from 'next/image';
+import styles from '../styles/Home.module.css';
 
-interface AgentProfileProps {
-  className?: string;
-}
-
-export default function AgentProfile({ className = "" }: AgentProfileProps) {
+export default function AgentProfile() {
   return (
-    <section className={`agent-profile ${className}`}>
-      <div className="agent-container">
+    <section className={styles.section} style={{ background: 'linear-gradient(135deg, #1e40af 0%, #3b82f6 100%)', color: 'white' }}>
+      <div className="agent-profile">
         <div className="agent-image">
-          <img 
-            src="/professional-headshot.jpg" 
+          <Image
+            src="/professional-headshot.jpg"
             alt="Dr. Duffy - Real Estate Professional"
-            width="200"
-            height="250"
-            loading="lazy"
+            width={200}
+            height={200}
+            className="agent-photo"
+            priority
           />
         </div>
+        
         <div className="agent-info">
-          <h2>Meet Your Luxury Real Estate Expert</h2>
-          <h3>Dr. Duffy</h3>
-          <p className="agent-title">Senior Real Estate Advisor | Berkshire Hathaway HomeServices</p>
-
+          <h2>Dr. Duffy</h2>
+          <h3>Your Luxury Real Estate Expert</h3>
+          <p className="agent-title">Berkshire Hathaway HomeServices Nevada Properties</p>
+          
           <div className="agent-credentials">
             <div className="credential">
-              <strong>Specialization:</strong> Luxury Properties & Investment Real Estate
+              <strong>🏆 Top Producer</strong> - Consistent multi-million dollar sales
             </div>
             <div className="credential">
-              <strong>Experience:</strong> 15+ Years in Las Vegas Market
+              <strong>📚 PhD in Education</strong> - Bringing analytical expertise to real estate
             </div>
             <div className="credential">
-              <strong>Certifications:</strong> CRS, GRI, ABR
+              <strong>🏘️ Local Expert</strong> - Deep knowledge of Las Vegas luxury market
+            </div>
+            <div className="credential">
+              <strong>💼 20+ Years Experience</strong> - Proven track record in high-end properties
             </div>
           </div>
 
+          <p className="agent-description">
+            With a unique combination of academic excellence and real estate expertise, Dr. Duffy provides 
+            unparalleled service to discerning clients. Specializing in luxury properties and investment 
+            opportunities in Las Vegas&apos; most prestigious communities.
+          </p>
+
           <div className="agent-contact">
-            <a href="tel:+17025551234" className="contact-button">
-              📞 Call Dr. Duffy
+            <a href="tel:+17025551234" className="contact-btn primary">
+              📞 Call Direct
             </a>
-            <a href="mailto:drduffy@emersonestateshomes.com" className="contact-button">
-              ✉️ Send Email
+            <a href="mailto:dr.duffy@emersonestateshomes.com" className="contact-btn secondary">
+              ✉️ Email Now
             </a>
           </div>
         </div>
@@ -47,85 +57,124 @@ export default function AgentProfile({ className = "" }: AgentProfileProps) {
 
       <style jsx>{`
         .agent-profile {
-          background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-          padding: 4rem 2rem;
-          border-radius: 12px;
-          margin: 2rem 0;
-        }
-
-        .agent-container {
+          display: flex;
+          align-items: center;
+          gap: 3rem;
           max-width: 1200px;
           margin: 0 auto;
-          display: grid;
-          grid-template-columns: 300px 1fr;
-          gap: 3rem;
-          align-items: center;
+          padding: 4rem 2rem;
         }
 
-        .agent-image img {
-          border-radius: 12px;
-          box-shadow: 0 8px 24px rgba(0,0,0,0.1);
-          width: 100%;
-          height: auto;
+        .agent-image {
+          flex-shrink: 0;
+        }
+
+        .agent-photo {
+          border-radius: 50%;
+          border: 5px solid white;
+          box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .agent-info {
+          flex: 1;
         }
 
         .agent-info h2 {
-          color: #2c3e50;
+          color: #ffffff;
+          font-size: 2.5rem;
           margin-bottom: 0.5rem;
-          font-size: 2rem;
+          font-weight: 700;
         }
 
         .agent-info h3 {
-          color: #e74c3c;
+          color: #fbbf24;
+          font-size: 2rem;
           margin-bottom: 0.5rem;
-          font-size: 1.5rem;
         }
 
         .agent-title {
-          color: #666;
-          margin-bottom: 2rem;
+          color: rgba(255,255,255,0.8);
           font-size: 1.1rem;
+          margin-bottom: 1.5rem;
+          font-style: italic;
         }
 
         .agent-credentials {
-          margin-bottom: 2rem;
+          background: rgba(255,255,255,0.1);
+          backdrop-filter: blur(10px);
+          padding: 1.5rem;
+          border-radius: 10px;
+          margin: 1.5rem 0;
+          border: 1px solid rgba(255,255,255,0.2);
         }
 
         .credential {
-          margin-bottom: 1rem;
-          color: #2c3e50;
+          margin-bottom: 0.75rem;
+          padding-bottom: 0.75rem;
+          border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .credential:last-child {
+          border-bottom: none;
+          margin-bottom: 0;
+          padding-bottom: 0;
+        }
+
+        .agent-description {
+          font-size: 1.1rem;
+          line-height: 1.7;
+          color: rgba(255,255,255,0.9);
+          margin: 1.5rem 0;
         }
 
         .agent-contact {
           display: flex;
           gap: 1rem;
-          flex-wrap: wrap;
+          margin-top: 2rem;
         }
 
-        .contact-button {
-          background: #e74c3c;
-          color: white;
-          padding: 1rem 1.5rem;
+        .contact-btn {
+          padding: 1rem 2rem;
           border-radius: 8px;
           text-decoration: none;
           font-weight: 600;
           transition: all 0.3s ease;
+          display: inline-flex;
+          align-items: center;
+          gap: 0.5rem;
         }
 
-        .contact-button:hover {
-          background: #c0392b;
+        .contact-btn.primary {
+          background: #fbbf24;
+          color: #1e40af;
+        }
+
+        .contact-btn.primary:hover {
+          background: #f59e0b;
           transform: translateY(-2px);
         }
 
+        .contact-btn.secondary {
+          background: transparent;
+          color: white;
+          border: 2px solid rgba(255,255,255,0.3);
+        }
+
+        .contact-btn.secondary:hover {
+          background: rgba(255,255,255,0.1);
+          border-color: rgba(255,255,255,0.5);
+        }
+
         @media (max-width: 768px) {
-          .agent-container {
-            grid-template-columns: 1fr;
-            gap: 2rem;
+          .agent-profile {
+            flex-direction: column;
             text-align: center;
+            padding: 2rem;
           }
 
-          .agent-profile {
-            padding: 2rem 1rem;
+          .agent-contact {
+            flex-direction: column;
+            align-items: center;
           }
         }
       `}</style>
