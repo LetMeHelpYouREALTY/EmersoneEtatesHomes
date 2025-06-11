@@ -194,12 +194,13 @@ export default function Layout({
         .logo {
           display: flex;
           align-items: center;
-          gap: 1rem;
+          gap: 0.75rem;
           text-decoration: none;
           color: white;
           font-size: 1.5rem;
           font-weight: 700;
           transition: transform 0.3s ease;
+          white-space: nowrap;
         }
 
         .logo:hover {
@@ -209,6 +210,11 @@ export default function Layout({
         .logo-img {
           border-radius: 8px;
           box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+          flex-shrink: 0;
+        }
+
+        .logo-text {
+          display: inline-block;
         }
 
         .nav-links {
@@ -323,7 +329,12 @@ export default function Layout({
         @media (max-width: 768px) {
           .header-container {
             grid-template-columns: 1fr auto;
-            padding: 1rem;
+            padding: 0.75rem 1rem;
+            gap: 0.5rem;
+          }
+
+          .logo-section {
+            min-width: 0;
           }
 
           .menu-section {
@@ -367,7 +378,13 @@ export default function Layout({
           }
 
           .logo {
-            font-size: 1.25rem;
+            font-size: 1.1rem;
+            gap: 0.5rem;
+          }
+
+          .logo-text {
+            overflow: hidden;
+            text-overflow: ellipsis;
           }
 
           .footer-content {
