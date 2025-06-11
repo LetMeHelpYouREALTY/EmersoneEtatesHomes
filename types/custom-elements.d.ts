@@ -7,6 +7,14 @@ declare namespace JSX {
       className?: string;
       children?: React.ReactNode;
     } & React.HTMLAttributes<HTMLElement>;
+    'realscout-office-listings': {
+      'agent-encoded-id'?: string;
+      'sort-order'?: string;
+      'listing-status'?: string;
+      'property-types'?: string;
+      className?: string;
+      children?: React.ReactNode;
+    } & React.HTMLAttributes<HTMLElement>;
   }
 }
 
@@ -17,6 +25,14 @@ declare module 'react' {
       'realscout-widget-embed': {
         id?: string;
         'widget-id'?: string;
+        className?: string;
+        children?: React.ReactNode;
+      } & React.HTMLAttributes<HTMLElement>;
+      'realscout-office-listings': {
+        'agent-encoded-id'?: string;
+        'sort-order'?: string;
+        'listing-status'?: string;
+        'property-types'?: string;
         className?: string;
         children?: React.ReactNode;
       } & React.HTMLAttributes<HTMLElement>;
