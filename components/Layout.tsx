@@ -2,7 +2,6 @@ import { ReactNode } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { FaHome, FaBuilding, FaUsers, FaSwimmingPool, FaPhone, FaEnvelope, FaMapMarkerAlt, FaFacebook, FaTwitter, FaInstagram, FaLinkedin } from 'react-icons/fa'
-import { motion } from 'framer-motion'
 
 interface LayoutProps {
   children: ReactNode
@@ -22,68 +21,64 @@ const Layout = ({ children }: LayoutProps) => {
   const isActive = (path: string) => router.pathname === path
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       {/* Header */}
-      <header className="bg-white shadow-lg sticky top-0 z-50">
-        <nav className="container mx-auto px-4">
-          <div className="flex items-center justify-between h-20">
+      <header style={{ 
+        background: 'white', 
+        boxShadow: '0 4px 20px rgba(0,0,0,0.1)', 
+        position: 'sticky', 
+        top: 0, 
+        zIndex: 1000 
+      }}>
+        <nav style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 1rem' }}>
+          <div style={{ 
+            display: 'flex', 
+            alignItems: 'center', 
+            justifyContent: 'space-between', 
+            height: '80px' 
+          }}>
             {/* Logo */}
-            <Link href="/" className="flex items-center space-x-3">
-              <div className="w-12 h-12 bg-gradient-to-br from-amber-500 to-orange-600 rounded-lg flex items-center justify-center">
-                <FaHome className="text-white text-xl" />
+            <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: '12px', textDecoration: 'none' }}>
+              <div style={{ 
+                width: '48px', 
+                height: '48px', 
+                background: 'linear-gradient(135deg, #f59e0b, #ea580c)', 
+                borderRadius: '8px', 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'center' 
+              }}>
+                <FaHome style={{ color: 'white', fontSize: '20px' }} />
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-gray-900">Emerson Estates</h1>
-                <p className="text-sm text-gray-600">Luxury Living in Las Vegas</p>
+                <h1 style={{ fontSize: '24px', fontWeight: 'bold', color: '#111827', margin: 0 }}>Emerson Estates</h1>
+                <p style={{ fontSize: '14px', color: '#6b7280', margin: 0 }}>Luxury Living in Las Vegas</p>
               </div>
             </Link>
 
             {/* Desktop Navigation */}
-            <div className="hidden md:flex items-center space-x-8">
+            <div style={{ display: 'flex', alignItems: 'center', gap: '2rem' }}>
               {navigation.map((item) => {
                 const Icon = item.icon
                 return (
                   <Link
                     key={item.name}
                     href={item.href}
-                    className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-all duration-300 ${
-                      isActive(item.href)
-                        ? 'bg-amber-500 text-white'
-                        : 'text-gray-700 hover:bg-amber-50 hover:text-amber-600'
-                    }`}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px',
+                      padding: '8px 16px',
+                      borderRadius: '8px',
+                      textDecoration: 'none',
+                      transition: 'all 0.3s ease',
+                      background: isActive(item.href) ? '#f59e0b' : 'transparent',
+                      color: isActive(item.href) ? 'white' : '#374151',
+                      fontWeight: '500'
+                    }}
                   >
-                    <Icon className="text-sm" />
-                    <span className="font-medium">{item.name}</span>
-                  </Link>
-                )
-              })}
-            </div>
-
-            {/* Mobile Menu Button */}
-            <button className="md:hidden p-2 rounded-lg text-gray-700 hover:bg-gray-100">
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
-            </button>
-          </div>
-
-          {/* Mobile Navigation */}
-          <div className="md:hidden border-t border-gray-200">
-            <div className="py-4 space-y-2">
-              {navigation.map((item) => {
-                const Icon = item.icon
-                return (
-                  <Link
-                    key={item.name}
-                    href={item.href}
-                    className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-300 ${
-                      isActive(item.href)
-                        ? 'bg-amber-500 text-white'
-                        : 'text-gray-700 hover:bg-amber-50 hover:text-amber-600'
-                    }`}
-                  >
-                    <Icon className="text-lg" />
-                    <span className="font-medium">{item.name}</span>
+                    <Icon style={{ fontSize: '14px' }} />
+                    <span>{item.name}</span>
                   </Link>
                 )
               })}
@@ -93,88 +88,71 @@ const Layout = ({ children }: LayoutProps) => {
       </header>
 
       {/* Main Content */}
-      <main className="flex-1">
+      <main style={{ flex: 1 }}>
         {children}
       </main>
 
       {/* Footer */}
-      <footer className="bg-gray-900 text-white">
-        <div className="container mx-auto px-4 py-16">
-          <div className="grid md:grid-cols-4 gap-8">
+      <footer style={{ background: '#111827', color: 'white' }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '4rem 1rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '2rem' }}>
             {/* Company Info */}
-            <div className="col-span-2">
-              <div className="flex items-center space-x-3 mb-6">
-                <div className="w-12 h-12 bg-gradient-to-br from-amber-500 to-orange-600 rounded-lg flex items-center justify-center">
-                  <FaHome className="text-white text-xl" />
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '1.5rem' }}>
+                <div style={{ 
+                  width: '48px', 
+                  height: '48px', 
+                  background: 'linear-gradient(135deg, #f59e0b, #ea580c)', 
+                  borderRadius: '8px', 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  justifyContent: 'center' 
+                }}>
+                  <FaHome style={{ color: 'white', fontSize: '20px' }} />
                 </div>
                 <div>
-                  <h3 className="text-2xl font-bold">Emerson Estates</h3>
-                  <p className="text-gray-400">Luxury Living in Las Vegas</p>
+                  <h3 style={{ fontSize: '24px', fontWeight: 'bold', margin: 0 }}>Emerson Estates</h3>
+                  <p style={{ color: '#9ca3af', margin: 0 }}>Luxury Living in Las Vegas</p>
                 </div>
               </div>
-              <p className="text-gray-300 mb-6 max-w-md">
+              <p style={{ color: '#d1d5db', marginBottom: '1.5rem', lineHeight: '1.6' }}>
                 Experience the finest in luxury living at Emerson Estates. Our premium homes offer 
                 modern amenities, stunning views, and an exclusive community lifestyle in the heart of Las Vegas.
               </p>
-              <div className="flex space-x-4">
-                <a href="#" className="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-amber-500 transition-colors duration-300">
-                  <FaFacebook />
-                </a>
-                <a href="#" className="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-amber-500 transition-colors duration-300">
-                  <FaTwitter />
-                </a>
-                <a href="#" className="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-amber-500 transition-colors duration-300">
-                  <FaInstagram />
-                </a>
-                <a href="#" className="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-amber-500 transition-colors duration-300">
-                  <FaLinkedin />
-                </a>
-              </div>
-            </div>
-
-            {/* Quick Links */}
-            <div>
-              <h4 className="text-lg font-semibold mb-6">Quick Links</h4>
-              <ul className="space-y-3">
-                {navigation.map((item) => (
-                  <li key={item.name}>
-                    <Link href={item.href} className="text-gray-300 hover:text-amber-400 transition-colors duration-300">
-                      {item.name}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
             </div>
 
             {/* Contact Info */}
             <div>
-              <h4 className="text-lg font-semibold mb-6">Contact Information</h4>
-              <div className="space-y-4">
-                <div className="flex items-start space-x-3">
-                  <FaMapMarkerAlt className="text-amber-400 mt-1" />
+              <h4 style={{ fontSize: '18px', fontWeight: '600', marginBottom: '1.5rem' }}>Contact Information</h4>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
+                  <FaMapMarkerAlt style={{ color: '#f59e0b', marginTop: '4px' }} />
                   <div>
-                    <p className="text-gray-300">2583 Regency Cove Ct</p>
-                    <p className="text-gray-300">Las Vegas, NV 89121</p>
+                    <p style={{ color: '#d1d5db', margin: 0 }}>2583 Regency Cove Ct</p>
+                    <p style={{ color: '#d1d5db', margin: 0 }}>Las Vegas, NV 89121</p>
                   </div>
                 </div>
-                <div className="flex items-center space-x-3">
-                  <FaPhone className="text-amber-400" />
-                  <p className="text-gray-300">(702) 555-0123</p>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                  <FaPhone style={{ color: '#f59e0b' }} />
+                  <p style={{ color: '#d1d5db', margin: 0 }}>(702) 555-0123</p>
                 </div>
-                <div className="flex items-center space-x-3">
-                  <FaEnvelope className="text-amber-400" />
-                  <p className="text-gray-300">info@emersonestateshomes.com</p>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                  <FaEnvelope style={{ color: '#f59e0b' }} />
+                  <p style={{ color: '#d1d5db', margin: 0 }}>info@emersonestateshomes.com</p>
                 </div>
               </div>
             </div>
           </div>
 
           {/* Bottom Bar */}
-          <div className="border-t border-gray-800 mt-12 pt-8 text-center">
-            <p className="text-gray-400">
-              © 2024 Emerson Estates. All rights reserved. | 
-              <Link href="#" className="text-amber-400 hover:text-amber-300 ml-1">Privacy Policy</Link> | 
-              <Link href="#" className="text-amber-400 hover:text-amber-300 ml-1">Terms of Service</Link>
+          <div style={{ 
+            borderTop: '1px solid #374151', 
+            marginTop: '3rem', 
+            paddingTop: '2rem', 
+            textAlign: 'center' 
+          }}>
+            <p style={{ color: '#9ca3af', margin: 0 }}>
+              © 2024 Emerson Estates. All rights reserved.
             </p>
           </div>
         </div>
