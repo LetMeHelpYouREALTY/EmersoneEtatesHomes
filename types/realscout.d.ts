@@ -5,6 +5,11 @@ declare global {
       'realscout-widget-embed': {
         id?: string;
         'widget-id'?: string;
+        'agent-encoded-id'?: string;
+        'sort-order'?: string;
+        'listing-status'?: string;
+        'property-types'?: string;
+        children?: React.ReactNode;
         [key: string]: any;
       };
       'realscout-office-listings': {
@@ -12,6 +17,7 @@ declare global {
         'sort-order'?: string;
         'listing-status'?: string;
         'property-types'?: string;
+        children?: React.ReactNode;
         [key: string]: any;
       };
     }
