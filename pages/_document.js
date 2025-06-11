@@ -44,12 +44,22 @@ export default function Document() {
         <meta httpEquiv="X-Frame-Options" content="DENY" />
         <meta httpEquiv="X-XSS-Protection" content="1; mode=block" />
         
+        {/* Preload RealScout Widget Script */}
+        <link 
+          rel="preload" 
+          href="https://em.realscout.com/widgets/realscout-web-components.umd.js" 
+          as="script" 
+          crossOrigin="anonymous"
+        />
+        
         {/* RealScout Widget Script - Required once for all widgets */}
         <script 
           src="https://em.realscout.com/widgets/realscout-web-components.umd.js" 
           type="module"
-          async
+          defer
+          crossOrigin="anonymous"
         ></script>
+        
         <style dangerouslySetInnerHTML={{
           __html: `
             realscout-office-listings {
@@ -57,6 +67,23 @@ export default function Document() {
               width: 100%;
               display: block;
               min-height: 400px;
+              opacity: 0;
+              transition: opacity 0.3s ease-in-out;
+            }
+            
+            realscout-office-listings:defined {
+              opacity: 1;
+            }
+            
+            @keyframes spin {
+              0% { transform: rotate(0deg); }
+              100% { transform: rotate(360deg); }
+            }
+            
+            /* Prevent layout shift */
+            .realscout-container {
+              min-height: 400px;
+              position: relative;
             }
           `
         }} />

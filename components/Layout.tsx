@@ -1,5 +1,6 @@
-import Head from "next/head";
-import Link from "next/link";
+import Head from 'next/head';
+import Link from 'next/link';
+import { useEffect, useState } from 'react';
 import Script from "next/script";
 import styles from "../styles/Home.module.css";
 
@@ -9,11 +10,13 @@ interface LayoutProps {
   description?: string;
 }
 
-export default function Layout({ 
-  children, 
-  title = "Emerson Estates", 
-  description = "Luxury homes in Las Vegas" 
-}: LayoutProps) {
+export default function Layout({ children, title = 'Emerson Estates - Luxury Homes in Las Vegas', description = 'Discover luxury homes at Emerson Estates in Las Vegas, Nevada. Located at 2583 Regency Cove Ct, Las Vegas, NV 89121.' }: LayoutProps) {
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
   return (
     <>
       <Head>
@@ -22,7 +25,7 @@ export default function Layout({
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      
+
 
       <header className={styles.header}>
         <nav className={styles.nav}>
