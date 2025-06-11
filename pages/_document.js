@@ -5,19 +5,18 @@ export default function Document() {
   return (
     <Html lang="en">
       <Head>
-        <meta charSet="utf-8" />
-        <meta name="robots" content="index, follow" />
-        <meta name="author" content="Emerson Estates" />
+        {/* Favicon */}
+        <link rel="icon" href="/favicon.ico" />
         
-        {/* SEO Meta Tags */}
+        {/* Meta Tags */}
         <meta name="description" content="Discover luxury homes at Emerson Estates, located at 2583 Regency Cove Ct, Las Vegas, NV 89121. Premium properties with modern amenities and community features." />
-        <meta name="keywords" content="luxury homes, Las Vegas real estate, Emerson Estates, premium properties, Nevada homes" />
-        
-        {/* Open Graph / Facebook */}
+        <meta name="keywords" content="Emerson Estates, luxury homes, Las Vegas real estate, Nevada homes, premium properties" />
+        <meta name="author" content="Emerson Estates" />
+
+        {/* Open Graph */}
         <meta property="og:type" content="website" />
         <meta property="og:title" content="Emerson Estates Homes - Luxury Living in Las Vegas, NV" />
         <meta property="og:description" content="Discover luxury homes at Emerson Estates, located at 2583 Regency Cove Ct, Las Vegas, NV 89121. Premium properties with modern amenities and community features." />
-        <meta property="og:url" content="https://www.emersonestateshomes.com" />
         <meta property="og:site_name" content="Emerson Estates" />
 
         {/* Twitter */}
