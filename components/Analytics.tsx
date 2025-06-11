@@ -57,6 +57,9 @@ const Analytics: React.FC<AnalyticsProps> = ({
   const initializeGoogleAnalytics = (gaId: string) => {
     if (typeof window === 'undefined') return;
 
+    // Prevent duplicate initialization
+    if (window.gtag) return;
+
     // Load GA script
     const script = document.createElement('script');
     script.src = `https://www.googletagmanager.com/gtag/js?id=${gaId}`;
@@ -73,7 +76,20 @@ const Analytics: React.FC<AnalyticsProps> = ({
     window.gtag('config', gaId, {
       page_title: document.title,
       page_location: window.location.href,
-      send_page_view: trackPageViews
+      send_page_view: trackPageViews,
+      custom_map: {
+        'custom_parameter_1': 'property_type',
+        'custom_parameter_2': 'user_segment'
+      },
+      // Enhanced ecommerce for real estate
+      allow_enhanced_conversions: true,
+      automatic_screen_view: true
+    });
+
+    // Set up enhanced measurement for real estate
+    window.gtag('config', gaId, {
+      custom_parameter_1: 'luxury_homes',
+      custom_parameter_2: 'las_vegas_market'
     });
   };
 
@@ -133,14 +149,40 @@ const Analytics: React.FC<AnalyticsProps> = ({
   }: TrackEventProps) => {
     if (typeof window === 'undefined') return;
 
-    // Google Analytics
+    // Enhanced parameters for real estate
+    const enhancedParams = {
+      event_category: category,
+      event_label: label,
+      value: value,
+      page_location: window.location.href,
+      page_referrer: document.referrer,
+      user_agent: navigator.userAgent,
+      timestamp: Date.now(),
+      ...customParameters
+    };
+
+    // Google Analytics GA4
     if (window.gtag) {
-      window.gtag('event', action, {
-        event_category: category,
-        event_label: label,
-        value: value,
-        ...customParameters
-      });
+      window.gtag('event', action, enhancedParams);
+      
+      // Special tracking for real estate events
+      if (category === 'property') {
+        window.gtag('event', 'property_interaction', {
+          property_type: customParameters.propertyType || 'luxury_home',
+          interaction_type: action,
+          location: 'emerson_estates',
+          agent: 'dr_jan_duffy'
+        });
+      }
+      
+      if (category === 'conversion') {
+        window.gtag('event', 'generate_lead', {
+          currency: 'USD',
+          value: value || 0,
+          lead_type: action,
+          source: 'website'
+        });
+      }
     }
 
     // Custom analytics
@@ -153,6 +195,8 @@ const Analytics: React.FC<AnalyticsProps> = ({
       url: window.location.href,
       referrer: document.referrer,
       sessionId: sessionStorage.getItem('analytics_session'),
+      streamId: process.env.NEXT_PUBLIC_STREAM_ID,
+      streamUrl: process.env.NEXT_PUBLIC_STREAM_URL,
       ...customParameters
     };
 
@@ -421,10 +465,88 @@ const Analytics: React.FC<AnalyticsProps> = ({
     };
   }, [enableDebugMode]);
 
+  // Real estate specific conversion tracking
+  useEffect(() => {
+    const trackRealEstateConversions = () => {
+      // Track property inquiries
+      const propertyInquiryButtons = document.querySelectorAll('[data-track="property-inquiry"]');
+      propertyInquiryButtons.forEach(button => {
+        button.addEventListener('click', () => {
+          trackEvent({
+            action: 'property_inquiry',
+            category: 'conversion',
+            label: button.getAttribute('data-property-id') || 'unknown',
+            customParameters: {
+              propertyType: button.getAttribute('data-property-type'),
+              propertyPrice: button.getAttribute('data-property-price'),
+              inquiryType: 'contact_form'
+            }
+          });
+        });
+      });
+
+      // Track calculator usage
+      const calculatorInputs = document.querySelectorAll('[data-analytics="calculator"] input');
+      calculatorInputs.forEach(input => {
+        input.addEventListener('change', () => {
+          trackEvent({
+            action: 'calculator_interaction',
+            category: 'engagement',
+            label: input.name || 'calculator_field',
+            customParameters: {
+              tool: 'mortgage_calculator',
+              fieldType: input.type,
+              value: input.value
+            }
+          });
+        });
+      });
+
+      // Track property gallery interactions
+      const galleryImages = document.querySelectorAll('[data-analytics="gallery"] img');
+      galleryImages.forEach((img, index) => {
+        img.addEventListener('click', () => {
+          trackEvent({
+            action: 'gallery_view',
+            category: 'engagement',
+            label: `image_${index + 1}`,
+            customParameters: {
+              imageAlt: img.getAttribute('alt'),
+              galleryType: 'property_photos'
+            }
+          });
+        });
+      });
+    };
+
+    // Run after DOM is ready
+    if (document.readyState === 'complete') {
+      trackRealEstateConversions();
+    } else {
+      window.addEventListener('load', trackRealEstateConversions);
+    }
+
+    return () => window.removeEventListener('load', trackRealEstateConversions);
+  }, [trackEvent]);
+
   // Expose tracking function globally for manual tracking
   useEffect(() => {
     if (typeof window !== 'undefined') {
       (window as any).trackAnalyticsEvent = trackEvent;
+      (window as any).trackPropertyView = (propertyId: string, propertyData: any) => {
+        trackEvent({
+          action: 'property_view',
+          category: 'property',
+          label: propertyId,
+          customParameters: {
+            propertyType: propertyData.type,
+            propertyPrice: propertyData.price,
+            propertyBedrooms: propertyData.bedrooms,
+            propertyBathrooms: propertyData.bathrooms,
+            propertySquareFeet: propertyData.squareFeet
+          }
+        });
+      };
     }
   }, [trackEvent]);
 
