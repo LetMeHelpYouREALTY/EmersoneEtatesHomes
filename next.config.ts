@@ -49,15 +49,11 @@ const nextConfig: NextConfig = {
   outputFileTracingRoot: process.cwd(),
   experimental: {
     allowedRevalidateHeaderKeys: ['content-type'],
-    scrollRestoration: true
+    scrollRestoration: true,
   },
 
   // Development origins configuration
   ...(process.env.NODE_ENV === 'development' && {
-    experimental: {
-      allowedRevalidateHeaderKeys: ['content-type'],
-      scrollRestoration: true,
-    },
     allowedDevOrigins: [
       '*.replit.dev',
       '*.replit.com',
