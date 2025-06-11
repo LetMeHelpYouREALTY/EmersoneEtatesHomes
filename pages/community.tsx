@@ -1,5 +1,6 @@
 import type { NextPage } from "next";
 import Layout from "../components/Layout";
+import ImageGallery from "../components/ImageGallery";
 import styles from "../styles/Home.module.css";
 
 const Community: NextPage = () => {
@@ -37,6 +38,30 @@ const Community: NextPage = () => {
             </div>
           </div>
         </section>
+
+        <ImageGallery
+          title="Community Gallery"
+          images={[
+            {
+              src: "/design 05_new 2_1749651606209.jpg",
+              alt: "Community entrance",
+              title: "Grand Entrance",
+              category: "exterior"
+            },
+            {
+              src: "/Best BHHS LOgo_1749650714182.jpg",
+              alt: "Community landscaping",
+              title: "Professional Landscaping",
+              category: "exterior"
+            },
+            {
+              src: "/new-logo.jpg",
+              alt: "Community amenities",
+              title: "Luxury Amenities",
+              category: "amenities"
+            }
+          ]}
+        />
       </div>
     </Layout>
   );

@@ -1,5 +1,6 @@
 import type { NextPage } from "next";
 import Layout from "../components/Layout";
+import ImageGallery from "../components/ImageGallery";
 import styles from "../styles/Home.module.css";
 
 const Amenities: NextPage = () => {
@@ -49,6 +50,30 @@ const Amenities: NextPage = () => {
             </div>
           </div>
         </section>
+
+        <ImageGallery
+          title="Amenity Showcase"
+          images={[
+            {
+              src: "/design 05_new 2_1749651606209.jpg",
+              alt: "Resort-style pool area",
+              title: "Resort-Style Pool",
+              category: "pool"
+            },
+            {
+              src: "/Best BHHS LOgo_1749650714182.jpg",
+              alt: "Modern fitness center",
+              title: "State-of-Art Fitness Center",
+              category: "fitness"
+            },
+            {
+              src: "/new-logo.jpg",
+              alt: "Elegant clubhouse interior",
+              title: "Luxury Clubhouse",
+              category: "clubhouse"
+            }
+          ]}
+        />
       </div>
     </Layout>
   );
