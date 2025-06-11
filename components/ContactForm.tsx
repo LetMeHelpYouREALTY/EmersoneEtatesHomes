@@ -115,8 +115,8 @@ const ContactForm: React.FC<ContactFormProps> = ({
     }
 
     // Track analytics
-    if (typeof window !== 'undefined' && (window as any).trackAnalyticsEvent) {
-      (window as any).trackAnalyticsEvent({
+    if (typeof window !== 'undefined' && window.trackAnalyticsEvent) {
+      window.trackAnalyticsEvent({
         action: 'form_field_interaction',
         category: 'engagement',
         label: name,
@@ -135,7 +135,7 @@ const ContactForm: React.FC<ContactFormProps> = ({
     setCurrentStep(prev => Math.max(prev - 1, 1));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (!validateStep(currentStep)) return;
@@ -161,8 +161,8 @@ const ContactForm: React.FC<ContactFormProps> = ({
         if (onSubmitSuccess) onSubmitSuccess();
 
         // Track conversion
-        if (typeof window !== 'undefined' && (window as any).trackAnalyticsEvent) {
-          (window as any).trackAnalyticsEvent({
+        if (typeof window !== 'undefined' && window.trackAnalyticsEvent) {
+          window.trackAnalyticsEvent({
             action: 'contact_form_submission',
             category: 'conversion',
             label: propertyId ? `property_${propertyId}` : 'general_inquiry'
@@ -207,7 +207,7 @@ const ContactForm: React.FC<ContactFormProps> = ({
             exit={{ opacity: 0, x: -20 }}
             className="form-step"
           >
-            <h3>Let's Get to Know You</h3>
+            <h3>Let&apos;s Get to Know You</h3>
             <p>Tell us how to reach you</p>
 
             <div className="input-group">
@@ -279,7 +279,7 @@ const ContactForm: React.FC<ContactFormProps> = ({
             className="form-step"
           >
             <h3>Your Property Interests</h3>
-            <p>Help us understand what you're looking for</p>
+            <p>Help us understand what you&apos;re looking for</p>
 
             <div className="input-group">
               <label htmlFor="propertyInterest">Specific Property Interest</label>
@@ -399,7 +399,7 @@ const ContactForm: React.FC<ContactFormProps> = ({
         <div className="success-content">
           <div className="success-icon">✅</div>
           <h3>Thank You!</h3>
-          <p>Your message has been received. We'll get back to you within 24 hours.</p>
+          <p>Your message has been received. We&apos;ll get back to you within 24 hours.</p>
           <div className="success-details">
             <p>📧 Email confirmation sent to: <strong>{formData.email}</strong></p>
             <p>🕐 Expected response time: <strong>Within 24 hours</strong></p>
