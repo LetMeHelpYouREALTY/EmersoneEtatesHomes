@@ -1,5 +1,4 @@
 
-import React from 'react';
 import { AgentInfo } from '@/types';
 import Image from 'next/image';
 import styles from '../styles/Home.module.css';
