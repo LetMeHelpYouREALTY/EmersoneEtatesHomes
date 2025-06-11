@@ -24,6 +24,7 @@ const Layout: React.FC<LayoutProps> = ({
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isContactModalOpen, setIsContactModalOpen] = useState(showContactModal);
   const [isScrolled, setIsScrolled] = useState(false);
+
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
@@ -35,7 +36,7 @@ const Layout: React.FC<LayoutProps> = ({
       }
     };
 
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     window.addEventListener('resize', handleResize);
 
     return () => {
@@ -47,6 +48,18 @@ const Layout: React.FC<LayoutProps> = ({
   useEffect(() => {
     setIsContactModalOpen(showContactModal);
   }, [showContactModal]);
+
+  useEffect(() => {
+    if (isMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isMenuOpen]);
 
   const navigation = [
     { name: 'Home', href: '/' },
@@ -209,9 +222,7 @@ const Layout: React.FC<LayoutProps> = ({
           </div>
 
           {/* Mobile Menu Overlay */}
-          {isMenuOpen && (
-            <div className="mobile-menu-overlay" onClick={closeMenu}></div>
-          )}
+          <div className={`mobile-menu-overlay ${isMenuOpen ? 'active' : ''}`} onClick={closeMenu}></div>
         </header>
 
         {/* Main Content */}
@@ -522,22 +533,20 @@ const Layout: React.FC<LayoutProps> = ({
         }
 
         .mobile-nav {
-          position: absolute;
-          top: 100%;
+          position: fixed;
+          top: 80px;
           left: 0;
           right: 0;
+          bottom: 0;
           background: white;
-          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-          transform: translateY(-20px);
-          opacity: 0;
-          visibility: hidden;
-          transition: all 0.3s ease;
+          z-index: 1001;
+          transform: translateX(-100%);
+          transition: transform 0.3s ease;
+          overflow-y: auto;
         }
 
         .mobile-nav.open {
-          transform: translateY(0);
-          opacity: 1;
-          visibility: visible;
+          transform: translateX(0);
         }
 
         .mobile-nav-container {
@@ -593,12 +602,20 @@ const Layout: React.FC<LayoutProps> = ({
 
         .mobile-menu-overlay {
           position: fixed;
-          top: 0;
+          top: 80px;
           left: 0;
           right: 0;
           bottom: 0;
           background: rgba(0, 0, 0, 0.5);
-          z-index: 999;
+          z-index: 1000;
+          opacity: 0;
+          visibility: hidden;
+          transition: all 0.3s ease;
+        }
+
+        .mobile-menu-overlay.active {
+          opacity: 1;
+          visibility: visible;
         }
 
         /* Main Content */
@@ -863,6 +880,14 @@ const Layout: React.FC<LayoutProps> = ({
 
           .cta-button {
             display: none;
+          }
+
+          .mobile-nav {
+            top: 70px;
+          }
+
+          .mobile-menu-overlay {
+            top: 70px;
           }
 
           .footer-container {

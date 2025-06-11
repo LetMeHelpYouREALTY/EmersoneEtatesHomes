@@ -52,6 +52,9 @@ const nextConfig: NextConfig = {
       maxInactiveAge: 25 * 1000,
       pagesBufferLength: 2,
     },
+    experimental: {
+      turbo: false,
+    },
   }),
   
   // Bundle analyzer for production builds
