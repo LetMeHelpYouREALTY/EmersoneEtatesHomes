@@ -1,456 +1,571 @@
 
 import React, { useState, useEffect } from 'react';
 
-interface MarketData {
-  averagePrice: number;
-  priceChange: number;
-  daysOnMarket: number;
-  soldLastMonth: number;
-  inventoryLevel: string;
-  marketTrend: 'up' | 'down' | 'stable';
+interface MarketStat {
+  label: string;
+  value: string;
+  change: string;
+  trend: 'up' | 'down' | 'stable';
+  icon: string;
+  description: string;
 }
 
-const MarketStats: React.FC = () => {
-  const [marketData, setMarketData] = useState<MarketData>({
-    averagePrice: 675000,
-    priceChange: 8.2,
-    daysOnMarket: 23,
-    soldLastMonth: 47,
-    inventoryLevel: 'Low',
-    marketTrend: 'up'
-  });
-  const [isLoading, setIsLoading] = useState(true);
-  const [animatedValues, setAnimatedValues] = useState({
-    averagePrice: 0,
-    priceChange: 0,
-    daysOnMarket: 0,
-    soldLastMonth: 0
-  });
+interface MarketStatsProps {
+  className?: string;
+  showTitle?: boolean;
+  animated?: boolean;
+}
 
-  useEffect(() => {
-    // Simulate loading real market data
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 1500);
+const MarketStats: React.FC<MarketStatsProps> = ({
+  className = '',
+  showTitle = true,
+  animated = true
+}) => {
+  const [isVisible, setIsVisible] = useState(false);
+  const [animatedValues, setAnimatedValues] = useState<Record<string, number>>({});
 
-    return () => clearTimeout(timer);
-  }, []);
-
-  useEffect(() => {
-    if (!isLoading) {
-      // Animate numbers counting up
-      const duration = 2000;
-      const steps = 60;
-      const stepDuration = duration / steps;
-
-      let step = 0;
-      const timer = setInterval(() => {
-        step++;
-        const progress = step / steps;
-        const ease = 1 - Math.pow(1 - progress, 3); // Ease out cubic
-
-        setAnimatedValues({
-          averagePrice: Math.floor(marketData.averagePrice * ease),
-          priceChange: Math.floor(marketData.priceChange * ease * 10) / 10,
-          daysOnMarket: Math.floor(marketData.daysOnMarket * ease),
-          soldLastMonth: Math.floor(marketData.soldLastMonth * ease)
-        });
-
-        if (step >= steps) {
-          clearInterval(timer);
-          setAnimatedValues({
-            averagePrice: marketData.averagePrice,
-            priceChange: marketData.priceChange,
-            daysOnMarket: marketData.daysOnMarket,
-            soldLastMonth: marketData.soldLastMonth
-          });
-        }
-      }, stepDuration);
-
-      return () => clearInterval(timer);
+  const marketStats: MarketStat[] = [
+    {
+      label: 'Median Home Price',
+      value: '$485,000',
+      change: '+5.2%',
+      trend: 'up',
+      icon: '🏠',
+      description: 'Year over year growth in Las Vegas luxury market'
+    },
+    {
+      label: 'Days on Market',
+      value: '28 days',
+      change: '-12%',
+      trend: 'down',
+      icon: '📅',
+      description: 'Average time luxury homes stay on market'
+    },
+    {
+      label: 'Inventory Level',
+      value: '2.1 months',
+      change: 'stable',
+      trend: 'stable',
+      icon: '📊',
+      description: 'Current supply of available luxury homes'
+    },
+    {
+      label: 'Price per Sq Ft',
+      value: '$185',
+      change: '+3.8%',
+      trend: 'up',
+      icon: '📐',
+      description: 'Average price per square foot in premium areas'
+    },
+    {
+      label: 'Sold Properties',
+      value: '247',
+      change: '+15.3%',
+      trend: 'up',
+      icon: '✅',
+      description: 'Luxury homes sold this quarter'
+    },
+    {
+      label: 'Market Activity',
+      value: 'Very Active',
+      change: '+8.7%',
+      trend: 'up',
+      icon: '⚡',
+      description: 'Current buyer demand and market engagement'
     }
-  }, [isLoading, marketData]);
+  ];
 
-  const formatCurrency = (amount: number): string => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(amount);
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setIsVisible(true);
+            
+            if (animated) {
+              // Animate numerical values
+              const numericStats = marketStats.filter(stat => 
+                stat.value.includes('$') || stat.value.includes('days') || stat.value.includes('months')
+              );
+              
+              numericStats.forEach((stat, index) => {
+                const numericValue = parseFloat(stat.value.replace(/[^0-9.]/g, ''));
+                let currentValue = 0;
+                const increment = numericValue / 50;
+                
+                const animation = setInterval(() => {
+                  currentValue += increment;
+                  if (currentValue >= numericValue) {
+                    currentValue = numericValue;
+                    clearInterval(animation);
+                  }
+                  setAnimatedValues(prev => ({
+                    ...prev,
+                    [stat.label]: currentValue
+                  }));
+                }, 20 + index * 10);
+              });
+            }
+          }
+        });
+      },
+      { threshold: 0.2 }
+    );
+
+    const element = document.getElementById('market-stats');
+    if (element) observer.observe(element);
+
+    return () => observer.disconnect();
+  }, [animated, marketStats]);
+
+  const formatAnimatedValue = (stat: MarketStat): string => {
+    if (!animated || !animatedValues[stat.label]) {
+      return stat.value;
+    }
+
+    const animatedVal = animatedValues[stat.label];
+    
+    if (stat.value.includes('$')) {
+      return `$${Math.round(animatedVal).toLocaleString()}`;
+    } else if (stat.value.includes('days')) {
+      return `${Math.round(animatedVal)} days`;
+    } else if (stat.value.includes('months')) {
+      return `${animatedVal.toFixed(1)} months`;
+    }
+    
+    return stat.value;
   };
 
   const getTrendIcon = (trend: string) => {
     switch (trend) {
-      case 'up': return '📈';
-      case 'down': return '📉';
-      default: return '➡️';
+      case 'up':
+        return '📈';
+      case 'down':
+        return '📉';
+      default:
+        return '➖';
     }
   };
 
   const getTrendColor = (trend: string) => {
     switch (trend) {
-      case 'up': return '#10b981';
-      case 'down': return '#ef4444';
-      default: return '#6b7280';
+      case 'up':
+        return '#10b981';
+      case 'down':
+        return '#ef4444';
+      default:
+        return '#6b7280';
     }
   };
 
   return (
-    <section className="market-stats">
-      <div className="stats-container">
+    <div 
+      id="market-stats"
+      className={`market-stats ${className} ${isVisible ? 'visible' : ''}`}
+      data-analytics="market-stats"
+    >
+      {showTitle && (
         <div className="stats-header">
-          <h2>Las Vegas Luxury Market Report</h2>
-          <p>Real-time market insights for premium properties in our area</p>
-          <div className="last-updated">
-            <span>📊 Last Updated: {new Date().toLocaleDateString()}</span>
+          <h2 className="stats-title">Las Vegas Luxury Market Insights</h2>
+          <p className="stats-subtitle">
+            Current market trends and statistics for premium properties in Las Vegas
+          </p>
+          <div className="stats-meta">
+            <span className="update-time">Last updated: {new Date().toLocaleDateString()}</span>
+            <span className="data-source">Source: MLS & Market Analysis</span>
           </div>
         </div>
+      )}
 
-        {isLoading ? (
-          <div className="loading-stats">
-            <div className="loading-spinner"></div>
-            <p>Loading latest market data...</p>
+      <div className="stats-grid">
+        {marketStats.map((stat, index) => (
+          <div 
+            key={stat.label}
+            className={`stat-card ${isVisible ? 'animate' : ''}`}
+            style={{
+              animationDelay: animated ? `${index * 0.1}s` : '0s'
+            }}
+          >
+            <div className="stat-header">
+              <div className="stat-icon">{stat.icon}</div>
+              <div className="stat-trend">
+                <span 
+                  className="trend-indicator"
+                  style={{ color: getTrendColor(stat.trend) }}
+                >
+                  {getTrendIcon(stat.trend)}
+                </span>
+              </div>
+            </div>
+            
+            <div className="stat-content">
+              <div className="stat-value">
+                {formatAnimatedValue(stat)}
+              </div>
+              <div className="stat-label">{stat.label}</div>
+              
+              {stat.change !== 'stable' && (
+                <div 
+                  className="stat-change"
+                  style={{ color: getTrendColor(stat.trend) }}
+                >
+                  {stat.change}
+                </div>
+              )}
+              
+              <div className="stat-description">
+                {stat.description}
+              </div>
+            </div>
+
+            <div className="stat-hover-overlay">
+              <div className="hover-content">
+                <h4>{stat.label}</h4>
+                <p>{stat.description}</p>
+                <div className="hover-details">
+                  <span>Current: {stat.value}</span>
+                  {stat.change !== 'stable' && (
+                    <span>Change: {stat.change}</span>
+                  )}
+                </div>
+              </div>
+            </div>
           </div>
-        ) : (
-          <>
-            <div className="stats-grid">
-              <div className="stat-card primary">
-                <div className="stat-icon">🏠</div>
-                <div className="stat-value">
-                  {formatCurrency(animatedValues.averagePrice)}
-                </div>
-                <div className="stat-label">Average Home Price</div>
-                <div className="stat-change positive">
-                  +{animatedValues.priceChange}% vs last year
-                </div>
-              </div>
+        ))}
+      </div>
 
-              <div className="stat-card">
-                <div className="stat-icon">📅</div>
-                <div className="stat-value">
-                  {animatedValues.daysOnMarket} days
-                </div>
-                <div className="stat-label">Average Days on Market</div>
-                <div className="stat-change neutral">
-                  Fast-moving market
-                </div>
-              </div>
-
-              <div className="stat-card">
-                <div className="stat-icon">📋</div>
-                <div className="stat-value">
-                  {animatedValues.soldLastMonth}
-                </div>
-                <div className="stat-label">Homes Sold Last Month</div>
-                <div className="stat-change positive">
-                  High demand area
-                </div>
-              </div>
-
-              <div className="stat-card">
-                <div className="stat-icon">📦</div>
-                <div className="stat-value">
-                  {marketData.inventoryLevel}
-                </div>
-                <div className="stat-label">Inventory Level</div>
-                <div className="stat-change neutral">
-                  Limited supply
-                </div>
-              </div>
-            </div>
-
-            <div className="market-insights">
-              <h3>Market Insights</h3>
-              <div className="insights-grid">
-                <div className="insight-card">
-                  <div className="insight-header">
-                    <span className="trend-icon">{getTrendIcon(marketData.marketTrend)}</span>
-                    <h4>Market Trend</h4>
-                  </div>
-                  <p>
-                    The luxury market in Las Vegas continues to show strong growth with 
-                    increased buyer interest and limited inventory driving competitive conditions.
-                  </p>
-                </div>
-
-                <div className="insight-card">
-                  <div className="insight-header">
-                    <span className="trend-icon">💡</span>
-                    <h4>Investment Outlook</h4>
-                  </div>
-                  <p>
-                    Premium properties in master-planned communities like Emerson Estates 
-                    are seeing exceptional appreciation and strong resale values.
-                  </p>
-                </div>
-
-                <div className="insight-card">
-                  <div className="insight-header">
-                    <span className="trend-icon">⏰</span>
-                    <h4>Timing Recommendations</h4>
-                  </div>
-                  <p>
-                    With low inventory and high demand, qualified buyers should act quickly. 
-                    Pre-approval and flexible terms are essential in this competitive market.
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <div className="cta-section">
-              <h3>Ready to Make Your Move?</h3>
-              <p>Get a personalized market analysis for your dream home</p>
-              <div className="cta-buttons">
-                <a href="/contact" className="cta-btn primary">
-                  Get Market Analysis
-                </a>
-                <a href="/homes" className="cta-btn secondary">
-                  View Available Homes
-                </a>
-              </div>
-            </div>
-          </>
-        )}
+      <div className="stats-footer">
+        <div className="market-summary">
+          <h3>Market Summary</h3>
+          <p>
+            Las Vegas luxury real estate market continues to show strong performance with 
+            steady price appreciation and healthy buyer demand. The market remains favorable 
+            for both buyers and sellers in the premium segment.
+          </p>
+        </div>
+        
+        <div className="consultation-cta">
+          <h4>Get Personalized Market Analysis</h4>
+          <p>Receive detailed insights specific to your property interests</p>
+          <button 
+            className="cta-button"
+            onClick={() => {
+              // Track interaction
+              if (typeof window !== 'undefined' && (window as any).trackAnalyticsEvent) {
+                (window as any).trackAnalyticsEvent({
+                  action: 'market_analysis_request',
+                  category: 'conversion',
+                  label: 'market_stats_widget'
+                });
+              }
+            }}
+          >
+            Request Analysis
+          </button>
+        </div>
       </div>
 
       <style jsx>{`
         .market-stats {
-          padding: 4rem 2rem;
-          background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-          color: white;
+          padding: 40px 0;
+          opacity: 0;
+          transform: translateY(30px);
+          transition: all 0.6s ease;
         }
 
-        .stats-container {
-          max-width: 1200px;
-          margin: 0 auto;
+        .market-stats.visible {
+          opacity: 1;
+          transform: translateY(0);
         }
 
         .stats-header {
           text-align: center;
-          margin-bottom: 3rem;
+          margin-bottom: 40px;
         }
 
-        .stats-header h2 {
-          font-size: 2.5rem;
-          margin-bottom: 1rem;
-          background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+        .stats-title {
+          font-size: 32px;
+          font-weight: 700;
+          color: #1a365d;
+          margin-bottom: 12px;
+          background: linear-gradient(135deg, #1a365d, #2563eb);
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
           background-clip: text;
         }
 
-        .stats-header p {
-          font-size: 1.2rem;
-          color: #cbd5e1;
-          margin-bottom: 1rem;
+        .stats-subtitle {
+          font-size: 16px;
+          color: #64748b;
+          margin-bottom: 16px;
+          max-width: 600px;
+          margin-left: auto;
+          margin-right: auto;
         }
 
-        .last-updated {
+        .stats-meta {
+          display: flex;
+          justify-content: center;
+          gap: 24px;
+          font-size: 12px;
           color: #94a3b8;
-          font-size: 0.9rem;
-        }
-
-        .loading-stats {
-          text-align: center;
-          padding: 4rem 2rem;
-        }
-
-        .loading-spinner {
-          width: 50px;
-          height: 50px;
-          border: 4px solid rgba(251, 191, 36, 0.3);
-          border-top: 4px solid #fbbf24;
-          border-radius: 50%;
-          animation: spin 1s linear infinite;
-          margin: 0 auto 2rem;
         }
 
         .stats-grid {
           display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-          gap: 2rem;
-          margin-bottom: 4rem;
+          grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+          gap: 24px;
+          margin-bottom: 40px;
         }
 
         .stat-card {
-          background: rgba(255, 255, 255, 0.05);
-          padding: 2.5rem 2rem;
-          border-radius: 20px;
-          text-align: center;
-          backdrop-filter: blur(10px);
-          border: 1px solid rgba(255, 255, 255, 0.1);
-          transition: transform 0.3s ease;
+          background: white;
+          border-radius: 16px;
+          padding: 24px;
+          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+          border: 1px solid #e2e8f0;
+          position: relative;
+          overflow: hidden;
+          transition: all 0.3s ease;
+          opacity: 0;
+          transform: translateY(20px);
+        }
+
+        .stat-card.animate {
+          opacity: 1;
+          transform: translateY(0);
         }
 
         .stat-card:hover {
-          transform: translateY(-5px);
+          transform: translateY(-4px);
+          box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+          border-color: #2563eb;
         }
 
-        .stat-card.primary {
-          background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
-          transform: scale(1.05);
+        .stat-card:hover .stat-hover-overlay {
+          opacity: 1;
+          visibility: visible;
+        }
+
+        .stat-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 16px;
         }
 
         .stat-icon {
-          font-size: 2.5rem;
-          margin-bottom: 1rem;
+          font-size: 32px;
+          background: linear-gradient(135deg, #f0f9ff, #dbeafe);
+          padding: 12px;
+          border-radius: 12px;
+          display: inline-block;
+        }
+
+        .stat-trend {
+          font-size: 20px;
+        }
+
+        .trend-indicator {
+          display: inline-block;
+          animation: pulse 2s infinite;
+        }
+
+        .stat-content {
+          position: relative;
+          z-index: 2;
         }
 
         .stat-value {
-          font-size: 2.5rem;
+          font-size: 28px;
           font-weight: 700;
-          margin-bottom: 0.5rem;
-          color: #fbbf24;
-        }
-
-        .stat-card.primary .stat-value {
-          color: white;
+          color: #1a365d;
+          margin-bottom: 4px;
+          line-height: 1.2;
         }
 
         .stat-label {
-          font-size: 1.1rem;
-          color: #cbd5e1;
-          margin-bottom: 1rem;
+          font-size: 14px;
+          font-weight: 600;
+          color: #64748b;
+          margin-bottom: 8px;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
         }
 
         .stat-change {
-          font-size: 0.9rem;
-          padding: 0.5rem 1rem;
-          border-radius: 20px;
+          font-size: 12px;
           font-weight: 600;
+          margin-bottom: 8px;
+          display: inline-flex;
+          align-items: center;
+          padding: 2px 8px;
+          border-radius: 12px;
+          background: rgba(16, 185, 129, 0.1);
         }
 
-        .stat-change.positive {
-          background: rgba(16, 185, 129, 0.2);
-          color: #10b981;
+        .stat-description {
+          font-size: 12px;
+          color: #94a3b8;
+          line-height: 1.4;
         }
 
-        .stat-change.neutral {
-          background: rgba(107, 114, 128, 0.2);
-          color: #9ca3af;
-        }
-
-        .market-insights {
-          margin-bottom: 4rem;
-        }
-
-        .market-insights h3 {
-          text-align: center;
-          font-size: 2rem;
-          margin-bottom: 2rem;
-          color: #fbbf24;
-        }
-
-        .insights-grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-          gap: 2rem;
-        }
-
-        .insight-card {
-          background: rgba(255, 255, 255, 0.05);
-          padding: 2rem;
-          border-radius: 16px;
-          border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .insight-header {
+        .stat-hover-overlay {
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: linear-gradient(135deg, #2563eb, #1d4ed8);
+          color: white;
+          padding: 24px;
           display: flex;
           align-items: center;
-          gap: 1rem;
-          margin-bottom: 1rem;
+          justify-content: center;
+          opacity: 0;
+          visibility: hidden;
+          transition: all 0.3s ease;
         }
 
-        .trend-icon {
-          font-size: 1.5rem;
+        .hover-content {
+          text-align: center;
         }
 
-        .insight-header h4 {
-          color: #fbbf24;
-          margin: 0;
+        .hover-content h4 {
+          font-size: 18px;
+          font-weight: 700;
+          margin-bottom: 8px;
         }
 
-        .insight-card p {
-          color: #cbd5e1;
+        .hover-content p {
+          font-size: 14px;
+          opacity: 0.9;
+          margin-bottom: 16px;
+        }
+
+        .hover-details {
+          display: flex;
+          flex-direction: column;
+          gap: 4px;
+          font-size: 12px;
+          opacity: 0.8;
+        }
+
+        .stats-footer {
+          display: grid;
+          grid-template-columns: 2fr 1fr;
+          gap: 40px;
+          margin-top: 40px;
+          padding-top: 40px;
+          border-top: 1px solid #e2e8f0;
+        }
+
+        .market-summary h3 {
+          font-size: 20px;
+          font-weight: 700;
+          color: #1a365d;
+          margin-bottom: 12px;
+        }
+
+        .market-summary p {
+          color: #64748b;
           line-height: 1.6;
         }
 
-        .cta-section {
+        .consultation-cta {
+          background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+          padding: 24px;
+          border-radius: 12px;
+          border: 1px solid #e2e8f0;
           text-align: center;
-          background: rgba(255, 255, 255, 0.05);
-          padding: 3rem 2rem;
-          border-radius: 20px;
-          border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        .cta-section h3 {
-          font-size: 2rem;
-          margin-bottom: 1rem;
-          color: #fbbf24;
+        .consultation-cta h4 {
+          font-size: 16px;
+          font-weight: 700;
+          color: #1a365d;
+          margin-bottom: 8px;
         }
 
-        .cta-section p {
-          font-size: 1.1rem;
-          color: #cbd5e1;
-          margin-bottom: 2rem;
+        .consultation-cta p {
+          font-size: 12px;
+          color: #64748b;
+          margin-bottom: 16px;
         }
 
-        .cta-buttons {
-          display: flex;
-          gap: 1.5rem;
-          justify-content: center;
-          flex-wrap: wrap;
-        }
-
-        .cta-btn {
-          padding: 1rem 2rem;
-          border-radius: 10px;
-          text-decoration: none;
+        .cta-button {
+          background: linear-gradient(135deg, #2563eb, #1d4ed8);
+          color: white;
+          border: none;
+          padding: 12px 24px;
+          border-radius: 8px;
           font-weight: 600;
-          transition: transform 0.3s ease;
+          font-size: 14px;
+          cursor: pointer;
+          transition: all 0.2s ease;
+          width: 100%;
         }
 
-        .cta-btn:hover {
-          transform: translateY(-2px);
+        .cta-button:hover {
+          background: linear-gradient(135deg, #1d4ed8, #1e40af);
+          transform: translateY(-1px);
+          box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
         }
 
-        .cta-btn.primary {
-          background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
-          color: #1f2937;
+        @keyframes pulse {
+          0%, 100% {
+            transform: scale(1);
+          }
+          50% {
+            transform: scale(1.1);
+          }
         }
 
-        .cta-btn.secondary {
-          background: transparent;
-          color: #fbbf24;
-          border: 2px solid #fbbf24;
-        }
-
-        @keyframes spin {
-          0% { transform: rotate(0deg); }
-          100% { transform: rotate(360deg); }
-        }
-
+        /* Responsive Design */
         @media (max-width: 768px) {
           .stats-grid {
             grid-template-columns: 1fr;
+            gap: 16px;
           }
 
-          .insights-grid {
+          .stats-footer {
             grid-template-columns: 1fr;
+            gap: 24px;
           }
 
-          .cta-buttons {
+          .stats-title {
+            font-size: 24px;
+          }
+
+          .stat-card {
+            padding: 20px;
+          }
+
+          .stat-value {
+            font-size: 24px;
+          }
+
+          .stats-meta {
             flex-direction: column;
-            align-items: center;
+            gap: 8px;
+          }
+        }
+
+        @media (max-width: 480px) {
+          .market-stats {
+            padding: 20px 0;
           }
 
-          .stats-header h2 {
-            font-size: 2rem;
+          .stats-header {
+            margin-bottom: 24px;
+          }
+
+          .consultation-cta {
+            padding: 20px;
           }
         }
       `}</style>
-    </section>
+    </div>
   );
 };
 
