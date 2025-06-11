@@ -1,3 +1,4 @@
+
 import type { NextConfig } from 'next'
 
 const nextConfig: NextConfig = {
@@ -10,17 +11,10 @@ const nextConfig: NextConfig = {
     '127.0.0.1:*',
     '0.0.0.0:*'
   ],
-
+  
   // Your existing experimental config
   experimental: {
     scrollRestoration: true
-  },
-
-  // Optional: ESLint configuration if needed
-  eslint: {
-    rules: {
-      'react/no-unescaped-entities': 'warn'
-    }
   }
 }
 
