@@ -173,7 +173,7 @@ export default function Layout({
           max-width: 1200px;
           margin: 0 auto;
           display: grid;
-          grid-template-columns: 1fr 2fr 1fr;
+          grid-template-columns: auto 1fr auto;
           align-items: center;
           padding: 1rem 2rem;
           gap: 1rem;
@@ -181,6 +181,7 @@ export default function Layout({
 
         .logo-section {
           justify-self: start;
+          min-width: 200px;
         }
 
         .nav {
@@ -201,16 +202,19 @@ export default function Layout({
           font-weight: 700;
           transition: transform 0.3s ease;
           white-space: nowrap;
+          position: relative;
         }
 
         .logo:hover {
-          transform: scale(1.05);
+          transform: scale(1.02);
         }
 
         .logo-img {
-          border-radius: 8px;
-          box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+          border-radius: 6px;
+          box-shadow: 0 2px 10px rgba(0,0,0,0.3);
           flex-shrink: 0;
+          background: white;
+          padding: 2px;
         }
 
         .logo-text {
