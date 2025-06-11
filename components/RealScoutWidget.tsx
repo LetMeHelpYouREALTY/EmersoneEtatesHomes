@@ -1,6 +1,4 @@
-
-import React from 'react';
-import dynamic from 'next/dynamic';
+import { useEffect, useState } from 'react';
 
 interface RealScoutWidgetProps {
   agentEncodedId?: string;
@@ -10,46 +8,35 @@ interface RealScoutWidgetProps {
   className?: string;
 }
 
-// Create a client-only component to avoid hydration issues
-const ClientOnlyRealScoutWidget = dynamic(
-  () => Promise.resolve(function RealScoutWidgetClient({
-    agentEncodedId = "QWdlbnQtMjI1MDUw",
-    sortOrder = "STATUS_AND_SIGNIFICANT_CHANGE",
-    listingStatus = "For Sale",
-    propertyTypes = "SFR,MF",
-    className = ""
-  }: RealScoutWidgetProps) {
+export default function RealScoutWidget({ 
+  agentEncodedId = "QWdlbnQtMjI1MDUw",
+  sortOrder = "STATUS_AND_SIGNIFICANT_CHANGE",
+  listingStatus = "For Sale",
+  propertyTypes = "SFR,MF",
+  className = ""
+}: RealScoutWidgetProps) {
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  if (!isClient) {
     return (
-      <div className={className}>
-        {React.createElement('realscout-office-listings', {
-          'agent-encoded-id': agentEncodedId,
-          'sort-order': sortOrder,
-          'listing-status': listingStatus,
-          'property-types': propertyTypes
-        })}
+      <div className={`realscout-placeholder ${className}`} style={{ minHeight: '400px', background: '#f5f5f5', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <p>Loading properties...</p>
       </div>
     );
-  }),
-  {
-    ssr: false,
-    loading: () => (
-      <div style={{
-        minHeight: '400px',
-        background: '#f5f5f5',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        borderRadius: '8px',
-        border: '1px solid #e0e0e0'
-      }}>
-        <p style={{ color: '#666', fontSize: '16px' }}>Loading property listings...</p>
-      </div>
-    )
   }
-);
 
-function RealScoutWidget(props: RealScoutWidgetProps) {
-  return <ClientOnlyRealScoutWidget {...props} />;
+  return (
+    <div className={className}>
+      <realscout-office-listings
+        agent-encoded-id={agentEncodedId}
+        sort-order={sortOrder}
+        listing-status={listingStatus}
+        property-types={propertyTypes}
+      />
+    </div>
+  );
 }
-
-export default RealScoutWidget;

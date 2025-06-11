@@ -14,53 +14,55 @@ const nextConfig: NextConfig = {
     dirs: ['pages', 'components', 'types']
   },
   
-  // Fix cross-origin warnings
-  allowedDevOrigins: ['*.replit.dev', '*.replit.com'],
+  // Fix cross-origin warnings for Replit
+  experimental: {
+    allowedRevalidateHeaderKeys: ['content-type'],
+    scrollRestoration: true
+  },
   
-  // Fix cross-origin issues in development
+  // Development configuration
+  async rewrites() {
+    return []
+  },
+  
   async headers() {
     return [
       {
         source: '/:path*',
         headers: [
           {
-            key: 'Access-Control-Allow-Origin',
-            value: '*',
+            key: 'X-Content-Type-Options',
+            value: 'nosniff',
           },
           {
-            key: 'Access-Control-Allow-Methods',
-            value: 'GET, POST, PUT, DELETE, OPTIONS',
+            key: 'X-Frame-Options',
+            value: 'DENY',
           },
           {
-            key: 'Access-Control-Allow-Headers',
-            value: 'X-Requested-With, Content-Type, Authorization',
+            key: 'X-XSS-Protection',
+            value: '1; mode=block',
           },
         ],
       },
     ]
   },
   
-  // Configure image optimization for production
+  // Configure image optimization
   images: {
     unoptimized: true,
     domains: ['em.realscout.com']
   },
   
-  // Experimental features - simplified for stability
-  experimental: {
-    scrollRestoration: true
-  },
-
-  // Development configuration
-  ...(process.env.NODE_ENV === 'development' && {
-    webpack: (config: any) => {
+  // Webpack configuration for development stability
+  webpack: (config, { dev, isServer }) => {
+    if (dev && !isServer) {
       config.watchOptions = {
         poll: 1000,
         aggregateTimeout: 300,
       };
-      return config;
-    },
-  })
+    }
+    return config;
+  },
 };
 
 export default nextConfig;
