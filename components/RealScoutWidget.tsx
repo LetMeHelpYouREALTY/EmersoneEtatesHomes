@@ -1,5 +1,6 @@
 
-import React, { useEffect } from 'react';
+import React from 'react';
+import Script from 'next/script';
 
 interface RealScoutWidgetProps {
   agentEncodedId?: string;
@@ -16,38 +17,29 @@ function RealScoutWidget({
   propertyTypes = "SFR,MF",
   className = ""
 }: RealScoutWidgetProps) {
-  useEffect(() => {
-    // Ensure the script is loaded
-    if (!document.querySelector('script[src*="realscout-web-components"]')) {
-      const script = document.createElement('script');
-      script.src = 'https://em.realscout.com/widgets/realscout-web-components.umd.js';
-      script.type = 'module';
-      document.head.appendChild(script);
-    }
-
-    // Add CSS if not already present
-    if (!document.querySelector('style[data-realscout-styles]')) {
-      const style = document.createElement('style');
-      style.setAttribute('data-realscout-styles', 'true');
-      style.textContent = `
+  return (
+    <>
+      <Script
+        src="https://em.realscout.com/widgets/realscout-web-components.umd.js"
+        strategy="beforeInteractive"
+      />
+      
+      <style jsx>{`
         realscout-office-listings {
           --rs-listing-divider-color: rgb(101, 141, 172);
           width: 100%;
         }
-      `;
-      document.head.appendChild(style);
-    }
-  }, []);
+      `}</style>
 
-  return (
-    <div className={className}>
-      {React.createElement('realscout-office-listings', {
-        'agent-encoded-id': agentEncodedId,
-        'sort-order': sortOrder,
-        'listing-status': listingStatus,
-        'property-types': propertyTypes
-      })}
-    </div>
+      <div className={className}>
+        {React.createElement('realscout-office-listings', {
+          'agent-encoded-id': agentEncodedId,
+          'sort-order': sortOrder,
+          'listing-status': listingStatus,
+          'property-types': propertyTypes
+        })}
+      </div>
+    </>
   );
 }
 
