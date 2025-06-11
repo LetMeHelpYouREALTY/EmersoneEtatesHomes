@@ -12,38 +12,7 @@ const nextConfig: NextConfig = {
     dirs: ['pages', 'components', 'types']
   },
 
-  // Basic security headers
-  async headers() {
-    return [
-      {
-        source: '/:path*',
-        headers: [
-          {
-            key: 'X-Content-Type-Options',
-            value: 'nosniff',
-          },
-          {
-            key: 'X-Frame-Options',
-            value: 'SAMEORIGIN',
-          },
-        ],
-      },
-    ]
-  },
-
-  // Image optimization
-  images: {
-    unoptimized: true,
-    domains: ['em.realscout.com']
-  },
-
-  outputFileTracingRoot: process.cwd(),
-  experimental: {
-    allowedRevalidateHeaderKeys: ['content-type'],
-    scrollRestoration: true
-  },
-
-  // Allow cross-origin requests in development
+  // Security and CORS headers
   async headers() {
     return [
       {
@@ -64,6 +33,18 @@ const nextConfig: NextConfig = {
         ],
       },
     ]
+  },
+
+  // Image optimization
+  images: {
+    unoptimized: true,
+    domains: ['em.realscout.com']
+  },
+
+  outputFileTracingRoot: process.cwd(),
+  experimental: {
+    allowedRevalidateHeaderKeys: ['content-type'],
+    scrollRestoration: true
   },
 
   // Development origins configuration
