@@ -1,0 +1,11 @@
+# *
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /admin/
+
+# Host
+Host: https://www.emersonestateshomes.com
+
+# Sitemaps
+Sitemap: https://www.emersonestateshomes.com/sitemap.xml
