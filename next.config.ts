@@ -1,3 +1,4 @@
+
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
@@ -39,7 +40,18 @@ const nextConfig: NextConfig = {
   // Experimental features - simplified for stability
   experimental: {
     scrollRestoration: true
-  }
+  },
+
+  // Development configuration
+  ...(process.env.NODE_ENV === 'development' && {
+    webpack: (config: any) => {
+      config.watchOptions = {
+        poll: 1000,
+        aggregateTimeout: 300,
+      };
+      return config;
+    },
+  })
 };
 
 export default nextConfig;

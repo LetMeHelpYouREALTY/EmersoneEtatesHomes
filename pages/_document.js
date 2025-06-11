@@ -4,6 +4,20 @@ export default function Document() {
   return (
     <Html lang="en">
       <Head>
+        <meta name="description" content="Luxury homes in Las Vegas - Emerson Estates" />
+        <link rel="icon" href="/favicon.ico" />
+        <script 
+          src="https://em.realscout.com/widgets/realscout-web-components.umd.js" 
+          type="module"
+        />
+        <style dangerouslySetInnerHTML={{
+          __html: `
+            realscout-office-listings {
+              --rs-listing-divider-color: rgb(101, 141, 172);
+              width: 100%;
+            }
+          `
+        }} />
         {/* Primary Meta Tags */}
         <meta name="title" content="Emerson Estates Homes - Luxury Living in Las Vegas, NV" />
         <meta name="description" content="Discover luxury homes at Emerson Estates, located at 2583 Regency Cove Ct, Las Vegas, NV 89121. Premium properties with modern amenities and community features." />
@@ -23,7 +37,6 @@ export default function Document() {
         <meta property="twitter:description" content="Discover luxury homes at Emerson Estates, located at 2583 Regency Cove Ct, Las Vegas, NV 89121. Premium properties with modern amenities and community features." />
 
         {/* Favicon */}
-        <link rel="icon" href="/favicon.ico" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
 
         {/* Security Headers */}
