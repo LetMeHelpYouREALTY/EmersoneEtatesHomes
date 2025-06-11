@@ -10,8 +10,8 @@ interface LayoutProps {
 
 const Layout: React.FC<LayoutProps> = ({ 
   children, 
-  title = "Emerson Estates - Luxury Homes in Las Vegas",
-  description = "Discover luxury living at Emerson Estates, an exclusive gated community in Las Vegas featuring premium homes, world-class amenities, and desert beauty."
+  title = "Emerson Estates - Luxury Homes in Las Vegas, NV",
+  description = "Discover luxury homes at Emerson Estates, located at 2583 Regency Cove Ct, Las Vegas, NV 89121. Premium properties with modern amenities and community features."
 }) => {
   return (
     <>

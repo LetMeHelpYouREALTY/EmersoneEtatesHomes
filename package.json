@@ -4,10 +4,11 @@
   "private": true,
   "scripts": {
     "dev": "next dev --port 3000 --hostname 0.0.0.0",
-    "build": "next build",
+    "build": "rm -rf .next && next build",
     "start": "next start --port 3000 --hostname 0.0.0.0",
     "lint": "next lint",
-    "postbuild": "next-sitemap"
+    "postbuild": "next-sitemap",
+    "clean": "rm -rf .next node_modules/.cache"
   },
   "dependencies": {
     "critters": "^0.0.23",

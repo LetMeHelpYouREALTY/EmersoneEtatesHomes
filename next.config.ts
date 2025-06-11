@@ -14,6 +14,9 @@ const nextConfig: NextConfig = {
     dirs: ['pages', 'components', 'types']
   },
   
+  // Fix cross-origin warnings
+  allowedDevOrigins: ['*.replit.dev', '*.replit.com'],
+  
   // Fix cross-origin issues in development
   async headers() {
     return [
