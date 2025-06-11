@@ -1,4 +1,6 @@
 
+import React from 'react';
+
 declare global {
   namespace JSX {
     interface IntrinsicElements {
@@ -11,7 +13,7 @@ declare global {
         'property-types'?: string;
         children?: React.ReactNode;
         [key: string]: any;
-      };
+      } & React.HTMLAttributes<HTMLElement>;
       'realscout-office-listings': {
         'agent-encoded-id'?: string;
         'sort-order'?: string;
@@ -19,7 +21,7 @@ declare global {
         'property-types'?: string;
         children?: React.ReactNode;
         [key: string]: any;
-      };
+      } & React.HTMLAttributes<HTMLElement>;
     }
   }
 }
