@@ -22,10 +22,7 @@ export default function Layout({
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <Script
-        src="https://em.realscout.com/widgets/realscout-web-components.umd.js"
-        strategy="beforeInteractive"
-      />
+      
 
       <header className={styles.header}>
         <nav className={styles.nav}>
