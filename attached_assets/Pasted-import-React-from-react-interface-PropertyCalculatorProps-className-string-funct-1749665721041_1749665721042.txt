@@ -1,0 +1,141 @@
+import React from 'react';
+
+interface PropertyCalculatorProps {
+  className?: string;
+}
+
+function PropertyCalculator({ className = "" }: PropertyCalculatorProps) {
+  // Use React.useState instead of destructured useState to avoid conflicts
+  const [loanAmount, setLoanAmount] = React.useState(500000);
+  const [interestRate, setInterestRate] = React.useState(6.5);
+  const [loanTerm, setLoanTerm] = React.useState(30);
+  const [downPayment, setDownPayment] = React.useState(100000);
+
+  // Use React.useMemo instead of destructured useMemo
+  const monthlyPayment = React.useMemo(() => {
+    const principal = loanAmount - downPayment;
+    const monthlyRate = interestRate / 100 / 12;
+    const numberOfPayments = loanTerm * 12;
+    
+    if (monthlyRate === 0) return principal / numberOfPayments;
+    
+    return (
+      (principal * monthlyRate * Math.pow(1 + monthlyRate, numberOfPayments)) /
+      (Math.pow(1 + monthlyRate, numberOfPayments) - 1)
+    );
+  }, [loanAmount, interestRate, loanTerm, downPayment]);
+
+  return (
+    <div className={`property-calculator ${className}`}>
+      <h3>Mortgage Calculator</h3>
+      
+      <div className="calculator-inputs">
+        <div className="input-group">
+          <label>Loan Amount: ${loanAmount.toLocaleString()}</label>
+          <input
+            type="range"
+            min="100000"
+            max="2000000"
+            step="10000"
+            value={loanAmount}
+            onChange={(e) => setLoanAmount(Number(e.target.value))}
+          />
+        </div>
+
+        <div className="input-group">
+          <label>Down Payment: ${downPayment.toLocaleString()}</label>
+          <input
+            type="range"
+            min="0"
+            max={loanAmount * 0.5}
+            step="5000"
+            value={downPayment}
+            onChange={(e) => setDownPayment(Number(e.target.value))}
+          />
+        </div>
+
+        <div className="input-group">
+          <label>Interest Rate: {interestRate}%</label>
+          <input
+            type="range"
+            min="3"
+            max="10"
+            step="0.1"
+            value={interestRate}
+            onChange={(e) => setInterestRate(Number(e.target.value))}
+          />
+        </div>
+
+        <div className="input-group">
+          <label>Loan Term: {loanTerm} years</label>
+          <input
+            type="range"
+            min="10"
+            max="40"
+            step="1"
+            value={loanTerm}
+            onChange={(e) => setLoanTerm(Number(e.target.value))}
+          />
+        </div>
+      </div>
+
+      <div className="calculator-result">
+        <h4>Monthly Payment: ${monthlyPayment.toFixed(2)}</h4>
+        <p>Principal: ${(loanAmount - downPayment).toLocaleString()}</p>
+      </div>
+
+      <style jsx>{`
+        .property-calculator {
+          background: white;
+          padding: 2rem;
+          border-radius: 8px;
+          box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+          max-width: 500px;
+        }
+
+        .calculator-inputs {
+          margin: 1.5rem 0;
+        }
+
+        .input-group {
+          margin-bottom: 1.5rem;
+        }
+
+        .input-group label {
+          display: block;
+          margin-bottom: 0.5rem;
+          font-weight: 600;
+          color: #333;
+        }
+
+        .input-group input[type="range"] {
+          width: 100%;
+          height: 8px;
+          border-radius: 4px;
+          background: #ddd;
+          outline: none;
+        }
+
+        .calculator-result {
+          background: #f8f9fa;
+          padding: 1.5rem;
+          border-radius: 6px;
+          border-left: 4px solid #007bff;
+        }
+
+        .calculator-result h4 {
+          margin: 0 0 0.5rem 0;
+          color: #007bff;
+          font-size: 1.5rem;
+        }
+
+        .calculator-result p {
+          margin: 0;
+          color: #666;
+        }
+      `}</style>
+    </div>
+  );
+}
+
+export default PropertyCalculator;
