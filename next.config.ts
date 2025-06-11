@@ -42,6 +42,18 @@ const nextConfig: NextConfig = {
     allowedRevalidateHeaderKeys: ['content-type'],
     scrollRestoration: true
   },
+  
+  // Fix cross-origin warnings in development
+  ...(process.env.NODE_ENV === 'development' && {
+    async rewrites() {
+      return [
+        {
+          source: '/_next/:path*',
+          destination: '/_next/:path*',
+        },
+      ]
+    }
+  }),
   async rewrites() {
     return []
   },
