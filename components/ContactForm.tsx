@@ -2,15 +2,6 @@ import { useState, FormEvent } from 'react';
 import { ContactFormData } from '@/types';
 import styles from '../styles/Home.module.css';
 
-interface ContactFormData {
-  name: string;
-  email: string;
-  phone: string;
-  message: string;
-  propertyType: string;
-  priceRange: string;
-}
-
 export default function ContactForm() {
   const [formData, setFormData] = useState<ContactFormData>({
     name: '',

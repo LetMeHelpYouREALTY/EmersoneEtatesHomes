@@ -1,4 +1,3 @@
-
 // Global type definitions for the project
 
 export interface PropertyListing {
