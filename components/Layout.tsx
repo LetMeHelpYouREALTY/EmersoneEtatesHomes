@@ -1,5 +1,6 @@
 import Head from 'next/head'
 import Link from 'next/link'
+import Image from 'next/image'
 import { ReactNode, Component, ErrorInfo } from 'react'
 
 interface LayoutProps {
@@ -61,13 +62,13 @@ export default function Layout({
       <header className="header">
         <div className="header-container">
           <Link href="/" className="logo">
-            <img 
+            <Image 
               src="/bhhs-logo.jpg" 
               alt="Berkshire Hathaway HomeServices" 
               className="logo-img"
-              width="50"
-              height="50"
-              loading="eager"
+              width={50}
+              height={50}
+              priority
             />
             <span className="logo-text">Emerson Estates</span>
           </Link>

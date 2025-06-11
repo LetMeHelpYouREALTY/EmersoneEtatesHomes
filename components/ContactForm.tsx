@@ -164,7 +164,7 @@ export default function ContactForm() {
 
           {submitStatus === 'success' && (
             <div className="status-message success">
-              Thank you! We'll be in touch within 24 hours.
+              Thank you! We&apos;ll be in touch within 24 hours.
             </div>
           )}
 
