@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -109,7 +108,7 @@ const ContactForm: React.FC<ContactFormProps> = ({
   ) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
-    
+
     // Clear error for this field
     if (errors[name]) {
       setErrors(prev => ({ ...prev, [name]: '' }));
@@ -138,11 +137,11 @@ const ContactForm: React.FC<ContactFormProps> = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!validateStep(currentStep)) return;
 
     setIsSubmitting(true);
-    
+
     try {
       const response = await fetch('/api/contact', {
         method: 'POST',
@@ -160,7 +159,7 @@ const ContactForm: React.FC<ContactFormProps> = ({
       if (response.ok) {
         setSubmitStatus('success');
         if (onSubmitSuccess) onSubmitSuccess();
-        
+
         // Track conversion
         if (typeof window !== 'undefined' && (window as any).trackAnalyticsEvent) {
           (window as any).trackAnalyticsEvent({
@@ -406,7 +405,7 @@ const ContactForm: React.FC<ContactFormProps> = ({
             <p>🕐 Expected response time: <strong>Within 24 hours</strong></p>
           </div>
         </div>
-        
+
         <style jsx>{`
           .success-state {
             text-align: center;
@@ -453,8 +452,8 @@ const ContactForm: React.FC<ContactFormProps> = ({
       <div className="form-container">
         <div className="form-header">
           <h2>Get In Touch</h2>
-          <p>Ready to find your dream home? Let's start the conversation.</p>
-          
+          <p>Ready to find your dream home? Let&apos;s start the conversation.</p>
+
           <div className="progress-bar">
             <div className="progress-track">
               <motion.div 
@@ -503,7 +502,7 @@ const ContactForm: React.FC<ContactFormProps> = ({
                 ← Previous
               </button>
             )}
-            
+
             {currentStep < totalSteps ? (
               <button
                 type="button"

@@ -1,4 +1,3 @@
-
 import React from 'react';
 
 interface RealScoutWidgetProps {
@@ -6,15 +5,13 @@ interface RealScoutWidgetProps {
 }
 
 declare global {
-  namespace JSX {
-    interface IntrinsicElements {
-      'realscout-office-listings': {
-        'agent-encoded-id': string;
-        'sort-order': string;
-        'listing-status': string;
-        'property-types': string;
-      };
-    }
+  interface JSXIntrinsicElements {
+    'realscout-office-listings': React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement> & {
+      'agent-encoded-id'?: string;
+      'sort-order'?: string;
+      'listing-status'?: string;
+      'property-types'?: string;
+    }, HTMLElement>;
   }
 }
 
@@ -27,7 +24,7 @@ const RealScoutWidget: React.FC<RealScoutWidgetProps> = ({ className = '' }) => 
         listing-status="For Sale"
         property-types="SFR,MF"
       />
-      
+
       <style jsx>{`
         .realscout-widget {
           width: 100%;

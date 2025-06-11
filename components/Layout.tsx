@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useRouter } from 'next/router';
 import ContactForm from './ContactForm';
 
@@ -120,12 +121,12 @@ const Layout: React.FC<LayoutProps> = ({
             {/* Logo */}
             <div className="logo-section">
               <Link href="/" className="logo-link" onClick={closeMenu}>
-                <img 
+                <Image 
                   src="/bhhs-logo.jpg" 
                   alt="Berkshire Hathaway HomeServices Nevada Properties"
                   className="logo-image"
-                  width="60"
-                  height="60"
+                  width={60}
+                  height={60}
                 />
                 <div className="logo-text">
                   <div className="brand-name">Emerson Estates</div>
@@ -230,12 +231,17 @@ const Layout: React.FC<LayoutProps> = ({
             {/* Agent Section */}
             <div className="footer-section agent-section">
               <div className="agent-info">
-                <img 
+                <Image 
                   src="/professional-headshot.jpg" 
                   alt="Dr. Jan Duffy"
                   className="agent-photo"
-                  width="80"
-                  height="80"
+                  width={80}
+                  height={80}
+                  style={{ 
+                    borderRadius: '50%', 
+                    objectFit: 'cover',
+                    marginBottom: '1rem'
+                  }}
                 />
                 <div className="agent-details">
                   <h3 className="agent-name">Dr. Jan Duffy</h3>
@@ -290,12 +296,12 @@ const Layout: React.FC<LayoutProps> = ({
             <div className="footer-section">
               <h4 className="footer-title">Brokerage</h4>
               <div className="brokerage-info">
-                <img 
+                <Image 
                   src="/bhhs-logo.jpg" 
                   alt="BHHS Nevada Properties"
                   className="brokerage-logo"
-                  width="60"
-                  height="60"
+                  width={60}
+                  height={60}
                 />
                 <div className="brokerage-details">
                   <p className="brokerage-name">Berkshire Hathaway<br />HomeServices Nevada Properties</p>

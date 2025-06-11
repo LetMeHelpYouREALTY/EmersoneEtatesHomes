@@ -1,5 +1,5 @@
-
 import React, { Component, ErrorInfo, ReactNode } from 'react';
+import Link from 'next/link';
 
 interface Props {
   children: ReactNode;
@@ -29,8 +29,10 @@ class ErrorBoundary extends Component<Props, State> {
     };
   }
 
-  public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+  public componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
     console.error('ErrorBoundary caught an error:', error, errorInfo);
+
+    const errorData = error as { code?: string; statusCode?: number };
 
     this.setState({
       error,
@@ -83,7 +85,7 @@ class ErrorBoundary extends Component<Props, State> {
             <div className="error-icon">⚠️</div>
             <h2>Oops! Something went wrong</h2>
             <p>We apologize for the inconvenience. Please try refreshing the page or contact us if the problem persists.</p>
-            
+
             <div className="error-actions">
               <button onClick={this.handleRetry} className="error-btn primary">
                 Try Again
@@ -91,9 +93,9 @@ class ErrorBoundary extends Component<Props, State> {
               <button onClick={this.handleReload} className="error-btn secondary">
                 Refresh Page
               </button>
-              <a href="/contact" className="error-btn tertiary">
+              <Link href="/contact" className="error-btn tertiary">
                 Contact Support
-              </a>
+              </Link>
             </div>
 
             {process.env.NODE_ENV === 'development' && this.state.error && (
@@ -102,10 +104,10 @@ class ErrorBoundary extends Component<Props, State> {
                 <div className="error-info">
                   <h4>Error Message:</h4>
                   <pre>{this.state.error.message}</pre>
-                  
+
                   <h4>Stack Trace:</h4>
                   <pre>{this.state.error.stack}</pre>
-                  
+
                   {this.state.errorInfo && (
                     <>
                       <h4>Component Stack:</h4>

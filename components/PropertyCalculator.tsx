@@ -1,5 +1,5 @@
-
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
+import Link from 'next/link';
 
 interface CalculatorState {
   homePrice: number;
@@ -49,7 +49,7 @@ const PropertyCalculator: React.FC = () => {
     if (Math.abs(newDownPayment - values.downPayment) > 1) {
       setValues(prev => ({ ...prev, downPayment: newDownPayment }));
     }
-  }, [values.homePrice, values.downPaymentPercent]);
+  }, [values.homePrice, values.downPaymentPercent, values.downPayment]);
 
   useEffect(() => {
     // Auto-calculate down payment percentage when amount changes
@@ -57,7 +57,7 @@ const PropertyCalculator: React.FC = () => {
     if (Math.abs(newPercent - values.downPaymentPercent) > 0.1) {
       setValues(prev => ({ ...prev, downPaymentPercent: newPercent }));
     }
-  }, [values.downPayment, values.homePrice]);
+  }, [values.downPayment, values.homePrice, values.downPaymentPercent]);
 
   useEffect(() => {
     calculatePayments();
@@ -65,7 +65,7 @@ const PropertyCalculator: React.FC = () => {
 
   const calculatePayments = () => {
     setIsCalculating(true);
-    
+
     setTimeout(() => {
       const loanAmount = values.homePrice - values.downPayment;
       const monthlyRate = values.interestRate / 100 / 12;
@@ -101,7 +101,7 @@ const PropertyCalculator: React.FC = () => {
         totalCost,
         loanAmount
       });
-      
+
       setIsCalculating(false);
     }, 500);
   };
@@ -132,7 +132,7 @@ const PropertyCalculator: React.FC = () => {
         <div className="calculator-header">
           <h2>Mortgage Payment Calculator</h2>
           <p>Calculate your monthly payments and see what you can afford</p>
-          
+
           <div className="tab-navigation">
             <button 
               className={`tab-btn ${activeTab === 'basic' ? 'active' : ''}`}
@@ -153,7 +153,7 @@ const PropertyCalculator: React.FC = () => {
           <div className="calculator-inputs">
             <div className="input-section">
               <h3>Loan Details</h3>
-              
+
               <div className="input-group">
                 <label>Home Price</label>
                 <div className="input-with-icon">
@@ -182,7 +182,7 @@ const PropertyCalculator: React.FC = () => {
                     />
                   </div>
                 </div>
-                
+
                 <div className="input-group">
                   <label>Down Payment %</label>
                   <div className="input-with-icon">
@@ -212,7 +212,7 @@ const PropertyCalculator: React.FC = () => {
                     <option value={30}>30 years</option>
                   </select>
                 </div>
-                
+
                 <div className="input-group">
                   <label>Interest Rate</label>
                   <div className="input-with-icon">
@@ -233,7 +233,7 @@ const PropertyCalculator: React.FC = () => {
             {activeTab === 'advanced' && (
               <div className="input-section">
                 <h3>Additional Costs</h3>
-                
+
                 <div className="input-group">
                   <label>Annual Property Tax</label>
                   <div className="input-with-icon">
@@ -262,7 +262,7 @@ const PropertyCalculator: React.FC = () => {
                       />
                     </div>
                   </div>
-                  
+
                   <div className="input-group">
                     <label>PMI (Monthly)</label>
                     <div className="input-with-icon">
@@ -361,7 +361,7 @@ const PropertyCalculator: React.FC = () => {
                     const monthlyIncome = results.totalMonthly / 0.28; // Assuming 28% DTI
                     const debtRatio = (results.totalMonthly / monthlyIncome) * 100;
                     const affordability = getAffordabilityLevel(debtRatio);
-                    
+
                     return (
                       <div className="affordability-card">
                         <h4>Affordability Assessment</h4>
@@ -382,12 +382,37 @@ const PropertyCalculator: React.FC = () => {
                 </div>
 
                 <div className="action-buttons">
-                  <a href="/contact" className="action-btn primary">
+                  <Link 
+                    href="/contact" 
+                    style={{
+                      display: 'inline-block',
+                      padding: '12px 24px',
+                      backgroundColor: '#2563eb',
+                      color: 'white',
+                      textDecoration: 'none',
+                      borderRadius: '8px',
+                      fontWeight: '600',
+                      margin: '8px'
+                    }}
+                  >
                     Get Pre-Approved
-                  </a>
-                  <a href="/homes" className="action-btn secondary">
+                  </Link>
+                  <Link 
+                    href="/homes" 
+                    style={{
+                      display: 'inline-block',
+                      padding: '12px 24px',
+                      backgroundColor: 'transparent',
+                      color: '#2563eb',
+                      textDecoration: 'none',
+                      borderRadius: '8px',
+                      fontWeight: '600',
+                      border: '2px solid #2563eb',
+                      margin: '8px'
+                    }}
+                  >
                     View Available Homes
-                  </a>
+                  </Link>
                 </div>
               </>
             )}

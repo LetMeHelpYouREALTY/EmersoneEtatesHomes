@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 
@@ -94,22 +93,22 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({
 
   const navigateImage = (direction: 'prev' | 'next') => {
     if (!selectedImage) return;
-    
+
     const currentIndex = filteredImages.findIndex(img => img.id === selectedImage.id);
     let newIndex;
-    
+
     if (direction === 'prev') {
       newIndex = currentIndex > 0 ? currentIndex - 1 : filteredImages.length - 1;
     } else {
       newIndex = currentIndex < filteredImages.length - 1 ? currentIndex + 1 : 0;
     }
-    
+
     setSelectedImage(filteredImages[newIndex]);
   };
 
   const handleKeyPress = (e: KeyboardEvent) => {
     if (!selectedImage) return;
-    
+
     switch (e.key) {
       case 'Escape':
         closeLightbox();
@@ -126,7 +125,7 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({
   useEffect(() => {
     document.addEventListener('keydown', handleKeyPress);
     return () => document.removeEventListener('keydown', handleKeyPress);
-  }, [selectedImage]);
+  }, [handleKeyPress]);
 
   return (
     <section className={`image-gallery ${className}`}>
@@ -210,7 +209,7 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({
             <button className="lightbox-close" onClick={closeLightbox}>
               ✕
             </button>
-            
+
             <button 
               className="lightbox-nav prev" 
               onClick={(e) => {
@@ -220,7 +219,7 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({
             >
               ❮
             </button>
-            
+
             <button 
               className="lightbox-nav next" 
               onClick={(e) => {
@@ -242,7 +241,7 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({
                   unoptimized
                 />
               </div>
-              
+
               <div className="lightbox-info">
                 <h3>{selectedImage.title}</h3>
                 <p>{selectedImage.alt}</p>

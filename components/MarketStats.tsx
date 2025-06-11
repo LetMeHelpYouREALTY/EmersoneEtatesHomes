@@ -1,5 +1,4 @@
-
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 
 interface MarketStat {
   label: string;
@@ -24,7 +23,7 @@ const MarketStats: React.FC<MarketStatsProps> = ({
   const [isVisible, setIsVisible] = useState(false);
   const [animatedValues, setAnimatedValues] = useState<Record<string, number>>({});
 
-  const marketStats: MarketStat[] = [
+  const marketStats = useMemo(() => [
     {
       label: 'Median Home Price',
       value: '$485,000',
@@ -73,7 +72,7 @@ const MarketStats: React.FC<MarketStatsProps> = ({
       icon: '⚡',
       description: 'Current buyer demand and market engagement'
     }
-  ];
+  ], []);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -81,18 +80,18 @@ const MarketStats: React.FC<MarketStatsProps> = ({
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             setIsVisible(true);
-            
+
             if (animated) {
               // Animate numerical values
               const numericStats = marketStats.filter(stat => 
                 stat.value.includes('$') || stat.value.includes('days') || stat.value.includes('months')
               );
-              
+
               numericStats.forEach((stat, index) => {
                 const numericValue = parseFloat(stat.value.replace(/[^0-9.]/g, ''));
                 let currentValue = 0;
                 const increment = numericValue / 50;
-                
+
                 const animation = setInterval(() => {
                   currentValue += increment;
                   if (currentValue >= numericValue) {
@@ -124,7 +123,7 @@ const MarketStats: React.FC<MarketStatsProps> = ({
     }
 
     const animatedVal = animatedValues[stat.label];
-    
+
     if (stat.value.includes('$')) {
       return `$${Math.round(animatedVal).toLocaleString()}`;
     } else if (stat.value.includes('days')) {
@@ -132,7 +131,7 @@ const MarketStats: React.FC<MarketStatsProps> = ({
     } else if (stat.value.includes('months')) {
       return `${animatedVal.toFixed(1)} months`;
     }
-    
+
     return stat.value;
   };
 
@@ -197,13 +196,13 @@ const MarketStats: React.FC<MarketStatsProps> = ({
                 </span>
               </div>
             </div>
-            
+
             <div className="stat-content">
               <div className="stat-value">
                 {formatAnimatedValue(stat)}
               </div>
               <div className="stat-label">{stat.label}</div>
-              
+
               {stat.change !== 'stable' && (
                 <div 
                   className="stat-change"
@@ -212,7 +211,7 @@ const MarketStats: React.FC<MarketStatsProps> = ({
                   {stat.change}
                 </div>
               )}
-              
+
               <div className="stat-description">
                 {stat.description}
               </div>
@@ -243,7 +242,7 @@ const MarketStats: React.FC<MarketStatsProps> = ({
             for both buyers and sellers in the premium segment.
           </p>
         </div>
-        
+
         <div className="consultation-cta">
           <h4>Get Personalized Market Analysis</h4>
           <p>Receive detailed insights specific to your property interests</p>
