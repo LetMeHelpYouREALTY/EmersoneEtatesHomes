@@ -1,23 +1,22 @@
 
 /** @type {import('next-sitemap').IConfig} */
 module.exports = {
-  siteUrl: process.env.NEXT_PUBLIC_SITE_URL || 'https://www.emersonestateshomes.com',
+  siteUrl: process.env.NEXT_PUBLIC_SITE_URL || 'https://emersonestateshomes.com',
   generateRobotsTxt: true,
+  changefreq: 'daily',
+  priority: 0.7,
+  sitemapSize: 5000,
   generateIndexSitemap: false,
   exclude: ['/api/*', '/admin/*', '/_*'],
   additionalPaths: async (config) => [
     await config.transform(config, '/'),
-    await config.transform(config, '/homes'),
-    await config.transform(config, '/community'),
-    await config.transform(config, '/amenities'),
-    await config.transform(config, '/contact'),
     await config.transform(config, '/about'),
+    await config.transform(config, '/homes'),
+    await config.transform(config, '/contact'),
     await config.transform(config, '/services'),
     await config.transform(config, '/neighborhoods'),
     await config.transform(config, '/market-insights'),
-    await config.transform(config, '/market-trends'),
-    await config.transform(config, '/blog'),
-    await config.transform(config, '/calculator'),
+    await config.transform(config, '/community'),
   ],
   robotsTxtOptions: {
     policies: [
@@ -28,15 +27,7 @@ module.exports = {
       }
     ],
     additionalSitemaps: [
-      `${process.env.NEXT_PUBLIC_SITE_URL || 'https://www.emersonestateshomes.com'}/sitemap.xml`,
-    ],
-  },
-  transform: async (config, path) => {
-    return {
-      loc: path,
-      changefreq: path === '/' ? 'daily' : 'weekly',
-      priority: path === '/' ? 1.0 : 0.8,
-      lastmod: new Date().toISOString(),
-    }
-  },
+      `${process.env.NEXT_PUBLIC_SITE_URL || 'https://emersonestateshomes.com'}/sitemap.xml`
+    ]
+  }
 }

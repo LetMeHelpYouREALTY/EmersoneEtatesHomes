@@ -7,8 +7,11 @@
     "build": "rm -rf .next && next build",
     "start": "next start --port 5000 --hostname 0.0.0.0",
     "lint": "next lint",
+    "type-check": "tsc --noEmit",
     "postbuild": "next-sitemap",
-    "clean": "rm -rf .next node_modules/.cache"
+    "clean": "rm -rf .next node_modules/.cache",
+    "analyze": "ANALYZE=true npm run build",
+    "prebuild": "npm run lint && npm run type-check"
   },
   "dependencies": {
     "@types/react-transition-group": "^4.4.12",
@@ -22,7 +25,8 @@
     "react-helmet": "^6.1.0",
     "react-icons": "^5.5.0",
     "rss-parser": "^3.13.0",
-    "tailwindcss": "^4.0.15"
+    "tailwindcss": "^4.0.15",
+    "web-vitals": "^5.0.3"
   },
   "devDependencies": {
     "@next/bundle-analyzer": "^15.3.3",
