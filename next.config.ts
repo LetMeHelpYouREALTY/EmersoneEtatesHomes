@@ -55,8 +55,10 @@ const nextConfig: NextConfig = {
   // Development origins configuration
   allowedDevOrigins: [
     '*.replit.dev',
-    '*.replit.com',
+    '*.repl.co',
+    '*.riker.replit.dev',
     'localhost:4000',
+    '127.0.0.1:4000',
     '0.0.0.0:4000'
   ],
 
