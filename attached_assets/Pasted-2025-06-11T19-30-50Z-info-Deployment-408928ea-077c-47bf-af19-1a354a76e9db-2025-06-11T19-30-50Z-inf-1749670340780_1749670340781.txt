@@ -1,0 +1,125 @@
+2025-06-11T19:30:50Z info: Deployment: 408928ea-077c-47bf-af19-1a354a76e9db
+2025-06-11T19:30:50Z info: Build: 06d265eb-f35f-4b31-afb3-efbc252d55fe
+2025-06-11T19:30:50Z info: Connecting to builder
+2025-06-11T19:30:52Z info: Builder connected
+2025-06-11T19:30:52Z info: Installing packages
+--> npm install
+
+npm warn ERESOLVE overriding peer dependency
+
+npm warn While resolving: react-side-effect@2.1.2
+npm warn Found: react@19.1.0
+npm warn node_modules/react
+npm warn   react@"^19.0.0" from the root project
+npm warn   6 more (framer-motion, next, react-dom, react-helmet, react-icons, styled-jsx)
+npm warn
+npm warn Could not resolve dependency:
+npm warn peer react@"^16.3.0 || ^17.0.0 || ^18.0.0" from react-side-effect@2.1.2
+npm warn node_modules/react-helmet/node_modules/react-side-effect
+npm warn   react-side-effect@"^2.1.0" from react-helmet@6.1.0
+npm warn   node_modules/react-helmet
+npm warn
+npm warn Conflicting peer dependency: react@18.3.1
+npm warn node_modules/react
+npm warn   peer react@"^16.3.0 || ^17.0.0 || ^18.0.0" from react-side-effect@2.1.2
+npm warn   node_modules/react-helmet/node_modules/react-side-effect
+npm warn     react-side-effect@"^2.1.0" from react-helmet@6.1.0
+npm warn     node_modules/react-helmet
+
+npm warn EBADENGINE Unsupported engine {
+npm warn EBADENGINE   package: 'auto-reload-brunch@1.4.0',
+npm warn EBADENGINE   required: { node: '~0.6.10 || 0.8 || 0.9' },
+npm warn EBADENGINE   current: { node: 'v22.10.0', npm: '10.9.0' }
+npm warn EBADENGINE }
+
+npm warn EBADENGINE Unsupported engine {
+npm warn EBADENGINE   package: 'auto-reload-brunch@1.4.0',
+npm warn EBADENGINE   required: { node: '~0.6.10 || 0.8 || 0.9' },
+npm warn EBADENGINE   current: { node: 'v22.10.0', npm: '10.9.0' }
+npm warn EBADENGINE }
+
+npm warn EBADENGINE Unsupported engine {
+npm warn EBADENGINE   package: 'coffeelint-brunch@1.4.4',
+npm warn EBADENGINE   required: { node: '~0.6.10 || 0.8 || 0.9' },
+npm warn EBADENGINE   current: { node: 'v22.10.0', npm: '10.9.0' }
+npm warn EBADENGINE }
+
+npm warn EBADENGINE Unsupported engine {
+npm warn EBADENGINE   package: 'coffeelint-brunch@1.4.4',
+npm warn EBADENGINE   required: { node: '~0.6.10 || 0.8 || 0.9' },
+npm warn EBADENGINE   current: { node: 'v22.10.0', npm: '10.9.0' }
+npm warn EBADENGINE }
+
+npm warn EBADENGINE Unsupported engine {
+npm warn EBADENGINE   package: 'emblem-brunch@0.1.1',
+npm warn EBADENGINE   required: { node: '~0.6.10 || 0.8 || 0.9' },
+npm warn EBADENGINE   current: { node: 'v22.10.0', npm: '10.9.0' }
+npm warn EBADENGINE }
+
+npm warn EBADENGINE Unsupported engine {
+npm warn EBADENGINE   package: 'emblem-brunch@0.1.1',
+npm warn EBADENGINE   required: { node: '~0.6.10 || 0.8 || 0.9' },
+npm warn EBADENGINE   current: { node: 'v22.10.0', npm: '10.9.0' }
+npm warn EBADENGINE }
+
+npm warn EBADENGINE Unsupported engine {
+npm warn EBADENGINE   package: 'package-name@0.1.0',
+npm warn EBADENGINE   required: { node: '~0.6.10 || 0.8 || 0.9' },
+npm warn EBADENGINE   current: { node: 'v22.10.0', npm: '10.9.0' }
+npm warn EBADENGINE }
+
+npm warn EBADENGINE Unsupported engine {
+npm warn EBADENGINE   package: 'package-name@0.1.0',
+npm warn EBADENGINE   required: { node: '~0.6.10 || 0.8 || 0.9' },
+npm warn EBADENGINE   current: { node: 'v22.10.0', npm: '10.9.0' }
+npm warn EBADENGINE }
+
+
+up to date, audited 459 packages in 32s
+
+153 packages are looking for funding
+  run `npm fund` for details
+
+
+21 vulnerabilities (9 low, 4 moderate, 4 high, 4 critical)
+
+To address issues that do not require attention, run:
+  npm audit fix
+
+To address all issues possible (including breaking changes), run:
+  npm audit fix --force
+
+Some issues need review, and may require choosing
+a different dependency.
+
+Run `npm audit` for details.
+
+npm notice
+npm notice New major version of npm available! 10.9.0 -> 11.4.1
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.4.1
+npm notice To update run: npm install -g npm@11.4.1
+npm notice
+
+2025-06-11T19:31:29Z info: Starting Build
+
+> my-app@0.1.0 build
+> rm -rf .next && next build
+
+
+   ▲ Next.js 15.3.3
+
+   Linting and checking validity of types ...
+
+
+Failed to compile.
+
+
+./components/ContactForm.tsx
+43:14  Error: 'error' is defined but never used.  @typescript-eslint/no-unused-vars
+
+./components/RealScoutWidget.tsx
+54:17  Error: `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`.  react/no-unescaped-entities
+58:15  Error: Do not use an `<a>` element to navigate to `/contact/`. Use `<Link />` from `next/link` instead. See: https://nextjs.org/docs/messages/no-html-link-for-pages  @next/next/no-html-link-for-pages
+
+info  - Need to disable some ESLint rules? Learn more here: https://nextjs.org/docs/app/api-reference/config/eslint#disabling-rules
+
