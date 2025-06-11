@@ -11,7 +11,7 @@ const ContactPage: NextPage = () => {
         title="Contact Dr. Duffy - Luxury Real Estate Expert | Emerson Estates"
         description="Contact Dr. Duffy and the Emerson Estates team for luxury real estate in Las Vegas. Expert guidance, personalized service, and exclusive property access."
         keywords="contact real estate agent Las Vegas, Dr. Duffy realtor, luxury homes contact, Emerson Estates contact"
-        url="https://www.emersonestateshomes.com/contact"
+        pathname="/contact"
       />
 
       <main>
