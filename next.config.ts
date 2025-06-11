@@ -14,19 +14,17 @@ const nextConfig: NextConfig = {
     dirs: ['pages', 'components', 'types']
   },
   
-  // Fix cross-origin warnings for Replit
+  // Allow development origins for Replit
   experimental: {
     allowedRevalidateHeaderKeys: ['content-type'],
-    scrollRestoration: true
+    scrollRestoration: true,
+    allowedDevOrigins: [
+      'replit.dev',
+      '*.replit.dev',
+      'localhost:3000',
+      '0.0.0.0:3000'
+    ]
   },
-  
-  // Allow development origins for Replit
-  allowedDevOrigins: [
-    'replit.dev',
-    '*.replit.dev',
-    'localhost:3000',
-    '0.0.0.0:3000'
-  ],
   
   // Development configuration
   async rewrites() {
