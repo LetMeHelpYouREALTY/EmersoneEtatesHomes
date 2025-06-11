@@ -2,11 +2,74 @@
 import type { NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
+import { memo, useMemo } from "react";
 import Layout from "../components/Layout";
 import RealScoutWidget from "../components/RealScoutWidget";
 import styles from "../styles/Home.module.css";
 
-const Home: NextPage = () => {
+const Home: NextPage = memo(() => {
+  const quickLinks = useMemo(() => [
+    {
+      href: "/community",
+      icon: "🏘️",
+      title: "Our Community",
+      description: "Discover the luxury lifestyle and prime location that makes Emerson Estates special."
+    },
+    {
+      href: "/amenities",
+      icon: "🏊",
+      title: "World-Class Amenities",
+      description: "Resort-style pool, fitness center, tennis courts, and more exclusive amenities."
+    },
+    {
+      href: "/about",
+      icon: "👤",
+      title: "Meet Your Agent",
+      description: "Get to know Dr. Jan Duffy, your trusted Las Vegas luxury real estate expert."
+    },
+    {
+      href: "/market-insights",
+      icon: "📊",
+      title: "Market Insights",
+      description: "Stay informed with the latest Las Vegas luxury real estate market trends and data."
+    },
+    {
+      href: "/calculator",
+      icon: "🧮",
+      title: "Payment Calculator",
+      description: "Calculate monthly payments and see what you can afford with our mortgage tool."
+    },
+    {
+      href: "/neighborhoods",
+      icon: "🗺️",
+      title: "Neighborhoods",
+      description: "Explore Las Vegas neighborhoods and find the perfect area for your lifestyle."
+    }
+  ], []);
+
+  const benefits = useMemo(() => [
+    {
+      icon: "📍",
+      title: "Prime Location",
+      description: "Minutes from the Las Vegas Strip, premium shopping, and top-rated schools. Easy access to I-215 and major highways."
+    },
+    {
+      icon: "🔒",
+      title: "Gated Security",
+      description: "24/7 gated community with professional security ensuring peace of mind for all residents."
+    },
+    {
+      icon: "🌵",
+      title: "Desert Landscape",
+      description: "Beautiful desert landscaping with walking trails and preserved natural areas throughout the community."
+    },
+    {
+      icon: "💎",
+      title: "Luxury Finishes",
+      description: "Premium materials, modern designs, and high-end appliances in every home."
+    }
+  ], []);
+
   return (
     <Layout>
       <Head>
@@ -16,7 +79,8 @@ const Home: NextPage = () => {
       </Head>
 
       <main className={styles.main}>
-        <section className={styles.hero}>
+        {/* Hero Section */}
+        <section className={styles.hero} key="hero-section">
           <div className={styles.heroContent}>
             <h1 className={styles.title}>Welcome to Emerson Estates</h1>
             <p className={styles.subtitle}>Luxury Living in the Heart of Las Vegas</p>
@@ -35,12 +99,13 @@ const Home: NextPage = () => {
           </div>
         </section>
 
-        <section id="featured-homes" className={styles.section}>
+        {/* Featured Properties */}
+        <section id="featured-homes" className={styles.section} key="featured-section">
           <h2 className={styles.sectionTitle}>Featured Properties</h2>
           <p className={styles.sectionDescription}>
             Browse our exclusive collection of luxury homes. Click on any property to view detailed information.
           </p>
-          <div className={styles.widgetContainer}>
+          <div className={styles.widgetContainer} key="widget-container">
             <RealScoutWidget />
           </div>
           <div className={styles.sectionFooter}>
@@ -50,77 +115,43 @@ const Home: NextPage = () => {
           </div>
         </section>
 
-        <section id="quick-links" className={styles.section}>
+        {/* Quick Links */}
+        <section id="quick-links" className={styles.section} key="quick-links-section">
           <h2 className={styles.sectionTitle}>Explore Emerson Estates</h2>
           <div className={styles.quickLinksGrid}>
-            <Link href="/community" className={styles.quickLinkCard}>
-              <div className={styles.cardIcon}>🏘️</div>
-              <h3>Our Community</h3>
-              <p>Discover the luxury lifestyle and prime location that makes Emerson Estates special.</p>
-            </Link>
-            
-            <Link href="/amenities" className={styles.quickLinkCard}>
-              <div className={styles.cardIcon}>🏊</div>
-              <h3>World-Class Amenities</h3>
-              <p>Resort-style pool, fitness center, tennis courts, and more exclusive amenities.</p>
-            </Link>
-            
-            <Link href="/about" className={styles.quickLinkCard}>
-              <div className={styles.cardIcon}>👤</div>
-              <h3>Meet Your Agent</h3>
-              <p>Get to know Dr. Jan Duffy, your trusted Las Vegas luxury real estate expert.</p>
-            </Link>
-            
-            <Link href="/market-insights" className={styles.quickLinkCard}>
-              <div className={styles.cardIcon}>📊</div>
-              <h3>Market Insights</h3>
-              <p>Stay informed with the latest Las Vegas luxury real estate market trends and data.</p>
-            </Link>
-            
-            <Link href="/calculator" className={styles.quickLinkCard}>
-              <div className={styles.cardIcon}>🧮</div>
-              <h3>Payment Calculator</h3>
-              <p>Calculate monthly payments and see what you can afford with our mortgage tool.</p>
-            </Link>
-            
-            <Link href="/neighborhoods" className={styles.quickLinkCard}>
-              <div className={styles.cardIcon}>🗺️</div>
-              <h3>Neighborhoods</h3>
-              <p>Explore Las Vegas neighborhoods and find the perfect area for your lifestyle.</p>
-            </Link>
+            {quickLinks.map((link, index) => (
+              <Link 
+                key={`quick-link-${index}-${link.href}`} 
+                href={link.href} 
+                className={styles.quickLinkCard}
+              >
+                <div className={styles.cardIcon}>{link.icon}</div>
+                <h3>{link.title}</h3>
+                <p>{link.description}</p>
+              </Link>
+            ))}
           </div>
         </section>
 
-        <section id="why-choose" className={styles.section}>
+        {/* Benefits */}
+        <section id="why-choose" className={styles.section} key="benefits-section">
           <h2 className={styles.sectionTitle}>Why Choose Emerson Estates?</h2>
           <div className={styles.benefitsGrid}>
-            <div className={styles.benefitCard}>
-              <div className={styles.benefitIcon}>📍</div>
-              <h3>Prime Location</h3>
-              <p>Minutes from the Las Vegas Strip, premium shopping, and top-rated schools. Easy access to I-215 and major highways.</p>
-            </div>
-            <div className={styles.benefitCard}>
-              <div className={styles.benefitIcon}>🔒</div>
-              <h3>Gated Security</h3>
-              <p>24/7 gated community with professional security ensuring peace of mind for all residents.</p>
-            </div>
-            <div className={styles.benefitCard}>
-              <div className={styles.benefitIcon}>🌵</div>
-              <h3>Desert Landscape</h3>
-              <p>Beautiful desert landscaping with walking trails and preserved natural areas throughout the community.</p>
-            </div>
-            <div className={styles.benefitCard}>
-              <div className={styles.benefitIcon}>💎</div>
-              <h3>Luxury Finishes</h3>
-              <p>Premium materials, modern designs, and high-end appliances in every home.</p>
-            </div>
+            {benefits.map((benefit, index) => (
+              <div key={`benefit-${index}-${benefit.title}`} className={styles.benefitCard}>
+                <div className={styles.benefitIcon}>{benefit.icon}</div>
+                <h3>{benefit.title}</h3>
+                <p>{benefit.description}</p>
+              </div>
+            ))}
           </div>
         </section>
 
-        <section id="contact-cta" className={styles.section}>
+        {/* CTA Section */}
+        <section id="contact-cta" className={styles.section} key="cta-section">
           <div className={styles.ctaContainer}>
             <h2>Ready to Find Your Dream Home?</h2>
-            <p>Let's start your journey to luxury living in Las Vegas.</p>
+            <p>Let&apos;s start your journey to luxury living in Las Vegas.</p>
             <div className={styles.ctaButtons}>
               <Link href="/contact">
                 <button className={styles.ctaButton}>Get Started Today</button>
@@ -137,6 +168,8 @@ const Home: NextPage = () => {
       </main>
     </Layout>
   );
-};
+});
+
+Home.displayName = 'HomePage';
 
 export default Home;

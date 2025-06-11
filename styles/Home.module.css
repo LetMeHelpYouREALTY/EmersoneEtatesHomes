@@ -315,11 +315,29 @@
   overflow: hidden;
   border-radius: 16px;
   box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+  position: relative;
+  isolation: isolate;
 }
 
 .widgetContainer > * {
   width: 100%;
   display: block;
+}
+
+/* Prevent duplicate content issues */
+.main > section {
+  position: relative;
+  z-index: 1;
+}
+
+.quickLinksGrid,
+.benefitsGrid {
+  contain: layout;
+}
+
+/* Ensure proper section separation */
+.section + .section {
+  margin-top: 3rem;
 }
 
 .ctaContainer {
