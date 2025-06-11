@@ -1,5 +1,6 @@
 
-import React, { useState } from 'react';
+import React, { useState, FormEvent } from 'react';
+import { ContactFormData } from '@/types';
 import styles from '../styles/Home.module.css';
 
 interface ContactFormData {

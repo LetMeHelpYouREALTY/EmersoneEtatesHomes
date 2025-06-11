@@ -48,3 +48,18 @@ export interface MarketData {
   daysOnMarket: number;
   lastUpdated: string;
 }
+
+export interface SEOHeadProps {
+  title: string;
+  description: string;
+  keywords?: string;
+  canonical?: string;
+}
+
+export interface LayoutProps {
+  children: React.ReactNode;
+}
+
+export interface RealScoutWidgetProps {
+  className?: string;
+}

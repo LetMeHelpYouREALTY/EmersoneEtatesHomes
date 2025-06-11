@@ -1,67 +1,72 @@
 
 import type { NextApiRequest, NextApiResponse } from 'next';
+import { ContactFormData } from '@/types';
 
-interface ContactData {
-  name: string;
-  email: string;
-  phone: string;
-  message: string;
-  propertyType: string;
-  priceRange: string;
+interface ContactApiRequest extends NextApiRequest {
+  body: ContactFormData;
 }
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
+interface ApiResponse {
+  message: string;
+  success: boolean;
+  data?: any;
+}
+
+export default function handler(
+  req: ContactApiRequest,
+  res: NextApiResponse<ApiResponse>
+): void {
   if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
+    return res.status(405).json({
+      message: 'Method not allowed',
+      success: false
+    });
   }
 
   try {
-    const { name, email, phone, message, propertyType, priceRange }: ContactData = req.body;
+    const { name, email, phone, message, propertyInterest }: ContactFormData = req.body;
 
     // Validate required fields
-    if (!name || !email) {
-      return res.status(400).json({ error: 'Name and email are required' });
+    if (!name || !email || !message) {
+      return res.status(400).json({
+        message: 'Missing required fields: name, email, and message are required',
+        success: false
+      });
     }
 
     // Email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      return res.status(400).json({ error: 'Invalid email format' });
+      return res.status(400).json({
+        message: 'Invalid email format',
+        success: false
+      });
     }
 
-    // Log the contact submission (in production, you'd save to database)
-    console.log('New contact submission:', {
+    // Here you would typically save to database or send email
+    console.log('Contact form submission:', {
       name,
       email,
-      phone,
+      phone: phone || 'Not provided',
       message,
-      propertyType,
-      priceRange,
-      timestamp: new Date().toISOString(),
-      ip: req.headers['x-forwarded-for'] || req.connection.remoteAddress
+      propertyInterest: propertyInterest || 'Not specified',
+      timestamp: new Date().toISOString()
     });
 
-    // In production, integrate with:
-    // - CRM system (Salesforce, HubSpot)
-    // - Email service (SendGrid, Mailgun)
-    // - Database (PostgreSQL, MongoDB)
-    
-    // Send notification email to agent
-    // await sendNotificationEmail({...contactData});
-    
-    // Send confirmation email to client
-    // await sendConfirmationEmail(email, name);
-
-    res.status(200).json({ 
-      success: true, 
-      message: 'Contact form submitted successfully' 
+    return res.status(200).json({
+      message: 'Contact form submitted successfully',
+      success: true,
+      data: {
+        submittedAt: new Date().toISOString(),
+        name
+      }
     });
 
   } catch (error) {
     console.error('Contact form error:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    return res.status(500).json({
+      message: 'Internal server error',
+      success: false
+    });
   }
 }

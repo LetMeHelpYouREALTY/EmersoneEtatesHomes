@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { MarketData } from '@/types';
 import styles from '../styles/Home.module.css';
 
 export default function MarketStats() {
