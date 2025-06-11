@@ -1,81 +1,101 @@
 
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
-import { motion, AnimatePresence } from 'framer-motion';
 
 interface GalleryImage {
+  id: number;
   src: string;
   alt: string;
   title: string;
-  category?: string;
-  description?: string;
-  photographer?: string;
-  date?: string;
+  category: 'exterior' | 'interior' | 'amenities' | 'community';
 }
 
 interface ImageGalleryProps {
-  images: GalleryImage[];
-  title?: string;
+  category?: 'all' | 'exterior' | 'interior' | 'amenities' | 'community';
   className?: string;
-  enableLightbox?: boolean;
-  enableSearch?: boolean;
-  columns?: number;
 }
 
 const ImageGallery: React.FC<ImageGalleryProps> = ({ 
-  images, 
-  title = "Gallery",
-  className = '',
-  enableLightbox = true,
-  enableSearch = true,
-  columns = 3
+  category = 'all', 
+  className = '' 
 }) => {
   const [selectedImage, setSelectedImage] = useState<GalleryImage | null>(null);
-  const [selectedCategory, setSelectedCategory] = useState<string>('all');
-  const [searchQuery, setSearchQuery] = useState<string>('');
-  const [viewMode, setViewMode] = useState<'grid' | 'masonry'>('grid');
-  const [isFullscreen, setIsFullscreen] = useState(false);
-  const [imageLoadErrors, setImageLoadErrors] = useState<Set<string>>(new Set());
+  const [activeCategory, setActiveCategory] = useState<string>(category);
+  const [isLoading, setIsLoading] = useState(true);
+  const [loadedImages, setLoadedImages] = useState<Set<number>>(new Set());
 
-  // Get unique categories
-  const categories = ['all', ...Array.from(new Set(images.map(img => img.category).filter(Boolean)))];
-  
-  // Filter images by category and search
-  const filteredImages = images.filter(img => {
-    const matchesCategory = selectedCategory === 'all' || img.category === selectedCategory;
-    const matchesSearch = !searchQuery || 
-      img.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      img.alt.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (img.description && img.description.toLowerCase().includes(searchQuery.toLowerCase()));
-    
-    return matchesCategory && matchesSearch && !imageLoadErrors.has(img.src);
-  });
+  // Sample images - in production these would come from a CMS or API
+  const images: GalleryImage[] = [
+    {
+      id: 1,
+      src: '/design 05_new 2_1749651606209.jpg',
+      alt: 'Luxury home exterior with modern architecture',
+      title: 'Modern Luxury Home',
+      category: 'exterior'
+    },
+    {
+      id: 2,
+      src: '/Dr. Duffy Blue_Headshot_1749651931522.jpg',
+      alt: 'Professional headshot',
+      title: 'Dr. Duffy - Your Real Estate Expert',
+      category: 'community'
+    },
+    {
+      id: 3,
+      src: '/bhhs-logo.jpg',
+      alt: 'Berkshire Hathaway HomeServices logo',
+      title: 'Trusted Real Estate Partner',
+      category: 'community'
+    },
+    // Placeholder images for demonstration
+    ...Array.from({ length: 9 }, (_, i) => ({
+      id: i + 4,
+      src: `/design 05_new 2_1749651606209.jpg`,
+      alt: `Gallery image ${i + 4}`,
+      title: `Property Feature ${i + 4}`,
+      category: ['exterior', 'interior', 'amenities', 'community'][i % 4] as GalleryImage['category']
+    }))
+  ];
 
-  const openModal = useCallback((image: GalleryImage) => {
-    if (!enableLightbox) return;
-    
-    setSelectedImage(image);
-    document.body.style.overflow = 'hidden';
-    
-    // Track analytics
-    if (typeof window !== 'undefined' && window.gtag) {
-      window.gtag('event', 'image_view', {
-        event_category: 'engagement',
-        event_label: image.title
-      });
-    }
-  }, [enableLightbox]);
+  const categories = [
+    { key: 'all', label: 'All Photos', icon: '📸' },
+    { key: 'exterior', label: 'Exterior', icon: '🏠' },
+    { key: 'interior', label: 'Interior', icon: '🛋️' },
+    { key: 'amenities', label: 'Amenities', icon: '🏊‍♂️' },
+    { key: 'community', label: 'Community', icon: '🌟' }
+  ];
 
-  const closeModal = useCallback(() => {
-    setSelectedImage(null);
-    setIsFullscreen(false);
-    document.body.style.overflow = 'unset';
+  const filteredImages = activeCategory === 'all' 
+    ? images 
+    : images.filter(img => img.category === activeCategory);
+
+  useEffect(() => {
+    // Simulate loading time
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 1000);
+
+    return () => clearTimeout(timer);
   }, []);
 
-  const navigateImage = useCallback((direction: 'prev' | 'next') => {
+  const handleImageLoad = (imageId: number) => {
+    setLoadedImages(prev => new Set(prev).add(imageId));
+  };
+
+  const openLightbox = (image: GalleryImage) => {
+    setSelectedImage(image);
+    document.body.style.overflow = 'hidden';
+  };
+
+  const closeLightbox = () => {
+    setSelectedImage(null);
+    document.body.style.overflow = 'unset';
+  };
+
+  const navigateImage = (direction: 'prev' | 'next') => {
     if (!selectedImage) return;
     
-    const currentIndex = filteredImages.findIndex(img => img.src === selectedImage.src);
+    const currentIndex = filteredImages.findIndex(img => img.id === selectedImage.id);
     let newIndex;
     
     if (direction === 'prev') {
@@ -84,140 +104,72 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({
       newIndex = currentIndex < filteredImages.length - 1 ? currentIndex + 1 : 0;
     }
     
-    setSelectedImage(filteredImages[newIndex] || null);
-  }, [selectedImage, filteredImages]);
+    setSelectedImage(filteredImages[newIndex]);
+  };
 
-  const toggleFullscreen = useCallback(() => {
-    setIsFullscreen(!isFullscreen);
-  }, [isFullscreen]);
+  const handleKeyPress = (e: KeyboardEvent) => {
+    if (!selectedImage) return;
+    
+    switch (e.key) {
+      case 'Escape':
+        closeLightbox();
+        break;
+      case 'ArrowLeft':
+        navigateImage('prev');
+        break;
+      case 'ArrowRight':
+        navigateImage('next');
+        break;
+    }
+  };
 
-  const handleImageError = useCallback((src: string) => {
-    setImageLoadErrors(prev => new Set([...prev, src]));
-  }, []);
-
-  // Keyboard navigation
   useEffect(() => {
-    const handleKeyPress = (e: KeyboardEvent) => {
-      if (!selectedImage) return;
-      
-      switch (e.key) {
-        case 'Escape':
-          closeModal();
-          break;
-        case 'ArrowLeft':
-          navigateImage('prev');
-          break;
-        case 'ArrowRight':
-          navigateImage('next');
-          break;
-        case 'f':
-        case 'F':
-          toggleFullscreen();
-          break;
-      }
-    };
-
     document.addEventListener('keydown', handleKeyPress);
     return () => document.removeEventListener('keydown', handleKeyPress);
-  }, [selectedImage, closeModal, navigateImage, toggleFullscreen]);
-
-  const gridStyles = {
-    display: 'grid',
-    gridTemplateColumns: `repeat(auto-fit, minmax(${300}px, 1fr))`,
-    gap: '1.5rem'
-  };
+  }, [selectedImage]);
 
   return (
     <section className={`image-gallery ${className}`}>
       <div className="gallery-container">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="gallery-header"
-        >
-          <h2>{title}</h2>
-          <div className="gallery-stats">
-            {filteredImages.length} {filteredImages.length === 1 ? 'image' : 'images'}
-          </div>
-        </motion.div>
-        
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.2 }}
-          className="gallery-controls"
-        >
-          {/* Search Bar */}
-          {enableSearch && (
-            <div className="search-container">
-              <input
-                type="text"
-                placeholder="Search images..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="search-input"
-              />
-              <div className="search-icon">🔍</div>
-            </div>
-          )}
+        <div className="gallery-header">
+          <h2>Photo Gallery</h2>
+          <p>Explore luxury living at Emerson Estates</p>
+        </div>
 
-          {/* Category Filter */}
-          {categories.length > 1 && (
-            <div className="category-filter">
-              {categories.map((category) => (
-                <motion.button
-                  key={category}
-                  className={`filter-btn ${selectedCategory === category ? 'active' : ''}`}
-                  onClick={() => setSelectedCategory(category)}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  {category === 'all' ? 'All' : category.charAt(0).toUpperCase() + category.slice(1)}
-                  <span className="count">
-                    ({category === 'all' ? images.length : images.filter(img => img.category === category).length})
-                  </span>
-                </motion.button>
+        <div className="category-filters">
+          {categories.map((cat) => (
+            <button
+              key={cat.key}
+              className={`filter-btn ${activeCategory === cat.key ? 'active' : ''}`}
+              onClick={() => setActiveCategory(cat.key)}
+            >
+              <span className="filter-icon">{cat.icon}</span>
+              <span className="filter-label">{cat.label}</span>
+              <span className="filter-count">
+                ({cat.key === 'all' ? images.length : images.filter(img => img.category === cat.key).length})
+              </span>
+            </button>
+          ))}
+        </div>
+
+        {isLoading ? (
+          <div className="loading-gallery">
+            <div className="loading-grid">
+              {Array.from({ length: 12 }).map((_, i) => (
+                <div key={i} className="loading-placeholder">
+                  <div className="loading-shimmer"></div>
+                </div>
               ))}
             </div>
-          )}
-
-          {/* View Mode Toggle */}
-          <div className="view-controls">
-            <button
-              className={`view-btn ${viewMode === 'grid' ? 'active' : ''}`}
-              onClick={() => setViewMode('grid')}
-              title="Grid View"
-            >
-              ⊞
-            </button>
-            <button
-              className={`view-btn ${viewMode === 'masonry' ? 'active' : ''}`}
-              onClick={() => setViewMode('masonry')}
-              title="Masonry View"
-            >
-              ⊟
-            </button>
           </div>
-        </motion.div>
-
-        {/* Image Grid */}
-        <motion.div
-          layout
-          className={`gallery-grid ${viewMode}`}
-          style={viewMode === 'grid' ? gridStyles : {}}
-        >
-          <AnimatePresence>
+        ) : (
+          <div className="gallery-grid">
             {filteredImages.map((image, index) => (
-              <motion.div
-                key={`${image.src}-${index}`}
-                layout
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.8 }}
-                transition={{ delay: index * 0.05 }}
+              <div
+                key={image.id}
                 className="gallery-item"
-                onClick={() => openModal(image)}
-                whileHover={{ y: -5 }}
+                style={{ animationDelay: `${index * 100}ms` }}
+                onClick={() => openLightbox(image)}
               >
                 <div className="image-container">
                   <Image
@@ -225,186 +177,89 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({
                     alt={image.alt}
                     width={400}
                     height={300}
-                    className="gallery-image"
+                    className={`gallery-image ${loadedImages.has(image.id) ? 'loaded' : ''}`}
+                    onLoad={() => handleImageLoad(image.id)}
                     unoptimized
-                    onError={() => handleImageError(image.src)}
-                    priority={index < 4}
                   />
-                  
                   <div className="image-overlay">
                     <div className="overlay-content">
                       <h3>{image.title}</h3>
-                      {image.description && (
-                        <p className="image-description">{image.description}</p>
-                      )}
-                      <div className="image-meta">
-                        {image.photographer && (
-                          <span className="photographer">📷 {image.photographer}</span>
-                        )}
-                        {image.date && (
-                          <span className="date">📅 {image.date}</span>
-                        )}
-                      </div>
-                    </div>
-                    <div className="overlay-actions">
-                      <button className="action-btn view">👁️</button>
-                      <button className="action-btn download">⬇️</button>
-                      <button className="action-btn share">📤</button>
+                      <p>Click to view</p>
+                      <div className="zoom-icon">🔍</div>
                     </div>
                   </div>
-
-                  {image.category && (
-                    <div className="category-badge">
-                      {image.category}
-                    </div>
-                  )}
                 </div>
-              </motion.div>
+              </div>
             ))}
-          </AnimatePresence>
-        </motion.div>
+          </div>
+        )}
 
-        {filteredImages.length === 0 && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="no-images"
-          >
-            <div className="no-images-icon">🖼️</div>
+        {filteredImages.length === 0 && !isLoading && (
+          <div className="no-images">
+            <div className="no-images-icon">📷</div>
             <h3>No images found</h3>
-            <p>
-              {searchQuery 
-                ? `No images match "${searchQuery}". Try a different search term.`
-                : 'No images available for this category.'
-              }
-            </p>
-            {(searchQuery || selectedCategory !== 'all') && (
-              <button 
-                className="reset-btn"
-                onClick={() => {
-                  setSearchQuery('');
-                  setSelectedCategory('all');
-                }}
-              >
-                Reset Filters
-              </button>
-            )}
-          </motion.div>
+            <p>Try selecting a different category</p>
+          </div>
         )}
       </div>
 
-      {/* Enhanced Modal */}
-      <AnimatePresence>
-        {selectedImage && enableLightbox && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className={`modal-overlay ${isFullscreen ? 'fullscreen' : ''}`}
-            onClick={closeModal}
-          >
-            <motion.div
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.8, opacity: 0 }}
-              className="modal-content"
-              onClick={(e) => e.stopPropagation()}
+      {/* Lightbox Modal */}
+      {selectedImage && (
+        <div className="lightbox-overlay" onClick={closeLightbox}>
+          <div className="lightbox-container">
+            <button className="lightbox-close" onClick={closeLightbox}>
+              ✕
+            </button>
+            
+            <button 
+              className="lightbox-nav prev" 
+              onClick={(e) => {
+                e.stopPropagation();
+                navigateImage('prev');
+              }}
             >
-              {/* Modal Header */}
-              <div className="modal-header">
-                <div className="modal-info">
-                  <h3>{selectedImage.title}</h3>
-                  <div className="modal-meta">
-                    {selectedImage.photographer && (
-                      <span>📷 {selectedImage.photographer}</span>
-                    )}
-                    {selectedImage.date && (
-                      <span>📅 {selectedImage.date}</span>
-                    )}
-                  </div>
-                </div>
-                
-                <div className="modal-controls">
-                  <button 
-                    className="control-btn"
-                    onClick={toggleFullscreen}
-                    title={isFullscreen ? 'Exit Fullscreen (F)' : 'Fullscreen (F)'}
-                  >
-                    {isFullscreen ? '⤓' : '⤢'}
-                  </button>
-                  <button 
-                    className="control-btn"
-                    onClick={closeModal}
-                    title="Close (Esc)"
-                  >
-                    ✕
-                  </button>
-                </div>
-              </div>
-              
-              {/* Navigation Arrows */}
-              {filteredImages.length > 1 && (
-                <>
-                  <button 
-                    className="modal-nav prev" 
-                    onClick={() => navigateImage('prev')}
-                    title="Previous (←)"
-                  >
-                    ❮
-                  </button>
-                  
-                  <button 
-                    className="modal-nav next" 
-                    onClick={() => navigateImage('next')}
-                    title="Next (→)"
-                  >
-                    ❯
-                  </button>
-                </>
-              )}
-              
-              {/* Main Image */}
-              <div className="modal-image-container">
+              ❮
+            </button>
+            
+            <button 
+              className="lightbox-nav next" 
+              onClick={(e) => {
+                e.stopPropagation();
+                navigateImage('next');
+              }}
+            >
+              ❯
+            </button>
+
+            <div className="lightbox-content" onClick={(e) => e.stopPropagation()}>
+              <div className="lightbox-image-container">
                 <Image
                   src={selectedImage.src}
                   alt={selectedImage.alt}
                   width={1200}
                   height={800}
-                  className="modal-image"
+                  className="lightbox-image"
                   unoptimized
-                  priority
                 />
-                
-                {selectedImage.description && (
-                  <div className="image-caption">
-                    <p>{selectedImage.description}</p>
-                  </div>
-                )}
               </div>
-
-              {/* Image Counter */}
-              {filteredImages.length > 1 && (
-                <div className="image-counter">
-                  {filteredImages.findIndex(img => img.src === selectedImage.src) + 1} / {filteredImages.length}
+              
+              <div className="lightbox-info">
+                <h3>{selectedImage.title}</h3>
+                <p>{selectedImage.alt}</p>
+                <div className="lightbox-meta">
+                  <span className="image-category">
+                    {categories.find(cat => cat.key === selectedImage.category)?.icon} 
+                    {categories.find(cat => cat.key === selectedImage.category)?.label}
+                  </span>
+                  <span className="image-counter">
+                    {filteredImages.findIndex(img => img.id === selectedImage.id) + 1} of {filteredImages.length}
+                  </span>
                 </div>
-              )}
-
-              {/* Action Buttons */}
-              <div className="modal-actions">
-                <button className="modal-action-btn">
-                  <span>⬇️</span> Download
-                </button>
-                <button className="modal-action-btn">
-                  <span>📤</span> Share
-                </button>
-                <button className="modal-action-btn">
-                  <span>ℹ️</span> Info
-                </button>
               </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+            </div>
+          </div>
+        </div>
+      )}
 
       <style jsx>{`
         .image-gallery {
@@ -423,173 +278,123 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({
         }
 
         .gallery-header h2 {
+          font-size: 2.5rem;
           color: #1e40af;
-          font-size: 3rem;
-          margin-bottom: 0.5rem;
-          background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-          background-clip: text;
+          margin-bottom: 1rem;
         }
 
-        .gallery-stats {
+        .gallery-header p {
+          font-size: 1.2rem;
           color: #64748b;
-          font-size: 1.1rem;
-          font-weight: 500;
         }
 
-        .gallery-controls {
+        .category-filters {
           display: flex;
-          justify-content: space-between;
-          align-items: center;
+          justify-content: center;
+          gap: 1rem;
           margin-bottom: 3rem;
-          gap: 2rem;
-          flex-wrap: wrap;
-        }
-
-        .search-container {
-          position: relative;
-          flex: 1;
-          max-width: 300px;
-        }
-
-        .search-input {
-          width: 100%;
-          padding: 1rem 1rem 1rem 3rem;
-          border: 2px solid #e5e7eb;
-          border-radius: 25px;
-          font-size: 1rem;
-          transition: all 0.3s ease;
-          background: white;
-        }
-
-        .search-input:focus {
-          outline: none;
-          border-color: #3b82f6;
-          box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-        }
-
-        .search-icon {
-          position: absolute;
-          left: 1rem;
-          top: 50%;
-          transform: translateY(-50%);
-          color: #64748b;
-        }
-
-        .category-filter {
-          display: flex;
-          gap: 0.75rem;
           flex-wrap: wrap;
         }
 
         .filter-btn {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
           padding: 0.75rem 1.5rem;
           border: 2px solid #e5e7eb;
           background: white;
-          border-radius: 25px;
+          border-radius: 50px;
           cursor: pointer;
           transition: all 0.3s ease;
-          font-weight: 500;
-          display: flex;
-          align-items: center;
-          gap: 0.5rem;
-          box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+          font-weight: 600;
+          color: #64748b;
         }
 
-        .filter-btn:hover,
-        .filter-btn.active {
-          background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
-          color: white;
-          border-color: #1e40af;
+        .filter-btn:hover {
+          border-color: #3b82f6;
           transform: translateY(-2px);
         }
 
-        .count {
-          background: rgba(0,0,0,0.1);
-          padding: 0.25rem 0.5rem;
-          border-radius: 12px;
-          font-size: 0.75rem;
+        .filter-btn.active {
+          border-color: #1e40af;
+          background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+          color: white;
         }
 
-        .filter-btn.active .count {
-          background: rgba(255,255,255,0.2);
-        }
-
-        .view-controls {
-          display: flex;
-          gap: 0.5rem;
-        }
-
-        .view-btn {
-          width: 40px;
-          height: 40px;
-          border: 2px solid #e5e7eb;
-          background: white;
-          border-radius: 8px;
-          cursor: pointer;
-          transition: all 0.3s ease;
-          display: flex;
-          align-items: center;
-          justify-content: center;
+        .filter-icon {
           font-size: 1.2rem;
         }
 
-        .view-btn:hover,
-        .view-btn.active {
-          background: #1e40af;
-          color: white;
-          border-color: #1e40af;
+        .filter-count {
+          font-size: 0.9rem;
+          opacity: 0.8;
+        }
+
+        .loading-gallery {
+          margin-bottom: 2rem;
+        }
+
+        .loading-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+          gap: 2rem;
+        }
+
+        .loading-placeholder {
+          height: 250px;
+          background: #f1f5f9;
+          border-radius: 16px;
+          overflow: hidden;
+          position: relative;
+        }
+
+        .loading-shimmer {
+          height: 100%;
+          background: linear-gradient(
+            90deg,
+            transparent,
+            rgba(255, 255, 255, 0.4),
+            transparent
+          );
+          animation: shimmer 2s infinite;
         }
 
         .gallery-grid {
           display: grid;
-          gap: 2rem;
-        }
-
-        .gallery-grid.grid {
-          grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-        }
-
-        .gallery-grid.masonry {
           grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-          grid-auto-rows: 20px;
+          gap: 2rem;
+          margin-bottom: 2rem;
         }
 
         .gallery-item {
+          opacity: 0;
+          animation: fadeInUp 0.6s ease forwards;
           cursor: pointer;
-          border-radius: 16px;
-          overflow: hidden;
-          transition: all 0.3s ease;
-          background: white;
-          box-shadow: 0 8px 30px rgba(0,0,0,0.1);
-          position: relative;
-        }
-
-        .gallery-item:hover {
-          transform: translateY(-8px);
-          box-shadow: 0 20px 50px rgba(0,0,0,0.15);
         }
 
         .image-container {
           position: relative;
+          border-radius: 16px;
           overflow: hidden;
+          background: white;
+          box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+          transition: transform 0.3s ease;
+        }
+
+        .gallery-item:hover .image-container {
+          transform: translateY(-5px);
         }
 
         .gallery-image {
           width: 100%;
-          height: 280px;
+          height: 250px;
           object-fit: cover;
-          transition: transform 0.5s ease;
+          transition: opacity 0.3s ease;
+          opacity: 0;
         }
 
-        .gallery-grid.masonry .gallery-image {
-          height: auto;
-          min-height: 200px;
-        }
-
-        .gallery-item:hover .gallery-image {
-          transform: scale(1.1);
+        .gallery-image.loaded {
+          opacity: 1;
         }
 
         .image-overlay {
@@ -598,355 +403,241 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({
           left: 0;
           right: 0;
           bottom: 0;
-          background: linear-gradient(
-            to bottom,
-            transparent 0%,
-            transparent 40%,
-            rgba(0,0,0,0.3) 70%,
-            rgba(0,0,0,0.8) 100%
-          );
+          background: linear-gradient(135deg, rgba(30, 64, 175, 0.8) 0%, rgba(59, 130, 246, 0.8) 100%);
           display: flex;
-          flex-direction: column;
-          justify-content: space-between;
-          padding: 1.5rem;
+          align-items: center;
+          justify-content: center;
           opacity: 0;
           transition: opacity 0.3s ease;
+          color: white;
+          text-align: center;
         }
 
         .gallery-item:hover .image-overlay {
           opacity: 1;
         }
 
-        .overlay-content {
-          margin-top: auto;
-        }
-
         .overlay-content h3 {
-          color: white;
-          font-size: 1.3rem;
-          font-weight: 600;
+          font-size: 1.2rem;
           margin-bottom: 0.5rem;
         }
 
-        .image-description {
-          color: rgba(255,255,255,0.9);
+        .overlay-content p {
           font-size: 0.9rem;
-          line-height: 1.4;
-          margin-bottom: 0.75rem;
+          margin-bottom: 1rem;
+          opacity: 0.9;
         }
 
-        .image-meta {
-          display: flex;
-          gap: 1rem;
-          font-size: 0.8rem;
-          color: rgba(255,255,255,0.8);
-        }
-
-        .overlay-actions {
-          display: flex;
-          gap: 0.5rem;
-          align-self: flex-end;
-        }
-
-        .action-btn {
-          width: 36px;
-          height: 36px;
-          background: rgba(255,255,255,0.2);
-          backdrop-filter: blur(10px);
-          border: none;
-          border-radius: 50%;
-          color: white;
-          cursor: pointer;
-          transition: all 0.3s ease;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        }
-
-        .action-btn:hover {
-          background: rgba(255,255,255,0.3);
-          transform: scale(1.1);
-        }
-
-        .category-badge {
-          position: absolute;
-          top: 1rem;
-          left: 1rem;
-          background: rgba(30, 64, 175, 0.9);
-          color: white;
-          padding: 0.5rem 1rem;
-          border-radius: 20px;
-          font-size: 0.8rem;
-          font-weight: 600;
-          text-transform: capitalize;
-          backdrop-filter: blur(10px);
+        .zoom-icon {
+          font-size: 2rem;
         }
 
         .no-images {
           text-align: center;
-          padding: 5rem 2rem;
+          padding: 4rem 2rem;
           color: #64748b;
         }
 
         .no-images-icon {
-          font-size: 5rem;
-          margin-bottom: 1.5rem;
-          opacity: 0.5;
-        }
-
-        .no-images h3 {
-          color: #1e40af;
+          font-size: 4rem;
           margin-bottom: 1rem;
-          font-size: 1.5rem;
         }
 
-        .no-images p {
-          font-size: 1.1rem;
-          line-height: 1.6;
-          margin-bottom: 2rem;
-        }
-
-        .reset-btn {
-          background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
-          color: white;
-          padding: 1rem 2rem;
-          border: none;
-          border-radius: 8px;
-          cursor: pointer;
-          font-weight: 600;
-          transition: transform 0.3s ease;
-        }
-
-        .reset-btn:hover {
-          transform: translateY(-2px);
-        }
-
-        /* Modal Styles */
-        .modal-overlay {
+        .lightbox-overlay {
           position: fixed;
           top: 0;
           left: 0;
           right: 0;
           bottom: 0;
-          background: rgba(0,0,0,0.95);
+          background: rgba(0, 0, 0, 0.9);
+          z-index: 9999;
           display: flex;
           align-items: center;
           justify-content: center;
-          z-index: 1000;
+          animation: fadeIn 0.3s ease;
+        }
+
+        .lightbox-container {
+          position: relative;
+          max-width: 90vw;
+          max-height: 90vh;
+          width: 100%;
+          height: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .lightbox-close {
+          position: absolute;
+          top: 2rem;
+          right: 2rem;
+          background: rgba(255, 255, 255, 0.2);
+          border: none;
+          color: white;
+          font-size: 2rem;
+          width: 50px;
+          height: 50px;
+          border-radius: 50%;
+          cursor: pointer;
+          z-index: 10001;
+          transition: background 0.3s ease;
+        }
+
+        .lightbox-close:hover {
+          background: rgba(255, 255, 255, 0.3);
+        }
+
+        .lightbox-nav {
+          position: absolute;
+          top: 50%;
+          transform: translateY(-50%);
+          background: rgba(255, 255, 255, 0.2);
+          border: none;
+          color: white;
+          font-size: 2rem;
+          width: 60px;
+          height: 60px;
+          border-radius: 50%;
+          cursor: pointer;
+          z-index: 10001;
+          transition: background 0.3s ease;
+        }
+
+        .lightbox-nav:hover {
+          background: rgba(255, 255, 255, 0.3);
+        }
+
+        .lightbox-nav.prev {
+          left: 2rem;
+        }
+
+        .lightbox-nav.next {
+          right: 2rem;
+        }
+
+        .lightbox-content {
+          background: white;
+          border-radius: 20px;
+          overflow: hidden;
+          max-width: 1000px;
+          max-height: 80vh;
+          box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+          animation: scaleIn 0.3s ease;
+        }
+
+        .lightbox-image-container {
+          position: relative;
+          max-height: 60vh;
+          overflow: hidden;
+        }
+
+        .lightbox-image {
+          width: 100%;
+          height: auto;
+          display: block;
+        }
+
+        .lightbox-info {
           padding: 2rem;
         }
 
-        .modal-overlay.fullscreen {
-          padding: 0;
-        }
-
-        .modal-content {
-          position: relative;
-          max-width: 95vw;
-          max-height: 95vh;
-          background: rgba(255,255,255,0.05);
-          backdrop-filter: blur(20px);
-          border-radius: 16px;
-          overflow: hidden;
-          display: flex;
-          flex-direction: column;
-        }
-
-        .modal-overlay.fullscreen .modal-content {
-          max-width: 100vw;
-          max-height: 100vh;
-          border-radius: 0;
-        }
-
-        .modal-header {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          padding: 1.5rem;
-          background: rgba(0,0,0,0.3);
-          backdrop-filter: blur(10px);
-        }
-
-        .modal-info h3 {
-          color: white;
+        .lightbox-info h3 {
+          color: #1e40af;
           font-size: 1.5rem;
           margin-bottom: 0.5rem;
         }
 
-        .modal-meta {
-          display: flex;
-          gap: 1rem;
-          color: rgba(255,255,255,0.8);
-          font-size: 0.9rem;
+        .lightbox-info p {
+          color: #64748b;
+          margin-bottom: 1rem;
         }
 
-        .modal-controls {
+        .lightbox-meta {
           display: flex;
+          justify-content: space-between;
+          align-items: center;
+          font-size: 0.9rem;
+          color: #9ca3af;
+        }
+
+        .image-category {
+          display: flex;
+          align-items: center;
           gap: 0.5rem;
         }
 
-        .control-btn {
-          width: 40px;
-          height: 40px;
-          background: rgba(255,255,255,0.1);
-          border: none;
-          border-radius: 8px;
-          color: white;
-          cursor: pointer;
-          transition: all 0.3s ease;
-          font-size: 1.2rem;
+        @keyframes fadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
         }
 
-        .control-btn:hover {
-          background: rgba(255,255,255,0.2);
+        @keyframes fadeInUp {
+          from {
+            opacity: 0;
+            transform: translateY(20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
         }
 
-        .modal-nav {
-          position: absolute;
-          top: 50%;
-          transform: translateY(-50%);
-          background: rgba(0,0,0,0.5);
-          border: none;
-          color: white;
-          font-size: 2rem;
-          padding: 1rem;
-          cursor: pointer;
-          border-radius: 8px;
-          transition: all 0.3s ease;
-          backdrop-filter: blur(10px);
-          z-index: 1001;
+        @keyframes scaleIn {
+          from {
+            opacity: 0;
+            transform: scale(0.9);
+          }
+          to {
+            opacity: 1;
+            transform: scale(1);
+          }
         }
 
-        .modal-nav:hover {
-          background: rgba(0,0,0,0.7);
-          transform: translateY(-50%) scale(1.1);
-        }
-
-        .modal-nav.prev {
-          left: 2rem;
-        }
-
-        .modal-nav.next {
-          right: 2rem;
-        }
-
-        .modal-image-container {
-          flex: 1;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-          padding: 2rem;
-          position: relative;
-        }
-
-        .modal-image {
-          max-width: 100%;
-          max-height: 70vh;
-          object-fit: contain;
-          border-radius: 8px;
-          box-shadow: 0 20px 50px rgba(0,0,0,0.3);
-        }
-
-        .image-caption {
-          background: rgba(0,0,0,0.7);
-          color: white;
-          padding: 1rem;
-          border-radius: 8px;
-          margin-top: 1rem;
-          max-width: 600px;
-          text-align: center;
-          backdrop-filter: blur(10px);
-        }
-
-        .image-counter {
-          position: absolute;
-          bottom: 2rem;
-          left: 50%;
-          transform: translateX(-50%);
-          background: rgba(0,0,0,0.7);
-          color: white;
-          padding: 0.5rem 1rem;
-          border-radius: 20px;
-          font-size: 0.9rem;
-          backdrop-filter: blur(10px);
-        }
-
-        .modal-actions {
-          display: flex;
-          gap: 1rem;
-          padding: 1.5rem;
-          background: rgba(0,0,0,0.3);
-          backdrop-filter: blur(10px);
-        }
-
-        .modal-action-btn {
-          flex: 1;
-          background: rgba(255,255,255,0.1);
-          color: white;
-          border: none;
-          padding: 1rem;
-          border-radius: 8px;
-          cursor: pointer;
-          transition: all 0.3s ease;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          gap: 0.5rem;
-          font-weight: 500;
-        }
-
-        .modal-action-btn:hover {
-          background: rgba(255,255,255,0.2);
-          transform: translateY(-2px);
+        @keyframes shimmer {
+          0% { transform: translateX(-100%); }
+          100% { transform: translateX(100%); }
         }
 
         @media (max-width: 768px) {
-          .gallery-controls {
-            flex-direction: column;
-            align-items: stretch;
+          .category-filters {
+            justify-content: flex-start;
+            overflow-x: auto;
+            padding-bottom: 1rem;
           }
 
-          .search-container {
-            max-width: none;
-          }
-
-          .category-filter {
-            justify-content: center;
+          .filter-btn {
+            flex-shrink: 0;
           }
 
           .gallery-grid {
             grid-template-columns: 1fr;
           }
 
-          .modal-nav {
-            top: auto;
-            bottom: 8rem;
-            transform: none;
-            padding: 0.75rem;
+          .lightbox-nav {
+            width: 50px;
+            height: 50px;
             font-size: 1.5rem;
           }
 
-          .modal-nav.prev {
+          .lightbox-nav.prev {
             left: 1rem;
           }
 
-          .modal-nav.next {
+          .lightbox-nav.next {
             right: 1rem;
           }
 
-          .modal-actions {
-            flex-direction: column;
+          .lightbox-close {
+            top: 1rem;
+            right: 1rem;
+            width: 40px;
+            height: 40px;
+            font-size: 1.5rem;
           }
 
-          .modal-header {
-            flex-direction: column;
-            gap: 1rem;
-            align-items: flex-start;
-          }
-
-          .modal-controls {
-            align-self: flex-end;
+          .lightbox-info {
+            padding: 1.5rem;
           }
         }
       `}</style>

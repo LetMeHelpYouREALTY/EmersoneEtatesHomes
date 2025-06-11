@@ -1,104 +1,114 @@
 
-import React, { useState, useCallback, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useState, useEffect } from 'react';
 
-interface CalculationResult {
+interface CalculatorState {
+  homePrice: number;
+  downPayment: number;
+  downPaymentPercent: number;
+  loanTerm: number;
+  interestRate: number;
+  propertyTax: number;
+  homeInsurance: number;
+  pmi: number;
+  hoaFees: number;
+}
+
+interface CalculationResults {
   monthlyPayment: number;
-  totalInterest: number;
-  totalPayment: number;
-  downPaymentAmount: number;
-  loanAmount: number;
-  monthlyPI: number;
-  monthlyTaxes: number;
+  principalAndInterest: number;
+  monthlyTax: number;
   monthlyInsurance: number;
+  monthlyPMI: number;
   monthlyHOA: number;
+  totalMonthly: number;
+  totalInterest: number;
+  totalCost: number;
+  loanAmount: number;
 }
 
-interface PropertyCalculatorProps {
-  className?: string;
-}
+const PropertyCalculator: React.FC = () => {
+  const [values, setValues] = useState<CalculatorState>({
+    homePrice: 675000,
+    downPayment: 135000,
+    downPaymentPercent: 20,
+    loanTerm: 30,
+    interestRate: 7.25,
+    propertyTax: 8100,
+    homeInsurance: 2400,
+    pmi: 0,
+    hoaFees: 150
+  });
 
-const PropertyCalculator: React.FC<PropertyCalculatorProps> = ({ className = '' }) => {
-  const [homePrice, setHomePrice] = useState<string>('500000');
-  const [downPayment, setDownPayment] = useState<string>('20');
-  const [interestRate, setInterestRate] = useState<string>('7.5');
-  const [loanTerm, setLoanTerm] = useState<string>('30');
-  const [propertyTax, setPropertyTax] = useState<string>('1.2');
-  const [insurance, setInsurance] = useState<string>('1200');
-  const [hoa, setHoa] = useState<string>('150');
-  const [result, setResult] = useState<CalculationResult | null>(null);
-  const [errors, setErrors] = useState<string[]>([]);
+  const [results, setResults] = useState<CalculationResults | null>(null);
   const [isCalculating, setIsCalculating] = useState(false);
-  const [showComparison, setShowComparison] = useState(false);
+  const [activeTab, setActiveTab] = useState<'basic' | 'advanced'>('basic');
 
-  const validateInputs = useCallback((): string[] => {
-    const newErrors: string[] = [];
-    
-    if (!homePrice || parseFloat(homePrice) <= 0) {
-      newErrors.push('Home price must be greater than 0');
+  useEffect(() => {
+    // Auto-calculate down payment amount when percentage changes
+    const newDownPayment = (values.homePrice * values.downPaymentPercent) / 100;
+    if (Math.abs(newDownPayment - values.downPayment) > 1) {
+      setValues(prev => ({ ...prev, downPayment: newDownPayment }));
     }
-    if (!downPayment || parseFloat(downPayment) < 0 || parseFloat(downPayment) > 100) {
-      newErrors.push('Down payment must be between 0% and 100%');
-    }
-    if (!interestRate || parseFloat(interestRate) <= 0) {
-      newErrors.push('Interest rate must be greater than 0');
-    }
-    if (!loanTerm || parseFloat(loanTerm) <= 0) {
-      newErrors.push('Loan term must be greater than 0');
-    }
+  }, [values.homePrice, values.downPaymentPercent]);
 
-    return newErrors;
-  }, [homePrice, downPayment, interestRate, loanTerm]);
-
-  const calculateMortgage = useCallback(async () => {
-    const validationErrors = validateInputs();
-    setErrors(validationErrors);
-
-    if (validationErrors.length > 0) {
-      setResult(null);
-      return;
+  useEffect(() => {
+    // Auto-calculate down payment percentage when amount changes
+    const newPercent = (values.downPayment / values.homePrice) * 100;
+    if (Math.abs(newPercent - values.downPaymentPercent) > 0.1) {
+      setValues(prev => ({ ...prev, downPaymentPercent: newPercent }));
     }
+  }, [values.downPayment, values.homePrice]);
 
+  useEffect(() => {
+    calculatePayments();
+  }, [values]);
+
+  const calculatePayments = () => {
     setIsCalculating(true);
-
-    // Simulate calculation delay for better UX
-    await new Promise(resolve => setTimeout(resolve, 800));
-
-    const price = parseFloat(homePrice);
-    const downPercent = parseFloat(downPayment) / 100;
-    const rate = parseFloat(interestRate) / 100 / 12;
-    const term = parseFloat(loanTerm) * 12;
-    const taxRate = parseFloat(propertyTax) / 100 / 12;
-    const insuranceMonthly = parseFloat(insurance) / 12;
-    const hoaMonthly = parseFloat(hoa);
-
-    const downPaymentAmount = price * downPercent;
-    const loanAmount = price - downPaymentAmount;
-
-    // Monthly payment calculation (P&I)
-    const monthlyPI = loanAmount * (rate * Math.pow(1 + rate, term)) / (Math.pow(1 + rate, term) - 1);
     
-    // Individual monthly components
-    const monthlyTaxes = price * taxRate;
-    const monthlyPayment = monthlyPI + monthlyTaxes + insuranceMonthly + hoaMonthly;
-    
-    const totalPayment = monthlyPI * term;
-    const totalInterest = totalPayment - loanAmount;
+    setTimeout(() => {
+      const loanAmount = values.homePrice - values.downPayment;
+      const monthlyRate = values.interestRate / 100 / 12;
+      const numberOfPayments = values.loanTerm * 12;
 
-    setResult({
-      monthlyPayment,
-      totalInterest,
-      totalPayment,
-      downPaymentAmount,
-      loanAmount,
-      monthlyPI,
-      monthlyTaxes,
-      monthlyInsurance: insuranceMonthly,
-      monthlyHOA: hoaMonthly
-    });
+      let principalAndInterest = 0;
+      if (monthlyRate > 0) {
+        principalAndInterest = loanAmount * 
+          (monthlyRate * Math.pow(1 + monthlyRate, numberOfPayments)) /
+          (Math.pow(1 + monthlyRate, numberOfPayments) - 1);
+      } else {
+        principalAndInterest = loanAmount / numberOfPayments;
+      }
 
-    setIsCalculating(false);
-  }, [homePrice, downPayment, interestRate, loanTerm, propertyTax, insurance, hoa, validateInputs]);
+      const monthlyTax = values.propertyTax / 12;
+      const monthlyInsurance = values.homeInsurance / 12;
+      const monthlyPMI = values.downPaymentPercent < 20 ? values.pmi : 0;
+      const monthlyHOA = values.hoaFees;
+
+      const totalMonthly = principalAndInterest + monthlyTax + monthlyInsurance + monthlyPMI + monthlyHOA;
+      const totalInterest = (principalAndInterest * numberOfPayments) - loanAmount;
+      const totalCost = values.homePrice + totalInterest;
+
+      setResults({
+        monthlyPayment: principalAndInterest,
+        principalAndInterest,
+        monthlyTax,
+        monthlyInsurance,
+        monthlyPMI,
+        monthlyHOA,
+        totalMonthly,
+        totalInterest,
+        totalCost,
+        loanAmount
+      });
+      
+      setIsCalculating(false);
+    }, 500);
+  };
+
+  const handleInputChange = (field: keyof CalculatorState, value: number) => {
+    setValues(prev => ({ ...prev, [field]: value }));
+  };
 
   const formatCurrency = (amount: number): string => {
     return new Intl.NumberFormat('en-US', {
@@ -109,608 +119,577 @@ const PropertyCalculator: React.FC<PropertyCalculatorProps> = ({ className = '' 
     }).format(amount);
   };
 
-  const formatPercentage = (amount: number, total: number): string => {
-    return ((amount / total) * 100).toFixed(1) + '%';
+  const getAffordabilityLevel = (ratio: number): { level: string, color: string, description: string } => {
+    if (ratio <= 28) return { level: 'Excellent', color: '#10b981', description: 'Well within recommended range' };
+    if (ratio <= 36) return { level: 'Good', color: '#f59e0b', description: 'Acceptable debt-to-income ratio' };
+    if (ratio <= 43) return { level: 'Caution', color: '#ef4444', description: 'Higher than recommended' };
+    return { level: 'High Risk', color: '#dc2626', description: 'Consider lower price range' };
   };
 
-  // Auto-calculate when inputs change
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      if (homePrice && downPayment && interestRate && loanTerm) {
-        calculateMortgage();
-      }
-    }, 1000);
-
-    return () => clearTimeout(timer);
-  }, [homePrice, downPayment, interestRate, loanTerm, propertyTax, insurance, hoa, calculateMortgage]);
-
   return (
-    <section className={`calculator-section ${className}`} data-analytics="calculator">
+    <section className="property-calculator">
       <div className="calculator-container">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-        >
-          <h2>Advanced Mortgage Calculator</h2>
-          <p>Calculate your estimated monthly payment with detailed breakdown</p>
-        </motion.div>
+        <div className="calculator-header">
+          <h2>Mortgage Payment Calculator</h2>
+          <p>Calculate your monthly payments and see what you can afford</p>
+          
+          <div className="tab-navigation">
+            <button 
+              className={`tab-btn ${activeTab === 'basic' ? 'active' : ''}`}
+              onClick={() => setActiveTab('basic')}
+            >
+              Basic Calculator
+            </button>
+            <button 
+              className={`tab-btn ${activeTab === 'advanced' ? 'active' : ''}`}
+              onClick={() => setActiveTab('advanced')}
+            >
+              Advanced Details
+            </button>
+          </div>
+        </div>
 
-        <div className="calculator-form">
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.3, duration: 0.6 }}
-          >
-            <div className="form-row">
-              <div className="form-group">
-                <label htmlFor="homePrice">
-                  Home Price
-                  <span className="tooltip">💡 Average price in Emerson Estates: $650,000</span>
-                </label>
-                <div className="input-wrapper">
-                  <span className="currency-symbol">$</span>
+        <div className="calculator-content">
+          <div className="calculator-inputs">
+            <div className="input-section">
+              <h3>Loan Details</h3>
+              
+              <div className="input-group">
+                <label>Home Price</label>
+                <div className="input-with-icon">
+                  <span className="input-icon">$</span>
                   <input
-                    id="homePrice"
                     type="number"
-                    value={homePrice}
-                    onChange={(e) => setHomePrice(e.target.value)}
-                    placeholder="500000"
-                  />
-                </div>
-              </div>
-              <div className="form-group">
-                <label htmlFor="downPayment">
-                  Down Payment (%)
-                  <span className="tooltip">💡 20% avoids PMI insurance</span>
-                </label>
-                <div className="slider-container">
-                  <input
-                    id="downPayment"
-                    type="range"
+                    value={values.homePrice}
+                    onChange={(e) => handleInputChange('homePrice', Number(e.target.value))}
                     min="0"
-                    max="50"
-                    step="0.5"
-                    value={downPayment}
-                    onChange={(e) => setDownPayment(e.target.value)}
-                    className="slider"
+                    step="1000"
                   />
-                  <div className="slider-value">{downPayment}%</div>
+                </div>
+              </div>
+
+              <div className="input-row">
+                <div className="input-group">
+                  <label>Down Payment</label>
+                  <div className="input-with-icon">
+                    <span className="input-icon">$</span>
+                    <input
+                      type="number"
+                      value={values.downPayment}
+                      onChange={(e) => handleInputChange('downPayment', Number(e.target.value))}
+                      min="0"
+                      step="1000"
+                    />
+                  </div>
+                </div>
+                
+                <div className="input-group">
+                  <label>Down Payment %</label>
+                  <div className="input-with-icon">
+                    <input
+                      type="number"
+                      value={Math.round(values.downPaymentPercent * 10) / 10}
+                      onChange={(e) => handleInputChange('downPaymentPercent', Number(e.target.value))}
+                      min="0"
+                      max="100"
+                      step="0.5"
+                    />
+                    <span className="input-icon">%</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="input-row">
+                <div className="input-group">
+                  <label>Loan Term</label>
+                  <select
+                    value={values.loanTerm}
+                    onChange={(e) => handleInputChange('loanTerm', Number(e.target.value))}
+                  >
+                    <option value={15}>15 years</option>
+                    <option value={20}>20 years</option>
+                    <option value={25}>25 years</option>
+                    <option value={30}>30 years</option>
+                  </select>
+                </div>
+                
+                <div className="input-group">
+                  <label>Interest Rate</label>
+                  <div className="input-with-icon">
+                    <input
+                      type="number"
+                      value={values.interestRate}
+                      onChange={(e) => handleInputChange('interestRate', Number(e.target.value))}
+                      min="0"
+                      max="20"
+                      step="0.125"
+                    />
+                    <span className="input-icon">%</span>
+                  </div>
                 </div>
               </div>
             </div>
 
-            <div className="form-row">
-              <div className="form-group">
-                <label htmlFor="interestRate">
-                  Interest Rate (%)
-                  <span className="tooltip">💡 Current average: 7.5%</span>
-                </label>
-                <input
-                  id="interestRate"
-                  type="number"
-                  step="0.01"
-                  min="0"
-                  value={interestRate}
-                  onChange={(e) => setInterestRate(e.target.value)}
-                  placeholder="7.5"
-                />
-              </div>
-              <div className="form-group">
-                <label htmlFor="loanTerm">Loan Term</label>
-                <select
-                  id="loanTerm"
-                  value={loanTerm}
-                  onChange={(e) => setLoanTerm(e.target.value)}
-                >
-                  <option value="15">15 years</option>
-                  <option value="20">20 years</option>
-                  <option value="25">25 years</option>
-                  <option value="30">30 years</option>
-                </select>
-              </div>
-            </div>
+            {activeTab === 'advanced' && (
+              <div className="input-section">
+                <h3>Additional Costs</h3>
+                
+                <div className="input-group">
+                  <label>Annual Property Tax</label>
+                  <div className="input-with-icon">
+                    <span className="input-icon">$</span>
+                    <input
+                      type="number"
+                      value={values.propertyTax}
+                      onChange={(e) => handleInputChange('propertyTax', Number(e.target.value))}
+                      min="0"
+                      step="100"
+                    />
+                  </div>
+                </div>
 
-            <div className="form-row">
-              <div className="form-group">
-                <label htmlFor="propertyTax">
-                  Property Tax Rate (%)
-                  <span className="tooltip">💡 Nevada average: 1.2%</span>
-                </label>
-                <input
-                  id="propertyTax"
-                  type="number"
-                  step="0.01"
-                  min="0"
-                  value={propertyTax}
-                  onChange={(e) => setPropertyTax(e.target.value)}
-                  placeholder="1.2"
-                />
-              </div>
-              <div className="form-group">
-                <label htmlFor="insurance">Home Insurance (Annual)</label>
-                <div className="input-wrapper">
-                  <span className="currency-symbol">$</span>
-                  <input
-                    id="insurance"
-                    type="number"
-                    min="0"
-                    value={insurance}
-                    onChange={(e) => setInsurance(e.target.value)}
-                    placeholder="1200"
-                  />
+                <div className="input-row">
+                  <div className="input-group">
+                    <label>Home Insurance (Annual)</label>
+                    <div className="input-with-icon">
+                      <span className="input-icon">$</span>
+                      <input
+                        type="number"
+                        value={values.homeInsurance}
+                        onChange={(e) => handleInputChange('homeInsurance', Number(e.target.value))}
+                        min="0"
+                        step="100"
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className="input-group">
+                    <label>PMI (Monthly)</label>
+                    <div className="input-with-icon">
+                      <span className="input-icon">$</span>
+                      <input
+                        type="number"
+                        value={values.pmi}
+                        onChange={(e) => handleInputChange('pmi', Number(e.target.value))}
+                        min="0"
+                        step="25"
+                        disabled={values.downPaymentPercent >= 20}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="input-group">
+                  <label>HOA Fees (Monthly)</label>
+                  <div className="input-with-icon">
+                    <span className="input-icon">$</span>
+                    <input
+                      type="number"
+                      value={values.hoaFees}
+                      onChange={(e) => handleInputChange('hoaFees', Number(e.target.value))}
+                      min="0"
+                      step="25"
+                    />
+                  </div>
                 </div>
               </div>
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="hoa">
-                HOA Fee (Monthly)
-                <span className="tooltip">💡 Includes community amenities</span>
-              </label>
-              <div className="input-wrapper">
-                <span className="currency-symbol">$</span>
-                <input
-                  id="hoa"
-                  type="number"
-                  min="0"
-                  value={hoa}
-                  onChange={(e) => setHoa(e.target.value)}
-                  placeholder="150"
-                />
-              </div>
-            </div>
-          </motion.div>
-
-          <AnimatePresence>
-            {errors.length > 0 && (
-              <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: 'auto' }}
-                exit={{ opacity: 0, height: 0 }}
-                className="error-messages"
-              >
-                {errors.map((error, index) => (
-                  <p key={index} className="error-message">{error}</p>
-                ))}
-              </motion.div>
             )}
-          </AnimatePresence>
+          </div>
 
-          <motion.button 
-            type="button" 
-            className="calculate-btn"
-            onClick={calculateMortgage}
-            disabled={isCalculating}
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-          >
+          <div className="calculator-results">
             {isCalculating ? (
-              <span className="calculating">
-                <span className="spinner"></span>
-                Calculating...
-              </span>
-            ) : (
-              'Calculate Payment'
-            )}
-          </motion.button>
-
-          <AnimatePresence>
-            {result && (
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                className="results"
-              >
-                <div className="results-header">
-                  <h3>Payment Breakdown</h3>
-                  <button 
-                    className="toggle-view"
-                    onClick={() => setShowComparison(!showComparison)}
-                  >
-                    {showComparison ? '📊 Chart View' : '📈 Details'}
-                  </button>
+              <div className="loading-results">
+                <div className="loading-spinner"></div>
+                <p>Calculating payments...</p>
+              </div>
+            ) : results && (
+              <>
+                <div className="result-card primary">
+                  <div className="result-icon">🏠</div>
+                  <div className="result-value">{formatCurrency(results.totalMonthly)}</div>
+                  <div className="result-label">Total Monthly Payment</div>
                 </div>
 
-                <div className="result-grid">
-                  <motion.div 
-                    className="result-item highlight"
-                    whileHover={{ scale: 1.02 }}
-                  >
-                    <span className="result-label">Total Monthly Payment</span>
-                    <span className="result-value">{formatCurrency(result.monthlyPayment)}</span>
-                  </motion.div>
-                  
-                  <div className="result-item">
-                    <span className="result-label">Principal & Interest</span>
-                    <span className="result-value">{formatCurrency(result.monthlyPI)}</span>
-                    <span className="result-percent">{formatPercentage(result.monthlyPI, result.monthlyPayment)}</span>
+                <div className="result-breakdown">
+                  <h4>Payment Breakdown</h4>
+                  <div className="breakdown-item">
+                    <span>Principal & Interest</span>
+                    <span>{formatCurrency(results.principalAndInterest)}</span>
                   </div>
-                  
-                  <div className="result-item">
-                    <span className="result-label">Property Taxes</span>
-                    <span className="result-value">{formatCurrency(result.monthlyTaxes)}</span>
-                    <span className="result-percent">{formatPercentage(result.monthlyTaxes, result.monthlyPayment)}</span>
+                  <div className="breakdown-item">
+                    <span>Property Tax</span>
+                    <span>{formatCurrency(results.monthlyTax)}</span>
                   </div>
-                  
-                  <div className="result-item">
-                    <span className="result-label">Home Insurance</span>
-                    <span className="result-value">{formatCurrency(result.monthlyInsurance)}</span>
-                    <span className="result-percent">{formatPercentage(result.monthlyInsurance, result.monthlyPayment)}</span>
+                  <div className="breakdown-item">
+                    <span>Home Insurance</span>
+                    <span>{formatCurrency(results.monthlyInsurance)}</span>
                   </div>
-                  
-                  <div className="result-item">
-                    <span className="result-label">HOA Fee</span>
-                    <span className="result-value">{formatCurrency(result.monthlyHOA)}</span>
-                    <span className="result-percent">{formatPercentage(result.monthlyHOA, result.monthlyPayment)}</span>
-                  </div>
+                  {results.monthlyPMI > 0 && (
+                    <div className="breakdown-item">
+                      <span>PMI</span>
+                      <span>{formatCurrency(results.monthlyPMI)}</span>
+                    </div>
+                  )}
+                  {results.monthlyHOA > 0 && (
+                    <div className="breakdown-item">
+                      <span>HOA Fees</span>
+                      <span>{formatCurrency(results.monthlyHOA)}</span>
+                    </div>
+                  )}
                 </div>
 
                 <div className="loan-summary">
-                  <div className="summary-item">
-                    <span>Down Payment</span>
-                    <span>{formatCurrency(result.downPaymentAmount)}</span>
-                  </div>
-                  <div className="summary-item">
-                    <span>Loan Amount</span>
-                    <span>{formatCurrency(result.loanAmount)}</span>
-                  </div>
-                  <div className="summary-item">
-                    <span>Total Interest</span>
-                    <span>{formatCurrency(result.totalInterest)}</span>
-                  </div>
-                  <div className="summary-item highlight">
-                    <span>Total Cost</span>
-                    <span>{formatCurrency(result.totalPayment + result.downPaymentAmount)}</span>
+                  <h4>Loan Summary</h4>
+                  <div className="summary-grid">
+                    <div className="summary-item">
+                      <span className="summary-label">Loan Amount</span>
+                      <span className="summary-value">{formatCurrency(results.loanAmount)}</span>
+                    </div>
+                    <div className="summary-item">
+                      <span className="summary-label">Total Interest</span>
+                      <span className="summary-value">{formatCurrency(results.totalInterest)}</span>
+                    </div>
+                    <div className="summary-item">
+                      <span className="summary-label">Total Cost</span>
+                      <span className="summary-value">{formatCurrency(results.totalCost)}</span>
+                    </div>
                   </div>
                 </div>
 
-                <div className="action-buttons">
-                  <button className="action-btn primary">
-                    📧 Email Results
-                  </button>
-                  <button className="action-btn secondary">
-                    📞 Speak with Agent
-                  </button>
-                  <button className="action-btn tertiary">
-                    🏠 View Properties
-                  </button>
+                <div className="affordability-check">
+                  {(() => {
+                    const monthlyIncome = results.totalMonthly / 0.28; // Assuming 28% DTI
+                    const debtRatio = (results.totalMonthly / monthlyIncome) * 100;
+                    const affordability = getAffordabilityLevel(debtRatio);
+                    
+                    return (
+                      <div className="affordability-card">
+                        <h4>Affordability Assessment</h4>
+                        <div className="affordability-indicator" style={{ borderColor: affordability.color }}>
+                          <div className="affordability-level" style={{ color: affordability.color }}>
+                            {affordability.level}
+                          </div>
+                          <div className="affordability-description">
+                            {affordability.description}
+                          </div>
+                          <div className="recommended-income">
+                            Recommended monthly income: {formatCurrency(monthlyIncome)}
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })()}
                 </div>
-              </motion.div>
+
+                <div className="action-buttons">
+                  <a href="/contact" className="action-btn primary">
+                    Get Pre-Approved
+                  </a>
+                  <a href="/homes" className="action-btn secondary">
+                    View Available Homes
+                  </a>
+                </div>
+              </>
             )}
-          </AnimatePresence>
+          </div>
         </div>
       </div>
 
       <style jsx>{`
-        .calculator-section {
+        .property-calculator {
           padding: 4rem 2rem;
           background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-          position: relative;
-          overflow: hidden;
-        }
-
-        .calculator-section::before {
-          content: '';
-          position: absolute;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
-          background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="%23e5e7eb" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
-          opacity: 0.5;
         }
 
         .calculator-container {
-          max-width: 900px;
+          max-width: 1200px;
           margin: 0 auto;
-          background: white;
-          border-radius: 20px;
-          padding: 3rem;
-          box-shadow: 0 25px 60px rgba(0,0,0,0.1);
-          position: relative;
-          z-index: 1;
         }
 
-        .calculator-container h2 {
-          color: #1e40af;
-          font-size: 2.5rem;
-          margin-bottom: 0.5rem;
-          text-align: center;
-          background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-          background-clip: text;
-        }
-
-        .calculator-container p {
-          color: #64748b;
+        .calculator-header {
           text-align: center;
           margin-bottom: 3rem;
-          font-size: 1.1rem;
         }
 
-        .form-row {
+        .calculator-header h2 {
+          font-size: 2.5rem;
+          color: #1e40af;
+          margin-bottom: 1rem;
+        }
+
+        .calculator-header p {
+          font-size: 1.2rem;
+          color: #64748b;
+          margin-bottom: 2rem;
+        }
+
+        .tab-navigation {
+          display: flex;
+          justify-content: center;
+          gap: 0.5rem;
+          background: white;
+          padding: 0.5rem;
+          border-radius: 50px;
+          box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+          display: inline-flex;
+        }
+
+        .tab-btn {
+          padding: 0.75rem 1.5rem;
+          border: none;
+          background: transparent;
+          border-radius: 25px;
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          color: #64748b;
+        }
+
+        .tab-btn.active {
+          background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+          color: white;
+        }
+
+        .calculator-content {
           display: grid;
           grid-template-columns: 1fr 1fr;
-          gap: 2rem;
-          margin-bottom: 2rem;
+          gap: 3rem;
+          margin-top: 3rem;
         }
 
-        .form-group {
-          display: flex;
-          flex-direction: column;
-          position: relative;
-        }
-
-        .form-group label {
-          color: #374151;
-          font-weight: 600;
-          margin-bottom: 0.75rem;
-          display: flex;
-          align-items: center;
-          gap: 0.5rem;
-        }
-
-        .tooltip {
-          font-size: 0.75rem;
-          background: #1e40af;
-          color: white;
-          padding: 0.25rem 0.5rem;
-          border-radius: 4px;
-          opacity: 0;
-          transition: opacity 0.3s ease;
-        }
-
-        .form-group:hover .tooltip {
-          opacity: 1;
-        }
-
-        .input-wrapper {
-          position: relative;
-        }
-
-        .currency-symbol {
-          position: absolute;
-          left: 1rem;
-          top: 50%;
-          transform: translateY(-50%);
-          color: #64748b;
-          font-weight: 600;
-          z-index: 1;
-        }
-
-        .form-group input,
-        .form-group select {
-          padding: 1rem;
-          border: 2px solid #e5e7eb;
-          border-radius: 10px;
-          font-size: 1rem;
-          transition: all 0.3s ease;
-          background: #fafafa;
-        }
-
-        .input-wrapper input {
-          padding-left: 2.5rem;
-        }
-
-        .form-group input:focus,
-        .form-group select:focus {
-          outline: none;
-          border-color: #3b82f6;
+        .calculator-inputs {
           background: white;
-          box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+          padding: 2.5rem;
+          border-radius: 20px;
+          box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+          height: fit-content;
         }
 
-        .slider-container {
-          position: relative;
+        .input-section {
+          margin-bottom: 2.5rem;
         }
 
-        .slider {
-          width: 100%;
-          height: 8px;
-          border-radius: 5px;
-          background: #e5e7eb;
-          outline: none;
-          -webkit-appearance: none;
-        }
-
-        .slider::-webkit-slider-thumb {
-          appearance: none;
-          width: 20px;
-          height: 20px;
-          border-radius: 50%;
-          background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
-          cursor: pointer;
-          box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-        }
-
-        .slider-value {
-          position: absolute;
-          top: -2.5rem;
-          right: 0;
-          background: #1e40af;
-          color: white;
-          padding: 0.25rem 0.75rem;
-          border-radius: 15px;
-          font-size: 0.875rem;
-          font-weight: 600;
-        }
-
-        .calculate-btn {
-          width: 100%;
-          background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
-          color: white;
-          padding: 1.25rem 2rem;
-          border: none;
-          border-radius: 12px;
-          font-size: 1.2rem;
-          font-weight: 600;
-          cursor: pointer;
-          transition: all 0.3s ease;
-          margin: 2rem 0;
-          position: relative;
-          overflow: hidden;
-        }
-
-        .calculate-btn:disabled {
-          opacity: 0.7;
-          cursor: not-allowed;
-        }
-
-        .calculating {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          gap: 0.75rem;
-        }
-
-        .spinner {
-          width: 20px;
-          height: 20px;
-          border: 2px solid transparent;
-          border-top: 2px solid white;
-          border-radius: 50%;
-          animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-          0% { transform: rotate(0deg); }
-          100% { transform: rotate(360deg); }
-        }
-
-        .error-messages {
-          margin: 1rem 0;
-        }
-
-        .error-message {
-          color: #dc2626;
-          background: #fef2f2;
-          padding: 0.75rem 1rem;
-          border-radius: 8px;
-          margin: 0.5rem 0;
-          border-left: 4px solid #dc2626;
-          font-weight: 500;
-        }
-
-        .results {
-          background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-          padding: 2rem;
-          border-radius: 16px;
-          margin-top: 2rem;
-        }
-
-        .results-header {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          margin-bottom: 2rem;
-        }
-
-        .results h3 {
+        .input-section h3 {
           color: #1e40af;
-          margin: 0;
-          font-size: 1.75rem;
-        }
-
-        .toggle-view {
-          background: white;
-          border: 2px solid #e5e7eb;
-          padding: 0.5rem 1rem;
-          border-radius: 8px;
-          cursor: pointer;
-          transition: all 0.3s ease;
-        }
-
-        .toggle-view:hover {
-          border-color: #3b82f6;
-          background: #f8fafc;
-        }
-
-        .result-grid {
-          display: grid;
-          grid-template-columns: 1fr;
-          gap: 1rem;
-          margin-bottom: 2rem;
-        }
-
-        .result-item {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          padding: 1.25rem;
-          background: white;
-          border-radius: 12px;
-          box-shadow: 0 2px 15px rgba(0,0,0,0.05);
-          position: relative;
-        }
-
-        .result-item.highlight {
-          background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
-          color: white;
-          grid-column: 1 / -1;
-          padding: 2rem;
-        }
-
-        .result-label {
-          font-weight: 600;
-          font-size: 1rem;
-        }
-
-        .result-value {
-          font-weight: 700;
+          margin-bottom: 1.5rem;
           font-size: 1.3rem;
         }
 
-        .result-percent {
-          position: absolute;
-          top: 0.5rem;
-          right: 1rem;
-          font-size: 0.75rem;
-          opacity: 0.7;
+        .input-group {
+          margin-bottom: 1.5rem;
         }
 
-        .loan-summary {
+        .input-row {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 1rem;
+        }
+
+        .input-group label {
+          display: block;
+          margin-bottom: 0.5rem;
+          font-weight: 600;
+          color: #374151;
+        }
+
+        .input-with-icon {
+          position: relative;
+          display: flex;
+          align-items: center;
+        }
+
+        .input-icon {
+          position: absolute;
+          left: 1rem;
+          color: #64748b;
+          font-weight: 600;
+          z-index: 1;
+        }
+
+        .input-with-icon input {
+          padding-left: 2.5rem;
+        }
+
+        .input-with-icon input:has(+ .input-icon) {
+          padding-left: 1rem;
+          padding-right: 2.5rem;
+        }
+
+        .input-with-icon .input-icon:last-child {
+          left: auto;
+          right: 1rem;
+        }
+
+        .input-group input,
+        .input-group select {
+          width: 100%;
+          padding: 0.75rem 1rem;
+          border: 2px solid #e5e7eb;
+          border-radius: 10px;
+          font-size: 1rem;
+          transition: border-color 0.3s ease;
+        }
+
+        .input-group input:focus,
+        .input-group select:focus {
+          outline: none;
+          border-color: #3b82f6;
+        }
+
+        .input-group input:disabled {
+          background: #f9fafb;
+          color: #9ca3af;
+          cursor: not-allowed;
+        }
+
+        .calculator-results {
           background: white;
-          padding: 1.5rem;
-          border-radius: 12px;
+          padding: 2.5rem;
+          border-radius: 20px;
+          box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+          height: fit-content;
+        }
+
+        .loading-results {
+          text-align: center;
+          padding: 3rem 0;
+        }
+
+        .loading-spinner {
+          width: 40px;
+          height: 40px;
+          border: 4px solid #e5e7eb;
+          border-top: 4px solid #3b82f6;
+          border-radius: 50%;
+          animation: spin 1s linear infinite;
+          margin: 0 auto 1rem;
+        }
+
+        .result-card {
+          text-align: center;
+          padding: 2rem;
+          background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+          border-radius: 16px;
+          color: white;
           margin-bottom: 2rem;
         }
 
-        .summary-item {
+        .result-icon {
+          font-size: 2.5rem;
+          margin-bottom: 1rem;
+        }
+
+        .result-value {
+          font-size: 2.5rem;
+          font-weight: 700;
+          margin-bottom: 0.5rem;
+        }
+
+        .result-label {
+          font-size: 1.1rem;
+          opacity: 0.9;
+        }
+
+        .result-breakdown,
+        .loan-summary,
+        .affordability-check {
+          margin-bottom: 2rem;
+        }
+
+        .result-breakdown h4,
+        .loan-summary h4,
+        .affordability-check h4 {
+          color: #1e40af;
+          margin-bottom: 1rem;
+          font-size: 1.2rem;
+        }
+
+        .breakdown-item {
           display: flex;
           justify-content: space-between;
           padding: 0.75rem 0;
           border-bottom: 1px solid #f1f5f9;
         }
 
-        .summary-item:last-child {
+        .breakdown-item:last-child {
           border-bottom: none;
-          font-weight: 700;
-          font-size: 1.1rem;
-          color: #1e40af;
         }
 
-        .action-buttons {
+        .summary-grid {
           display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
           gap: 1rem;
         }
 
-        .action-btn {
+        .summary-item {
+          display: flex;
+          justify-content: space-between;
           padding: 1rem;
+          background: #f8fafc;
           border-radius: 8px;
+        }
+
+        .summary-label {
+          color: #64748b;
+        }
+
+        .summary-value {
+          font-weight: 700;
+          color: #1e40af;
+        }
+
+        .affordability-card {
+          background: #f8fafc;
+          padding: 1.5rem;
+          border-radius: 12px;
+        }
+
+        .affordability-indicator {
+          padding: 1rem;
+          border-left: 4px solid;
+          background: white;
+          border-radius: 8px;
+        }
+
+        .affordability-level {
+          font-weight: 700;
+          font-size: 1.1rem;
+          margin-bottom: 0.5rem;
+        }
+
+        .affordability-description {
+          color: #64748b;
+          margin-bottom: 0.5rem;
+        }
+
+        .recommended-income {
+          font-size: 0.9rem;
+          color: #374151;
+        }
+
+        .action-buttons {
+          display: flex;
+          gap: 1rem;
+          flex-wrap: wrap;
+        }
+
+        .action-btn {
+          flex: 1;
+          padding: 1rem 2rem;
+          border-radius: 10px;
+          text-decoration: none;
           font-weight: 600;
-          cursor: pointer;
-          transition: all 0.3s ease;
           text-align: center;
+          transition: transform 0.3s ease;
+          min-width: 180px;
+        }
+
+        .action-btn:hover {
+          transform: translateY(-2px);
         }
 
         .action-btn.primary {
           background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
           color: white;
-          border: none;
         }
 
         .action-btn.secondary {
@@ -719,38 +698,27 @@ const PropertyCalculator: React.FC<PropertyCalculatorProps> = ({ className = '' 
           border: 2px solid #1e40af;
         }
 
-        .action-btn.tertiary {
-          background: #f1f5f9;
-          color: #64748b;
-          border: 2px solid #e5e7eb;
-        }
-
-        .action-btn:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
         }
 
         @media (max-width: 768px) {
-          .form-row {
+          .calculator-content {
             grid-template-columns: 1fr;
-            gap: 1.5rem;
+            gap: 2rem;
           }
 
-          .calculator-container {
-            padding: 2rem;
-          }
-
-          .calculator-container h2 {
-            font-size: 2rem;
+          .input-row {
+            grid-template-columns: 1fr;
           }
 
           .action-buttons {
-            grid-template-columns: 1fr;
+            flex-direction: column;
           }
 
-          .results-header {
-            flex-direction: column;
-            gap: 1rem;
+          .tab-navigation {
+            width: 100%;
           }
         }
       `}</style>
