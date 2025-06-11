@@ -10,6 +10,13 @@ const Home: NextPage = () => {
         <title>Emerson Estates Homes - Las Vegas Real Estate</title>
         <meta name="description" content="Discover luxury homes in Emerson Estates, Las Vegas. Your premier destination for upscale living in Nevada." />
         <link rel="icon" href="/favicon.ico" />
+        <script src="https://em.realscout.com/widgets/realscout-web-components.umd.js" type="module"></script>
+        <style>{`
+          realscout-office-listings {
+            --rs-listing-divider-color: rgb(101, 141, 172);
+            width: 100%;
+          }
+        `}</style>
       </Head>
 
       <header className={styles.header}>
@@ -41,45 +48,13 @@ const Home: NextPage = () => {
 
         <section id="homes" className={styles.section}>
           <h2 className={styles.sectionTitle}>Featured Properties</h2>
-          <div className={styles.grid}>
-            <div className={styles.card}>
-              <div className={styles.cardImage}></div>
-              <h3>The Valencia</h3>
-              <p className={styles.price}>$750,000</p>
-              <ul className={styles.features}>
-                <li>4 Bedrooms, 3 Bathrooms</li>
-                <li>2,850 sq ft</li>
-                <li>2-Car Garage</li>
-                <li>Mountain Views</li>
-              </ul>
-              <button className={styles.viewButton}>View Details</button>
-            </div>
-
-            <div className={styles.card}>
-              <div className={styles.cardImage}></div>
-              <h3>The Sedona</h3>
-              <p className={styles.price}>$825,000</p>
-              <ul className={styles.features}>
-                <li>5 Bedrooms, 4 Bathrooms</li>
-                <li>3,200 sq ft</li>
-                <li>3-Car Garage</li>
-                <li>Pool & Spa Ready</li>
-              </ul>
-              <button className={styles.viewButton}>View Details</button>
-            </div>
-
-            <div className={styles.card}>
-              <div className={styles.cardImage}></div>
-              <h3>The Tuscan</h3>
-              <p className={styles.price}>$950,000</p>
-              <ul className={styles.features}>
-                <li>6 Bedrooms, 5 Bathrooms</li>
-                <li>4,100 sq ft</li>
-                <li>3-Car Garage</li>
-                <li>Premium Lot</li>
-              </ul>
-              <button className={styles.viewButton}>View Details</button>
-            </div>
+          <div className={styles.widgetContainer}>
+            <realscout-office-listings 
+              agent-encoded-id="QWdlbnQtMjI1MDUw" 
+              sort-order="STATUS_AND_SIGNIFICANT_CHANGE" 
+              listing-status="For Sale" 
+              property-types="SFR,MF">
+            </realscout-office-listings>
           </div>
         </section>
 
