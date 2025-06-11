@@ -4,7 +4,7 @@ import styles from '../styles/Home.module.css';
 
 export default function AgentProfile() {
   return (
-    <section className={styles.section} style={{ background: 'linear-gradient(135deg, #1e40af 0%, #3b82f6 100%)', color: 'white' }}>
+    <section className={styles['section']} style={{ background: 'linear-gradient(135deg, #1e40af 0%, #3b82f6 100%)', color: 'white' }}>
       <div className="agent-profile">
         <div className="agent-image">
           <Image
