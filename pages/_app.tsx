@@ -6,9 +6,9 @@ import { useEffect } from 'react'
 
 function MyApp({ Component, pageProps }: AppProps) {
   useEffect(() => {
-    // Ensure RealScout widget is properly initialized
-    if (typeof window !== 'undefined') {
-      // Add any client-side initialization here
+    // Client-side initialization
+    console.log('App initialized on client')
+  }, []) here
       console.log('App initialized on client');
     }
   }, []);

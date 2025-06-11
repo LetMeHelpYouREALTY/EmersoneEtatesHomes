@@ -14,16 +14,10 @@ const nextConfig: NextConfig = {
     dirs: ['pages', 'components', 'types']
   },
   
-  // Allow development origins for Replit
+  // Experimental features
   experimental: {
     allowedRevalidateHeaderKeys: ['content-type'],
-    scrollRestoration: true,
-    allowedDevOrigins: [
-      'replit.dev',
-      '*.replit.dev',
-      'localhost:3000',
-      '0.0.0.0:3000'
-    ]
+    scrollRestoration: true
   },
   
   // Development configuration
