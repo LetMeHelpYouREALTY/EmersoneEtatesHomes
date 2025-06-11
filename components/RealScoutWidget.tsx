@@ -1,6 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Script from 'next/script';
+import Link from 'next/link';
 
 interface RealScoutWidgetProps {
   className?: string;
@@ -51,13 +52,13 @@ const RealScoutWidget: React.FC<RealScoutWidgetProps> = ({ className = '' }) => 
             <div className="placeholder-icon">🏠</div>
             <h3>Property Listings Coming Soon</h3>
             <p>
-              We're setting up our property search integration. In the meantime, 
+              We&apos;re setting up our property search integration. In the meantime, 
               please contact us directly to view available homes in Emerson Estates.
             </p>
             <div className="contact-buttons">
-              <a href="/contact" className="contact-btn primary">
+              <Link href="/contact" className="contact-btn primary">
                 Contact Us
-              </a>
+              </Link>
               <a href="tel:+17025551234" className="contact-btn secondary">
                 Call Now
               </a>

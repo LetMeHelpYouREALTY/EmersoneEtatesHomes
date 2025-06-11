@@ -1,313 +1,404 @@
-import Head from 'next/head'
-import Link from 'next/link'
-import Image from 'next/image'
-import { ReactNode, Component, ErrorInfo } from 'react'
+
+import { useState, useEffect } from 'react';
+import Head from 'next/head';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
 
 interface LayoutProps {
-  children: ReactNode
-  title?: string
-  description?: string
-  keywords?: string
-  canonical?: string
-  noIndex?: boolean;
-}
-
-interface ErrorBoundaryState {
-  hasError: boolean
-  error?: Error
-  errorInfo?: ErrorInfo
-}
-
-class ErrorBoundary extends Component<{children: ReactNode}, ErrorBoundaryState> {
-  constructor(props: {children: ReactNode}) {
-    super(props)
-    this.state = { hasError: false }
-  }
-
-  static getDerivedStateFromError(error: Error): ErrorBoundaryState {
-    return { hasError: true, error }
-  }
-
-  componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    console.error('Layout Error Boundary:', error, errorInfo)
-    this.setState({ errorInfo: errorInfo })
-  }
-
-  render() {
-    if (this.state.hasError) {
-      return (
-        <div className="error-fallback">
-          <h2>Something went wrong loading this page.</h2>
-          <p>Please refresh the page or contact support if the issue persists.</p>
-        </div>
-      )
-    }
-
-    return this.props.children
-  }
+  children: React.ReactNode;
+  title?: string;
+  description?: string;
 }
 
 export default function Layout({ 
   children, 
-  title = "Emerson Estates - Luxury Living in Las Vegas",
-  description = "Discover luxury homes at Emerson Estates, located at 2583 Regency Cove Ct, Las Vegas, NV 89121.",
-  noIndex
+  title = "Emerson Estates - Luxury Homes in Las Vegas", 
+  description = "Discover luxury living at Emerson Estates. Premium homes with world-class amenities in Las Vegas, Nevada." 
 }: LayoutProps) {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const router = useRouter();
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 50);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const navigation = [
+    { name: 'Home', href: '/' },
+    { name: 'Available Homes', href: '/homes' },
+    { name: 'Community', href: '/community' },
+    { name: 'Amenities', href: '/amenities' },
+    { name: 'Contact', href: '/contact' }
+  ];
+
   return (
     <>
       <Head>
         <title>{title}</title>
         <meta name="description" content={description} />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <meta name="robots" content={noIndex ? "noindex, nofollow" : "index, follow"} />
-        <link rel="canonical" href="https://www.emersonestateshomes.com" />
+        <link rel="icon" href="/favicon.ico" />
+        
+        {/* Open Graph Meta Tags */}
+        <meta property="og:title" content={title} />
+        <meta property="og:description" content={description} />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content={`https://emersonestateshomes.com${router.asPath}`} />
+        <meta property="og:image" content="https://emersonestateshomes.com/design 05_new 2_1749651606209.jpg" />
+        
+        {/* Twitter Card Meta Tags */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={title} />
+        <meta name="twitter:description" content={description} />
+        <meta name="twitter:image" content="https://emersonestateshomes.com/design 05_new 2_1749651606209.jpg" />
+        
+        {/* Structured Data */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "RealEstateAgent",
+              "name": "Emerson Estates",
+              "address": {
+                "@type": "PostalAddress",
+                "streetAddress": "2583 Regency Cove Ct",
+                "addressLocality": "Las Vegas",
+                "addressRegion": "Nevada",
+                "postalCode": "89121",
+                "addressCountry": "US"
+              },
+              "description": description,
+              "url": "https://emersonestateshomes.com"
+            })
+          }}
+        />
       </Head>
 
-      <header className="header" role="banner">
-        <div className="header-container">
-          <div className="logo-section">
-            <Link href="/" className="logo">
-              <Image
-                src="/bhhs-logo.jpg"
-                alt="Berkshire Hathaway HomeServices"
-                width={50}
-                height={50}
-                className="logo-img"
-                unoptimized
-                onError={(e) => {
-                  const target = e.target as HTMLImageElement;
-                  target.style.display = 'none';
-                }}
-              />
-              <span className="logo-text">Emerson Estates</span>
+      <nav className={`navbar ${scrolled ? 'scrolled' : ''}`}>
+        <div className="nav-container">
+          <Link href="/" className="nav-logo">
+            <span className="logo-text">Emerson Estates</span>
+            <span className="logo-subtitle">Luxury Living</span>
+          </Link>
+
+          {/* Desktop Navigation */}
+          <div className="nav-menu">
+            {navigation.map((item) => (
+              <Link
+                key={item.name}
+                href={item.href}
+                className={`nav-link ${router.pathname === item.href ? 'active' : ''}`}
+              >
+                {item.name}
+              </Link>
+            ))}
+            <Link href="/contact" className="nav-cta">
+              Get Started
             </Link>
           </div>
 
-          <nav className="nav" role="navigation" aria-label="Main navigation">
-            <div className="nav-links">
-              <Link href="/" className="nav-link" aria-label="Go to homepage">
-                <span className="nav-icon">🏠</span>
-                <span className="nav-text">Home</span>
-              </Link>
-              <Link href="/homes" className="nav-link" aria-label="View available homes">
-                <span className="nav-icon">🏘️</span>
-                <span className="nav-text">Available Homes</span>
-              </Link>
-              <Link href="/community" className="nav-link" aria-label="Learn about community">
-                <span className="nav-icon">🌟</span>
-                <span className="nav-text">Community</span>
-              </Link>
-              <Link href="/amenities" className="nav-link" aria-label="Explore amenities">
-                <span className="nav-icon">🏊</span>
-                <span className="nav-text">Amenities</span>
-              </Link>
-              <Link href="/contact" className="nav-link" aria-label="Contact us">
-                <span className="nav-icon">📞</span>
-                <span className="nav-text">Contact</span>
-              </Link>
-            </div>
-          </nav>
-
-          <div className="menu-section">
-            <button 
-              className="mobile-menu-toggle"
-              aria-label="Toggle mobile menu"
-              onClick={() => {
-                const navLinks = document.querySelector('.nav-links');
-                navLinks?.classList.toggle('active');
-              }}
-            >
-              <span></span>
-              <span></span>
-              <span></span>
-            </button>
-          </div>
+          {/* Mobile Menu Button */}
+          <button
+            className="mobile-menu-btn"
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            aria-label="Toggle menu"
+          >
+            <span className={`hamburger ${isMenuOpen ? 'active' : ''}`}></span>
+            <span className={`hamburger ${isMenuOpen ? 'active' : ''}`}></span>
+            <span className={`hamburger ${isMenuOpen ? 'active' : ''}`}></span>
+          </button>
         </div>
-      </header>
 
-      <main className="main" role="main">
-        <ErrorBoundary>
-          {children}
-        </ErrorBoundary>
-      </main>
+        {/* Mobile Navigation */}
+        <div className={`mobile-nav ${isMenuOpen ? 'open' : ''}`}>
+          {navigation.map((item) => (
+            <Link
+              key={item.name}
+              href={item.href}
+              className={`mobile-nav-link ${router.pathname === item.href ? 'active' : ''}`}
+              onClick={() => setIsMenuOpen(false)}
+            >
+              {item.name}
+            </Link>
+          ))}
+          <Link 
+            href="/contact" 
+            className="mobile-nav-cta"
+            onClick={() => setIsMenuOpen(false)}
+          >
+            Get Started
+          </Link>
+        </div>
+      </nav>
 
-      <footer className="footer" role="contentinfo">
+      <main>{children}</main>
+
+      <footer className="footer">
         <div className="footer-container">
           <div className="footer-content">
             <div className="footer-section">
               <h3>Emerson Estates</h3>
-              <address>
-                2583 Regency Cove Ct<br />
-                Las Vegas, NV 89121
-              </address>
+              <p>Luxury living in the heart of Las Vegas. Experience the perfect blend of elegance, comfort, and community.</p>
+              <div className="contact-info">
+                <p>📍 2583 Regency Cove Ct, Las Vegas, NV 89121</p>
+                <p>📞 <a href="tel:+17025551234">(702) 555-1234</a></p>
+                <p>✉️ <a href="mailto:info@emersonestateshomes.com">info@emersonestateshomes.com</a></p>
+              </div>
             </div>
 
             <div className="footer-section">
-              <h3>Contact</h3>
-              <p>
-                <a href="tel:+17025551234">Phone: (702) 555-1234</a><br />
-                <a href="mailto:info@emersonestateshomes.com">Email: info@emersonestateshomes.com</a>
-              </p>
+              <h4>Quick Links</h4>
+              <ul>
+                {navigation.map((item) => (
+                  <li key={item.name}>
+                    <Link href={item.href}>{item.name}</Link>
+                  </li>
+                ))}
+              </ul>
             </div>
 
             <div className="footer-section">
-              <h3>Follow Us</h3>
-              <p>Connect with us on social media for updates and new listings.</p>
+              <h4>Services</h4>
+              <ul>
+                <li>Luxury Home Sales</li>
+                <li>Property Management</li>
+                <li>Investment Consultation</li>
+                <li>Market Analysis</li>
+              </ul>
+            </div>
+
+            <div className="footer-section">
+              <h4>Connect With Us</h4>
+              <div className="social-links">
+                <a href="#" aria-label="Facebook">📘</a>
+                <a href="#" aria-label="Instagram">📷</a>
+                <a href="#" aria-label="LinkedIn">💼</a>
+                <a href="#" aria-label="YouTube">📺</a>
+              </div>
             </div>
           </div>
 
           <div className="footer-bottom">
             <p>&copy; 2024 Emerson Estates. All rights reserved.</p>
+            <div className="footer-links">
+              <Link href="/privacy">Privacy Policy</Link>
+              <Link href="/terms">Terms of Service</Link>
+            </div>
           </div>
         </div>
       </footer>
 
       <style jsx>{`
-        .header {
-          background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
-          box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-          position: sticky;
+        .navbar {
+          position: fixed;
           top: 0;
+          left: 0;
+          right: 0;
+          background: rgba(255, 255, 255, 0.95);
+          backdrop-filter: blur(20px);
           z-index: 1000;
+          transition: all 0.3s ease;
+          border-bottom: 1px solid rgba(0, 0, 0, 0.1);
         }
 
-        .header-container {
+        .navbar.scrolled {
+          background: rgba(255, 255, 255, 0.98);
+          box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-container {
           max-width: 1200px;
           margin: 0 auto;
-          display: grid;
-          grid-template-columns: auto 1fr auto;
-          align-items: center;
           padding: 1rem 2rem;
-          gap: 1rem;
-        }
-
-        .logo-section {
-          justify-self: start;
-          min-width: 200px;
-        }
-
-        .nav {
-          justify-self: center;
-        }
-
-        .menu-section {
-          justify-self: end;
-        }
-
-        .logo {
           display: flex;
           align-items: center;
-          gap: 0.75rem;
+          justify-content: space-between;
+        }
+
+        .nav-logo {
           text-decoration: none;
-          color: white;
-          font-size: 1.5rem;
-          font-weight: 700;
-          transition: transform 0.3s ease;
-          white-space: nowrap;
-          position: relative;
-        }
-
-        .logo:hover {
-          transform: scale(1.02);
-        }
-
-        .logo-img {
-          border-radius: 6px;
-          box-shadow: 0 2px 10px rgba(0,0,0,0.3);
-          flex-shrink: 0;
-          background: white;
-          padding: 2px;
+          display: flex;
+          flex-direction: column;
         }
 
         .logo-text {
-          display: inline-block;
+          font-size: 1.5rem;
+          font-weight: 700;
+          color: #1e40af;
+          line-height: 1;
         }
 
-        .nav-links {
+        .logo-subtitle {
+          font-size: 0.75rem;
+          color: #64748b;
+          letter-spacing: 0.1em;
+          text-transform: uppercase;
+        }
+
+        .nav-menu {
           display: flex;
-          gap: 2rem;
           align-items: center;
+          gap: 2rem;
         }
 
         .nav-link {
-          color: white;
           text-decoration: none;
+          color: #374151;
           font-weight: 500;
-          padding: 0.75rem 1.25rem;
-          border-radius: 25px;
-          transition: all 0.3s ease;
+          transition: color 0.3s ease;
           position: relative;
         }
 
-        .nav-link:hover {
-          background: rgba(255,255,255,0.15);
-          transform: translateY(-2px);
-          box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        .nav-link:hover,
+        .nav-link.active {
+          color: #1e40af;
         }
 
-        .mobile-menu-toggle {
+        .nav-link.active::after {
+          content: '';
+          position: absolute;
+          bottom: -5px;
+          left: 0;
+          right: 0;
+          height: 2px;
+          background: #1e40af;
+        }
+
+        .nav-cta {
+          background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+          color: white;
+          padding: 0.75rem 1.5rem;
+          border-radius: 25px;
+          text-decoration: none;
+          font-weight: 600;
+          transition: transform 0.3s ease;
+        }
+
+        .nav-cta:hover {
+          transform: translateY(-2px);
+        }
+
+        .mobile-menu-btn {
           display: none;
+          flex-direction: column;
           background: none;
           border: none;
-          color: white;
           cursor: pointer;
           padding: 0.5rem;
-          border-radius: 4px;
-          transition: background-color 0.3s ease;
-          flex-direction: column;
-          width: 30px;
-          height: 30px;
-          justify-content: center;
-          align-items: center;
         }
 
-        .mobile-menu-toggle span {
-          display: block;
-          width: 20px;
-          height: 2px;
-          background: white;
-          margin: 2px 0;
+        .hamburger {
+          width: 25px;
+          height: 3px;
+          background: #374151;
+          margin: 3px 0;
           transition: 0.3s;
         }
 
-        .mobile-menu-toggle:hover {
-          background: rgba(255,255,255,0.1);
+        .hamburger.active:nth-child(1) {
+          transform: rotate(-45deg) translate(-5px, 6px);
+        }
+
+        .hamburger.active:nth-child(2) {
+          opacity: 0;
+        }
+
+        .hamburger.active:nth-child(3) {
+          transform: rotate(45deg) translate(-5px, -6px);
+        }
+
+        .mobile-nav {
+          position: absolute;
+          top: 100%;
+          left: 0;
+          right: 0;
+          background: white;
+          max-height: 0;
+          overflow: hidden;
+          transition: max-height 0.3s ease;
+          border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .mobile-nav.open {
+          max-height: 400px;
+        }
+
+        .mobile-nav-link,
+        .mobile-nav-cta {
+          display: block;
+          padding: 1rem 2rem;
+          text-decoration: none;
+          color: #374151;
+          border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+          transition: background 0.3s ease;
+        }
+
+        .mobile-nav-link:hover,
+        .mobile-nav-link.active {
+          background: #f8fafc;
+          color: #1e40af;
+        }
+
+        .mobile-nav-cta {
+          background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+          color: white;
+          font-weight: 600;
+          margin: 1rem 2rem;
+          border-radius: 8px;
+          text-align: center;
+          border: none;
+        }
+
+        main {
+          margin-top: 80px;
+          min-height: calc(100vh - 80px);
         }
 
         .footer {
-          background: linear-gradient(135deg, #1f2937 0%, #374151 100%);
+          background: #1f2937;
           color: white;
-          margin-top: auto;
+          padding: 3rem 0 1rem;
         }
 
         .footer-container {
           max-width: 1200px;
           margin: 0 auto;
-          padding: 3rem 2rem 1rem;
+          padding: 0 2rem;
         }
 
         .footer-content {
           display: grid;
           grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-          gap: 2rem;
+          gap: 3rem;
           margin-bottom: 2rem;
         }
 
-        .footer-section h3 {
+        .footer-section h3,
+        .footer-section h4 {
           color: #fbbf24;
           margin-bottom: 1rem;
-          font-size: 1.25rem;
         }
 
         .footer-section p,
-        .footer-section address {
+        .footer-section li {
+          color: #d1d5db;
           line-height: 1.6;
-          color: rgba(255,255,255,0.8);
-          font-style: normal;
+          margin-bottom: 0.5rem;
+        }
+
+        .footer-section ul {
+          list-style: none;
+          padding: 0;
         }
 
         .footer-section a {
-          color: #60a5fa;
+          color: #d1d5db;
           text-decoration: none;
           transition: color 0.3s ease;
         }
@@ -316,90 +407,67 @@ export default function Layout({
           color: #fbbf24;
         }
 
-        .footer-bottom {
-          text-align: center;
-          padding-top: 2rem;
-          border-top: 1px solid rgba(255,255,255,0.1);
-          color: rgba(255,255,255,0.6);
+        .contact-info {
+          margin-top: 1rem;
         }
 
-        .error-fallback {
-          padding: 2rem;
-          text-align: center;
-          background: #fee;
-          border: 1px solid #fcc;
-          border-radius: 4px;
-          margin: 1rem;
+        .social-links {
+          display: flex;
+          gap: 1rem;
+          margin-top: 1rem;
+        }
+
+        .social-links a {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 40px;
+          height: 40px;
+          background: rgba(255, 255, 255, 0.1);
+          border-radius: 50%;
+          transition: background 0.3s ease;
+          font-size: 1.2rem;
+        }
+
+        .social-links a:hover {
+          background: #fbbf24;
+        }
+
+        .footer-bottom {
+          border-top: 1px solid rgba(255, 255, 255, 0.1);
+          padding-top: 2rem;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          flex-wrap: wrap;
+          gap: 1rem;
+        }
+
+        .footer-links {
+          display: flex;
+          gap: 2rem;
         }
 
         @media (max-width: 768px) {
-          .header-container {
-            grid-template-columns: 1fr auto;
-            padding: 0.75rem 1rem;
-            gap: 0.5rem;
-          }
-
-          .logo-section {
-            min-width: 0;
-          }
-
-          .menu-section {
-            grid-column: 2;
-          }
-
-          .nav {
-            grid-column: 1 / -1;
-            grid-row: 2;
-            position: relative;
-          }
-
-          .nav-links {
+          .nav-menu {
             display: none;
-            position: absolute;
-            top: 100%;
-            left: 0;
-            right: 0;
-            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+          }
+
+          .mobile-menu-btn {
+            display: flex;
+          }
+
+          .footer-bottom {
             flex-direction: column;
-            padding: 1rem;
-            gap: 0.5rem;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-            border-radius: 8px;
-            margin-top: 0.5rem;
-            z-index: 1000;
-          }
-
-          .nav-links.active {
-            display: flex;
-          }
-
-          .nav-link {
-            padding: 1rem;
-            border-radius: 8px;
-            justify-content: center;
-          }
-
-          .mobile-menu-toggle {
-            display: flex;
-          }
-
-          .logo {
-            font-size: 1.1rem;
-            gap: 0.5rem;
-          }
-
-          .logo-text {
-            overflow: hidden;
-            text-overflow: ellipsis;
-          }
-
-          .footer-content {
-            grid-template-columns: 1fr;
             text-align: center;
-            gap: 1.5rem;
+          }
+
+          .footer-links {
+            flex-direction: column;
+            gap: 1rem;
           }
         }
       `}</style>
     </>
-  )
+  );
 }
