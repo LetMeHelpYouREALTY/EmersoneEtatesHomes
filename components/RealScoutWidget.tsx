@@ -1,5 +1,4 @@
 
-import Script from 'next/script'
 import { useEffect, useState } from 'react'
 
 interface RealScoutWidgetProps {
@@ -26,21 +25,12 @@ const RealScoutWidget: React.FC<RealScoutWidgetProps> = ({
   }
 
   return (
-    <>
-      <Script
-        src="https://em.realscout.com/widgets/realscout-web-components.umd.js"
-        strategy="afterInteractive"
-        onLoad={() => {
-          console.log('RealScout widget loaded successfully');
-        }}
+    <div className={className}>
+      <realscout-widget-embed 
+        id={widgetId}
+        widget-id="64c8c5f4b4c8e50014a8b4e2"
       />
-      <div className={className}>
-        <realscout-widget-embed 
-          id={widgetId}
-          widget-id="64c8c5f4b4c8e50014a8b4e2"
-        />
-      </div>
-    </>
+    </div>
   );
 };
 
