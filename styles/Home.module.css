@@ -1,4 +1,5 @@
 
+/* Container and layout styles */
 .container {
   padding: 0 2rem;
 }
@@ -109,15 +110,50 @@
   margin-left: 0.5rem;
 }
 
+@media (max-width: 600px) {
+  .grid {
+    width: 100%;
+    flex-direction: column;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .card,
+  .footer {
+    border-color: #222;
+  }
+  .code {
+    background: #111;
+  }
+  .logo img {
+    filter: invert(1);
+  }
+}
+
 /* Hero Section */
 .hero {
-  background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
   padding: 6rem 2rem;
   text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.3);
+  z-index: 1;
 }
 
 .heroContent {
+  position: relative;
+  z-index: 2;
   max-width: 800px;
   margin: 0 auto;
 }
@@ -126,85 +162,124 @@
   font-size: 3.5rem;
   font-weight: 700;
   margin-bottom: 1.5rem;
-  line-height: 1.2;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
 }
 
 .heroSubtitle {
   font-size: 1.5rem;
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
   opacity: 0.9;
 }
 
 .heroDescription {
-  font-size: 1.25rem;
-  line-height: 1.6;
-  margin-bottom: 3rem;
+  font-size: 1.2rem;
+  margin-bottom: 2.5rem;
   opacity: 0.8;
-}
-
-.ctaButtons {
-  display: flex;
-  gap: 1rem;
-  justify-content: center;
-  flex-wrap: wrap;
+  line-height: 1.6;
 }
 
 .ctaButton {
   display: inline-block;
   padding: 1rem 2rem;
-  border-radius: 8px;
+  background: #fbbf24;
+  color: #1e40af;
   text-decoration: none;
+  border-radius: 8px;
   font-weight: 600;
+  font-size: 1.1rem;
   transition: all 0.3s ease;
+  margin: 0.5rem;
 }
 
-.ctaButton.primary {
-  background: #fbbf24;
+.ctaButton:hover {
+  background: #f59e0b;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(251, 191, 36, 0.4);
+}
+
+.ctaSecondary {
+  background: transparent;
+  color: white;
+  border: 2px solid rgba(255,255,255,0.3);
+}
+
+.ctaSecondary:hover {
+  background: rgba(255,255,255,0.1);
+  border-color: rgba(255,255,255,0.5);
+}
+
+/* Navigation */
+.nav {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  padding: 1rem 2rem;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+}
+
+.navContent {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.logo {
+  font-size: 1.5rem;
+  font-weight: 700;
   color: #1e40af;
 }
 
-.ctaButton.primary:hover {
-  background: #f59e0b;
-  transform: translateY(-2px);
+.navLinks {
+  display: flex;
+  gap: 2rem;
 }
 
-.ctaButton.secondary {
-  background: transparent;
-  color: white;
-  border: 2px solid rgba(255, 255, 255, 0.3);
+.navLink {
+  text-decoration: none;
+  color: #374151;
+  font-weight: 500;
+  transition: color 0.3s ease;
 }
 
-.ctaButton.secondary:hover {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: rgba(255, 255, 255, 0.5);
+.navLink:hover {
+  color: #1e40af;
 }
 
-/* Section Styles */
+/* Sections */
 .section {
   padding: 5rem 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 .sectionTitle {
   font-size: 2.5rem;
-  font-weight: 700;
   text-align: center;
   margin-bottom: 1rem;
   color: #1e40af;
+  font-weight: 700;
 }
 
 .sectionDescription {
-  font-size: 1.25rem;
+  font-size: 1.2rem;
   text-align: center;
+  margin-bottom: 3rem;
   color: #64748b;
-  max-width: 700px;
-  margin: 0 auto 3rem auto;
   line-height: 1.6;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 /* Widget Container */
 .widgetContainer {
-  max-width: 1200px;
-  margin: 0 auto;
+  margin: 3rem 0;
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 10px 30px rgba(0,0,0,0.1);
@@ -215,8 +290,7 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 2rem;
-  max-width: 1200px;
-  margin: 0 auto;
+  margin-top: 3rem;
 }
 
 .communityCard {
@@ -225,6 +299,7 @@
   border-radius: 12px;
   box-shadow: 0 5px 20px rgba(0,0,0,0.1);
   transition: transform 0.3s ease;
+  border-left: 4px solid #1e40af;
 }
 
 .communityCard:hover {
@@ -242,7 +317,7 @@
   line-height: 1.6;
 }
 
-/* Properties */
+/* Property Grid */
 .propertyGrid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
@@ -252,14 +327,14 @@
 
 .propertyCard {
   background: white;
-  border-radius: 16px;
+  border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  box-shadow: 0 5px 20px rgba(0,0,0,0.1);
   transition: transform 0.3s ease;
 }
 
 .propertyCard:hover {
-  transform: translateY(-5px);
+  transform: translateY(-3px);
 }
 
 .propertyImage {
@@ -279,10 +354,9 @@
   margin-bottom: 0.5rem;
 }
 
-.propertyTitle {
-  font-size: 1.25rem;
-  font-weight: 600;
-  margin-bottom: 0.5rem;
+.propertyAddress {
+  color: #64748b;
+  margin-bottom: 1rem;
 }
 
 .propertyDetails {
@@ -378,11 +452,12 @@
 }
 
 .statCard {
-  background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
   padding: 2rem;
   border-radius: 12px;
   text-align: center;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.1);
 }
 
 .statValue {
@@ -392,41 +467,8 @@
 }
 
 .statLabel {
-  font-size: 1rem;
+  font-size: 1.1rem;
   opacity: 0.9;
-}
-
-/* Calculator */
-.calculator {
-  background: #f8fafc;
-  padding: 5rem 2rem;
-}
-
-.calculatorCard {
-  background: white;
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 3rem;
-  border-radius: 16px;
-  box-shadow: 0 20px 50px rgba(0,0,0,0.1);
-}
-
-.calculatorInputs {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 1.5rem;
-  margin-bottom: 2rem;
-}
-
-.inputGroup {
-  margin-bottom: 1rem;
-}
-
-.inputGroup label {
-  display: block;
-  margin-bottom: 0.5rem;
-  font-weight: 600;
-  color: #374151;
 }
 
 /* Responsive Design */
@@ -436,12 +478,24 @@
   }
   
   .heroSubtitle {
-    font-size: 1.25rem;
+    font-size: 1.2rem;
   }
   
-  .ctaButtons {
+  .heroDescription {
+    font-size: 1rem;
+  }
+  
+  .navContent {
     flex-direction: column;
-    align-items: center;
+    gap: 1rem;
+  }
+  
+  .navLinks {
+    gap: 1rem;
+  }
+  
+  .section {
+    padding: 3rem 1rem;
   }
   
   .sectionTitle {
@@ -453,11 +507,19 @@
     text-align: center;
   }
   
+  .propertyGrid {
+    grid-template-columns: 1fr;
+  }
+  
   .communityGrid {
     grid-template-columns: 1fr;
   }
   
-  .propertyGrid {
+  .featureGrid {
     grid-template-columns: 1fr;
+  }
+  
+  .statsGrid {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   }
 }
