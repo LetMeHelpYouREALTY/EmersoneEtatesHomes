@@ -1,5 +1,6 @@
 import React from 'react';
 import Head from 'next/head';
+import Image from 'next/image';
 import Link from 'next/link';
 
 interface LayoutProps {
@@ -46,12 +47,12 @@ const Layout: React.FC<LayoutProps> = ({
             alignItems: 'center',
             textDecoration: 'none'
           }}>
-            <img 
+            <Image 
               src="/new-logo.jpg" 
               alt="Emerson Estates" 
+              width={60}
+              height={60}
               style={{
-                height: '60px',
-                width: '60px',
                 objectFit: 'cover',
                 borderRadius: '50%'
               }}
