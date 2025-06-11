@@ -5,6 +5,11 @@ export default function Document() {
     <Html lang="en">
       <Head>
           <link rel="icon" href="/favicon.ico" />
+          <meta name="theme-color" content="#ffffff" />
+          <link rel="preconnect" href="https://fonts.googleapis.com" />
+          <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+          <link rel="dns-prefetch" href="//www.google-analytics.com" />
+          <meta name="format-detection" content="telephone=no" />
 
         {/* Meta Tags */}
         <meta name="description" content="Discover luxury homes at Emerson Estates, located at 2583 Regency Cove Ct, Las Vegas, NV 89121. Premium properties with modern amenities and community features." />
