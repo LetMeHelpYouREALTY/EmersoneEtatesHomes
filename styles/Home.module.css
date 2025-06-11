@@ -306,6 +306,20 @@
 .benefitCard p {
   color: #64748b;
   line-height: 1.6;
+  text-align: center;
+}
+
+.widgetContainer {
+  max-width: 100%;
+  margin: 2rem 0;
+  overflow: hidden;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+}
+
+.widgetContainer > * {
+  width: 100%;
+  display: block;
 }
 
 .ctaContainer {
@@ -372,24 +386,24 @@
     flex-direction: column;
     align-items: center;
   }
-  
+
   .ctaButtons {
     flex-direction: column;
     align-items: center;
   }
-  
+
   .quickLinksGrid {
     grid-template-columns: 1fr;
   }
-  
+
   .benefitsGrid {
     grid-template-columns: 1fr;
   }
-  
+
   .ctaContainer {
     padding: 2rem 1rem;
   }
-  
+
   .ctaContainer h2 {
     font-size: 2rem;
   }
