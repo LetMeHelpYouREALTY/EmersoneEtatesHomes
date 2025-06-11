@@ -18,8 +18,8 @@ const Home: NextPage = () => {
         `}</style>
       </Head>
 
-      <Script 
-        src="https://em.realscout.com/widgets/realscout-web-components.umd.js" 
+      <Script
+        src="https://em.realscout.com/widgets/realscout-web-components.umd.js"
         strategy="beforeInteractive"
       />
 

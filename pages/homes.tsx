@@ -1,4 +1,3 @@
-
 import type { NextPage } from "next";
 import Head from "next/head";
 import Script from "next/script";
@@ -19,8 +18,8 @@ const Homes: NextPage = () => {
         `}</style>
       </Head>
 
-      <Script 
-        src="https://em.realscout.com/widgets/realscout-web-components.umd.js" 
+      <Script
+        src="https://em.realscout.com/widgets/realscout-web-components.umd.js"
         strategy="beforeInteractive"
       />
 
