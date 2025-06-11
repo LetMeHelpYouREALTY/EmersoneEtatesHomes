@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
@@ -28,7 +27,7 @@ const Layout: React.FC<LayoutProps> = ({
 
   useEffect(() => {
     setMounted(true);
-    
+
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
     };
@@ -55,8 +54,13 @@ const Layout: React.FC<LayoutProps> = ({
   const navigation = [
     { name: 'Home', href: '/' },
     { name: 'Available Homes', href: '/homes' },
+    { name: 'About', href: '/about' },
+    { name: 'Services', href: '/services' },
+    { name: 'Neighborhoods', href: '/neighborhoods' },
     { name: 'Community', href: '/community' },
     { name: 'Amenities', href: '/amenities' },
+    { name: 'Market Insights', href: '/market-insights' },
+    { name: 'Blog', href: '/blog' },
     { name: 'Contact', href: '/contact' }
   ];
 
@@ -89,20 +93,20 @@ const Layout: React.FC<LayoutProps> = ({
         <meta name="description" content={description} />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
-        
+
         {/* Open Graph */}
         <meta property="og:title" content={title} />
         <meta property="og:description" content={description} />
         <meta property="og:type" content="website" />
         <meta property="og:url" content={process.env.NEXT_PUBLIC_SITE_URL + router.asPath} />
         <meta property="og:image" content={`${process.env.NEXT_PUBLIC_SITE_URL}/design 05_new 2_1749651606209.jpg`} />
-        
+
         {/* Twitter Card */}
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={title} />
         <meta name="twitter:description" content={description} />
         <meta name="twitter:image" content={`${process.env.NEXT_PUBLIC_SITE_URL}/design 05_new 2_1749651606209.jpg`} />
-        
+
         {/* Additional SEO */}
         <meta name="robots" content="index, follow" />
         <meta name="author" content="Dr. Jan Duffy" />
@@ -156,7 +160,7 @@ const Layout: React.FC<LayoutProps> = ({
               >
                 Contact Agent
               </button>
-              
+
               <button
                 className={`mobile-menu-toggle ${isMenuOpen ? 'open' : ''}`}
                 onClick={toggleMenu}
@@ -186,7 +190,7 @@ const Layout: React.FC<LayoutProps> = ({
                   </li>
                 ))}
               </ul>
-              
+
               <div className="mobile-nav-actions">
                 <button
                   onClick={() => {
@@ -197,7 +201,7 @@ const Layout: React.FC<LayoutProps> = ({
                 >
                   Contact Agent
                 </button>
-                
+
                 <div className="agent-contact-info">
                   <a href="tel:+17027677105" className="contact-link">
                     📞 (702) 767-7105
@@ -240,7 +244,7 @@ const Layout: React.FC<LayoutProps> = ({
                   <p className="agent-license">License #: S.0183086</p>
                 </div>
               </div>
-              
+
               <div className="contact-methods">
                 <a href="tel:+17027677105" className="contact-method">
                   <span className="icon">📞</span>
