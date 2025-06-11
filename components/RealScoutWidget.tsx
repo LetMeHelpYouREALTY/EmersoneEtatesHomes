@@ -1,109 +1,80 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef } from 'react'
+
+interface RealScoutWidgetProps {
+  type?: 'search' | 'listings' | 'featured'
+  className?: string
+}
 
 declare global {
   interface Window {
     RealScout?: {
-      render: (config: any) => void
+      render: (element: HTMLElement, config: any) => void
     }
   }
 }
 
-interface RealScoutWidgetProps {
-  widgetId?: string
-  className?: string
-  style?: React.CSSProperties
-}
-
 export default function RealScoutWidget({ 
-  widgetId = "wid-41bffe03-6aba-4eb9-af5b-ed91bbb686a9", 
-  className = "",
-  style = {}
+  type = 'listings', 
+  className = '' 
 }: RealScoutWidgetProps) {
-  const containerRef = useRef<HTMLDivElement>(null)
-  const [isLoaded, setIsLoaded] = useState(false)
-  const [isClient, setIsClient] = useState(false)
+  const widgetRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    setIsClient(true)
-  }, [])
+    const loadRealScoutScript = () => {
+      if (typeof window === 'undefined') return
 
-  useEffect(() => {
-    if (!isClient || !containerRef.current) return
+      // Check if script already exists
+      if (document.querySelector('script[src*="realscout"]')) {
+        initializeWidget()
+        return
+      }
 
-    const loadRealScoutWidget = () => {
       const script = document.createElement('script')
-      script.src = 'https://em.realscout.com/js/embed.js'
+      script.src = 'https://em.realscout.com/js/widgets.js'
       script.async = true
-      script.onload = () => {
-        // Add a small delay to ensure RealScout is fully initialized
-        setTimeout(() => {
-          setIsLoaded(true)
-          if (window.RealScout?.render && containerRef.current) {
-            try {
-              window.RealScout.render({
-                element: containerRef.current,
-                widgetId: widgetId,
-                height: '600px',
-                width: '100%'
-              })
-            } catch (error) {
-              console.error('RealScout widget render error:', error)
-            }
-          }
-        }, 100)
-      }
+      script.onload = initializeWidget
       script.onerror = () => {
-        console.error('Failed to load RealScout widget script')
+        console.warn('Failed to load RealScout widget script')
       }
+
       document.head.appendChild(script)
     }
 
-    // Check if script already exists
-    const existingScript = document.querySelector('script[src="https://em.realscout.com/js/embed.js"]')
-    if (!existingScript) {
-      loadRealScoutWidget()
-    } else {
-      // Script exists, try to render
-      setTimeout(() => {
-        if (window.RealScout?.render && containerRef.current) {
-          try {
-            window.RealScout.render({
-              element: containerRef.current,
-              widgetId: widgetId,
-              height: '600px',
-              width: '100%'
-            })
-            setIsLoaded(true)
-          } catch (error) {
-            console.error('RealScout widget render error:', error)
+    const initializeWidget = () => {
+      if (!widgetRef.current || typeof window === 'undefined') return
+
+      try {
+        if (window.RealScout?.render) {
+          window.RealScout.render(widgetRef.current, {
+            type: type,
+            theme: 'modern',
+            showFilters: true
+          })
+        } else {
+          // Fallback content
+          if (widgetRef.current) {
+            widgetRef.current.innerHTML = `
+              <div style="padding: 20px; text-align: center; border: 1px solid #ddd; border-radius: 8px;">
+                <h3>Property Listings</h3>
+                <p>Loading property information...</p>
+                <p>For the latest available homes, please contact our sales team.</p>
+              </div>
+            `
           }
         }
-      }, 100)
+      } catch (error) {
+        console.warn('RealScout widget initialization failed:', error)
+      }
     }
-  }, [isClient, widgetId])
 
-  // Always return the same structure to prevent hydration mismatches
+    loadRealScoutScript()
+  }, [type])
+
   return (
     <div 
-      ref={containerRef}
+      ref={widgetRef}
       className={`realscout-widget ${className}`}
-      style={style}
-      data-widget-id={widgetId}
-      suppressHydrationWarning={true}
-    >
-      {!isLoaded && (
-        <div 
-          style={{ 
-            height: '600px', 
-            backgroundColor: '#f5f5f5', 
-            display: 'flex', 
-            alignItems: 'center', 
-            justifyContent: 'center' 
-          }}
-        >
-          <p>Loading property listings...</p>
-        </div>
-      )}
-    </div>
+      style={{ minHeight: '400px' }}
+    />
   )
 }

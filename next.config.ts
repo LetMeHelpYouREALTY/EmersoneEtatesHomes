@@ -1,30 +1,18 @@
-
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  outputFileTracingRoot: process.cwd(),
+  reactStrictMode: true,
+  poweredByHeader: false,
   trailingSlash: false,
   compress: true,
-  poweredByHeader: false,
-  reactStrictMode: true,
-  
+
   // ESLint configuration
   eslint: {
     ignoreDuringBuilds: false,
     dirs: ['pages', 'components', 'types']
   },
-  
-  // Experimental features
-  experimental: {
-    allowedRevalidateHeaderKeys: ['content-type'],
-    scrollRestoration: true
-  },
-  
-  // Development configuration
-  async rewrites() {
-    return []
-  },
-  
+
+  // Basic security headers
   async headers() {
     return [
       {
@@ -38,30 +26,31 @@ const nextConfig: NextConfig = {
             key: 'X-Frame-Options',
             value: 'SAMEORIGIN',
           },
-          {
-            key: 'X-XSS-Protection',
-            value: '1; mode=block',
-          },
         ],
       },
     ]
   },
-  
-  // Configure image optimization
+
+  // Image optimization
   images: {
     unoptimized: true,
     domains: ['em.realscout.com']
   },
-  
-  // Webpack configuration for development stability
+
+  outputFileTracingRoot: process.cwd(),
+  experimental: {
+    allowedRevalidateHeaderKeys: ['content-type'],
+    scrollRestoration: true
+  },
+  async rewrites() {
+    return []
+  },
   webpack: (config, { dev, isServer }) => {
     if (dev && !isServer) {
       config.watchOptions = {
         poll: 1000,
         aggregateTimeout: 300,
       };
-      
-      // Fix middleware manifest issue
       config.resolve.fallback = {
         ...config.resolve.fallback,
         fs: false,
