@@ -54,7 +54,10 @@ const nextConfig: NextConfig = {
 
   // Development origins configuration
   ...(process.env.NODE_ENV === 'development' && {
-    allowedDevOrigins: ['*.replit.dev', '*.replit.app', '*.replit.com'],
+    experimental: {
+      allowedRevalidateHeaderKeys: ['content-type'],
+      scrollRestoration: true,
+    }
   }),
 
   async rewrites() {
