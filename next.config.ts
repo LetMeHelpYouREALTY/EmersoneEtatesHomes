@@ -6,7 +6,6 @@ const nextConfig: NextConfig = {
   compress: true,
   poweredByHeader: false,
   reactStrictMode: true,
-  swcMinify: true,
   
   // Fix cross-origin issues in development
   async headers() {
@@ -37,9 +36,8 @@ const nextConfig: NextConfig = {
     domains: ['em.realscout.com']
   },
   
-  // Experimental features for better performance
+  // Experimental features - simplified for stability
   experimental: {
-    optimizeCss: true,
     scrollRestoration: true
   }
 };
