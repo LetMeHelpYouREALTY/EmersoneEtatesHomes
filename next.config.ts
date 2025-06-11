@@ -57,7 +57,13 @@ const nextConfig: NextConfig = {
     experimental: {
       allowedRevalidateHeaderKeys: ['content-type'],
       scrollRestoration: true,
-    }
+    },
+    allowedDevOrigins: [
+      '*.replit.dev',
+      '*.replit.com',
+      'localhost:4000',
+      '0.0.0.0:4000'
+    ]
   }),
 
   async rewrites() {
