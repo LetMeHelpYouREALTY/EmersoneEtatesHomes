@@ -1,13 +1,31 @@
-// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
+
+// Next.js API route for handling real estate inquiries
 import type { NextApiRequest, NextApiResponse } from 'next'
 
-type Data = {
-  name: string
+type InquiryData = {
+  message: string
+  timestamp: string
 }
 
 export default function handler(
   req: NextApiRequest,
-  res: NextApiResponse<Data>
+  res: NextApiResponse<InquiryData>
 ) {
-  res.status(200).json({ name: 'John Doe' })
+  if (req.method === 'POST') {
+    // Handle inquiry submission
+    const { name, email, phone, message } = req.body;
+    
+    // In a real application, you would save this to a database
+    // and send notifications to the sales team
+    
+    res.status(200).json({ 
+      message: `Thank you for your inquiry, ${name}! Our team will contact you within 24 hours.`,
+      timestamp: new Date().toISOString()
+    });
+  } else {
+    res.status(200).json({ 
+      message: 'Emerson Estates Sales API - Ready to serve',
+      timestamp: new Date().toISOString()
+    });
+  }
 }
