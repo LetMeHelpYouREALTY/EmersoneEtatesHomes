@@ -53,14 +53,12 @@ const nextConfig: NextConfig = {
   },
 
   // Development origins configuration
-  ...(process.env.NODE_ENV === 'development' && {
-    allowedDevOrigins: [
-      '*.replit.dev',
-      '*.replit.com',
-      'localhost:4000',
-      '0.0.0.0:4000'
-    ]
-  }),
+  allowedDevOrigins: [
+    '*.replit.dev',
+    '*.replit.com',
+    'localhost:4000',
+    '0.0.0.0:4000'
+  ],
 
   async rewrites() {
     return []
