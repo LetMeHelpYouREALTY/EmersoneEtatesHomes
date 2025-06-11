@@ -42,12 +42,19 @@ const Layout: React.FC<LayoutProps> = ({
           alignItems: 'center'
         }}>
           <Link href="/" style={{
-            color: 'white',
-            textDecoration: 'none',
-            fontSize: '1.5rem',
-            fontWeight: 'bold'
+            display: 'flex',
+            alignItems: 'center',
+            textDecoration: 'none'
           }}>
-            Emerson Estates
+            <img 
+              src="/bhhs-logo.jpg" 
+              alt="Berkshire Hathaway HomeServices" 
+              style={{
+                height: '60px',
+                width: 'auto',
+                objectFit: 'contain'
+              }}
+            />
           </Link>
 
           <nav>
