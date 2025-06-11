@@ -2,12 +2,12 @@
 import React, { useEffect, useCallback } from 'react';
 import { useRouter } from 'next/router';
 
-interface AnalyticsEvent {
-  action: string;
-  category: string;
-  label?: string;
-  value?: number;
-  customParameters?: Record<string, any>;
+declare global {
+  interface Window {
+    gtag: (...args: any[]) => void;
+    dataLayer: any[];
+    ga: (...args: any[]) => void;
+  }
 }
 
 interface AnalyticsProps {
@@ -17,12 +17,12 @@ interface AnalyticsProps {
   enableDebugMode?: boolean;
 }
 
-declare global {
-  interface Window {
-    gtag?: (...args: any[]) => void;
-    dataLayer?: any[];
-    fbq?: (...args: any[]) => void;
-  }
+interface TrackEventProps {
+  action: string;
+  category: string;
+  label?: string;
+  value?: number;
+  customParameters?: Record<string, any>;
 }
 
 const Analytics: React.FC<AnalyticsProps> = ({
@@ -35,21 +35,163 @@ const Analytics: React.FC<AnalyticsProps> = ({
 
   // Initialize analytics
   useEffect(() => {
-    // Initialize Google Analytics if GA_ID is provided
     const gaId = process.env.NEXT_PUBLIC_GA_ID;
+    const gtmId = process.env.NEXT_PUBLIC_GTM_ID;
+    
     if (gaId) {
       initializeGoogleAnalytics(gaId);
     }
+    
+    if (gtmId) {
+      initializeGoogleTagManager(gtmId);
+    }
 
-    // Initialize other analytics services here
     initializeCustomAnalytics();
 
     if (enableDebugMode) {
-      console.log('Analytics initialized');
+      console.log('🔍 Analytics initialized', { gaId: !!gaId, gtmId: !!gtmId });
+    }
+  }, [enableDebugMode]);
+
+  // Initialize Google Analytics
+  const initializeGoogleAnalytics = (gaId: string) => {
+    if (typeof window === 'undefined') return;
+
+    // Load GA script
+    const script = document.createElement('script');
+    script.src = `https://www.googletagmanager.com/gtag/js?id=${gaId}`;
+    script.async = true;
+    document.head.appendChild(script);
+
+    // Initialize gtag
+    window.dataLayer = window.dataLayer || [];
+    window.gtag = function gtag() {
+      window.dataLayer.push(arguments);
+    };
+
+    window.gtag('js', new Date());
+    window.gtag('config', gaId, {
+      page_title: document.title,
+      page_location: window.location.href,
+      send_page_view: trackPageViews
+    });
+  };
+
+  // Initialize Google Tag Manager
+  const initializeGoogleTagManager = (gtmId: string) => {
+    if (typeof window === 'undefined') return;
+
+    // GTM script
+    const script = document.createElement('script');
+    script.innerHTML = `
+      (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+      new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+      j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+      'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+      })(window,document,'script','dataLayer','${gtmId}');
+    `;
+    document.head.appendChild(script);
+
+    // GTM noscript
+    const noscript = document.createElement('noscript');
+    noscript.innerHTML = `
+      <iframe src="https://www.googletagmanager.com/ns.html?id=${gtmId}"
+      height="0" width="0" style="display:none;visibility:hidden"></iframe>
+    `;
+    document.body.appendChild(noscript);
+  };
+
+  // Initialize custom analytics
+  const initializeCustomAnalytics = () => {
+    // Track user session
+    const sessionId = Date.now().toString();
+    sessionStorage.setItem('analytics_session', sessionId);
+    
+    // Track user agent and device info
+    if (typeof window !== 'undefined') {
+      const deviceInfo = {
+        userAgent: navigator.userAgent,
+        language: navigator.language,
+        platform: navigator.platform,
+        screenResolution: `${window.screen.width}x${window.screen.height}`,
+        viewportSize: `${window.innerWidth}x${window.innerHeight}`,
+        timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        sessionId
+      };
+
+      localStorage.setItem('device_info', JSON.stringify(deviceInfo));
+    }
+  };
+
+  // Track events
+  const trackEvent = useCallback(({
+    action,
+    category,
+    label,
+    value,
+    customParameters = {}
+  }: TrackEventProps) => {
+    if (typeof window === 'undefined') return;
+
+    // Google Analytics
+    if (window.gtag) {
+      window.gtag('event', action, {
+        event_category: category,
+        event_label: label,
+        value: value,
+        ...customParameters
+      });
+    }
+
+    // Custom analytics
+    const eventData = {
+      timestamp: new Date().toISOString(),
+      action,
+      category,
+      label,
+      value,
+      url: window.location.href,
+      referrer: document.referrer,
+      sessionId: sessionStorage.getItem('analytics_session'),
+      ...customParameters
+    };
+
+    // Store locally for potential batch sending
+    const existingEvents = JSON.parse(localStorage.getItem('analytics_events') || '[]');
+    existingEvents.push(eventData);
+    localStorage.setItem('analytics_events', JSON.stringify(existingEvents.slice(-100))); // Keep last 100 events
+
+    if (enableDebugMode) {
+      console.log('📊 Event tracked:', eventData);
     }
   }, [enableDebugMode]);
 
   // Track page views
+  const trackPageView = useCallback((url: string) => {
+    if (typeof window === 'undefined') return;
+
+    const pageData = {
+      page_title: document.title,
+      page_location: window.location.href,
+      page_path: url,
+      referrer: document.referrer
+    };
+
+    // Google Analytics
+    if (window.gtag) {
+      window.gtag('config', process.env.NEXT_PUBLIC_GA_ID || '', pageData);
+    }
+
+    // Custom tracking
+    trackEvent({
+      action: 'page_view',
+      category: 'navigation',
+      label: url,
+      customParameters: pageData
+    });
+  }, [trackEvent]);
+
+  // Track page views on route changes
   useEffect(() => {
     if (!trackPageViews) return;
 
@@ -61,280 +203,103 @@ const Analytics: React.FC<AnalyticsProps> = ({
     return () => {
       router.events.off('routeChangeComplete', handleRouteChange);
     };
-  }, [router.events, trackPageViews]);
+  }, [router.events, trackPageViews, trackPageView]);
 
-  // Initialize Google Analytics
-  const initializeGoogleAnalytics = (gaId: string) => {
-    // Add GA script
-    const script = document.createElement('script');
-    script.src = `https://www.googletagmanager.com/gtag/js?id=${gaId}`;
-    script.async = true;
-    document.head.appendChild(script);
-
-    // Initialize gtag
-    window.dataLayer = window.dataLayer || [];
-    window.gtag = function gtag() {
-      window.dataLayer!.push(arguments);
-    };
-
-    window.gtag('js', new Date());
-    window.gtag('config', gaId, {
-      page_location: window.location.href,
-      page_title: document.title,
-      custom_map: {
-        dimension1: 'property_interest',
-        dimension2: 'price_range',
-        dimension3: 'user_type'
-      }
-    });
-  };
-
-  // Initialize custom analytics
-  const initializeCustomAnalytics = () => {
-    // Track real estate specific metrics
-    trackEvent({
-      action: 'session_start',
-      category: 'engagement',
-      label: 'website_visit',
-      customParameters: {
-        timestamp: new Date().toISOString(),
-        page: router.asPath,
-        user_agent: navigator.userAgent,
-        referrer: document.referrer
-      }
-    });
-  };
-
-  // Track page views
-  const trackPageView = useCallback((url: string) => {
-    if (window.gtag) {
-      window.gtag('config', process.env.NEXT_PUBLIC_GA_ID, {
-        page_location: url,
-        page_title: document.title
-      });
-    }
-
-    // Custom page view tracking
-    trackEvent({
-      action: 'page_view',
-      category: 'navigation',
-      label: url,
-      customParameters: {
-        timestamp: new Date().toISOString(),
-        previous_page: document.referrer
-      }
-    });
-
-    if (enableDebugMode) {
-      console.log('Page view tracked:', url);
-    }
-  }, [enableDebugMode]);
-
-  // Track custom events
-  const trackEvent = useCallback(({
-    action,
-    category,
-    label,
-    value,
-    customParameters
-  }: AnalyticsEvent) => {
-    // Google Analytics event tracking
-    if (window.gtag) {
-      window.gtag('event', action, {
-        event_category: category,
-        event_label: label,
-        value: value,
-        ...customParameters
-      });
-    }
-
-    // Custom event tracking for real estate metrics
-    const eventData = {
-      action,
-      category,
-      label,
-      value,
-      timestamp: new Date().toISOString(),
-      page: router.asPath,
-      ...customParameters
-    };
-
-    // Send to custom analytics endpoint (if available)
-    if (process.env.NEXT_PUBLIC_ANALYTICS_ENDPOINT) {
-      fetch(process.env.NEXT_PUBLIC_ANALYTICS_ENDPOINT, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(eventData)
-      }).catch(error => {
-        if (enableDebugMode) {
-          console.warn('Analytics endpoint error:', error);
-        }
-      });
-    }
-
-    if (enableDebugMode) {
-      console.log('Event tracked:', eventData);
-    }
-  }, [router.asPath, enableDebugMode]);
-
-  // Set up event listeners for widget interactions
+  // Track widget interactions
   useEffect(() => {
     if (!trackWidgetInteractions) return;
 
-    const trackWidgetEvent = (event: Event) => {
+    const handleWidgetInteraction = (event: Event) => {
       const target = event.target as HTMLElement;
-      const widgetType = target.closest('[data-widget]')?.getAttribute('data-widget');
+      const widget = target.closest('[data-analytics]');
       
-      if (widgetType) {
+      if (widget) {
+        const widgetType = widget.getAttribute('data-analytics');
+        const actionType = target.tagName.toLowerCase() === 'button' ? 'click' : 'interaction';
+        
         trackEvent({
           action: 'widget_interaction',
-          category: 'widgets',
-          label: widgetType,
+          category: 'engagement',
+          label: `${widgetType}_${actionType}`,
           customParameters: {
-            interaction_type: event.type,
-            widget_element: target.tagName.toLowerCase()
+            widget_type: widgetType,
+            element_type: target.tagName,
+            element_text: target.textContent?.slice(0, 50),
+            element_class: target.className
           }
         });
       }
     };
 
-    // Track clicks on calculator
-    document.addEventListener('click', (e) => {
-      const target = e.target as HTMLElement;
-      if (target.closest('.property-calculator')) {
-        trackEvent({
-          action: 'calculator_use',
-          category: 'tools',
-          label: 'mortgage_calculator',
-          customParameters: {
-            element: target.tagName.toLowerCase(),
-            text_content: target.textContent?.substring(0, 50)
-          }
-        });
-      }
-    });
-
-    // Track property search interactions
-    document.addEventListener('click', (e) => {
-      const target = e.target as HTMLElement;
-      if (target.closest('.realscout-widget')) {
-        trackEvent({
-          action: 'property_search',
-          category: 'listings',
-          label: 'realscout_widget',
-          customParameters: {
-            interaction: 'property_view'
-          }
-        });
-      }
-    });
+    document.addEventListener('click', handleWidgetInteraction);
+    document.addEventListener('change', handleWidgetInteraction);
 
     return () => {
-      document.removeEventListener('click', trackWidgetEvent);
+      document.removeEventListener('click', handleWidgetInteraction);
+      document.removeEventListener('change', handleWidgetInteraction);
     };
   }, [trackWidgetInteractions, trackEvent]);
 
-  // Set up form submission tracking
+  // Track form submissions
   useEffect(() => {
     if (!trackFormSubmissions) return;
 
-    const trackFormSubmission = (event: Event) => {
+    const handleFormSubmission = (event: Event) => {
       const form = event.target as HTMLFormElement;
-      const formType = form.getAttribute('data-form-type') || 'contact';
-      
-      trackEvent({
-        action: 'form_submission',
-        category: 'leads',
-        label: formType,
-        value: 1,
-        customParameters: {
-          form_id: form.id,
-          timestamp: new Date().toISOString()
-        }
-      });
-    };
-
-    document.addEventListener('submit', trackFormSubmission);
-    return () => {
-      document.removeEventListener('submit', trackFormSubmission);
-    };
-  }, [trackFormSubmissions, trackEvent]);
-
-  // Expose tracking functions globally for other components
-  useEffect(() => {
-    // Make tracking functions available globally
-    (window as any).trackAnalytics = {
-      trackEvent,
-      trackPageView,
-      trackPropertyView: (propertyId: string, price?: number) => {
+      if (form.tagName === 'FORM') {
+        const formData = new FormData(form);
+        const formFields = Array.from(formData.keys());
+        
         trackEvent({
-          action: 'property_view',
-          category: 'listings',
-          label: propertyId,
-          value: price,
+          action: 'form_submission',
+          category: 'conversion',
+          label: form.id || form.className || 'unknown_form',
           customParameters: {
-            property_id: propertyId,
-            price: price
+            form_fields: formFields,
+            form_method: form.method,
+            form_action: form.action
           }
-        });
-      },
-      trackContactFormView: () => {
-        trackEvent({
-          action: 'contact_form_view',
-          category: 'leads',
-          label: 'form_impression'
-        });
-      },
-      trackPhoneClick: () => {
-        trackEvent({
-          action: 'phone_click',
-          category: 'leads',
-          label: 'phone_contact',
-          value: 1
-        });
-      },
-      trackEmailClick: () => {
-        trackEvent({
-          action: 'email_click',
-          category: 'leads',
-          label: 'email_contact',
-          value: 1
-        });
-      },
-      trackCalculatorUse: (calculationType: string) => {
-        trackEvent({
-          action: 'calculator_use',
-          category: 'tools',
-          label: calculationType
         });
       }
     };
-  }, [trackEvent, trackPageView]);
+
+    document.addEventListener('submit', handleFormSubmission);
+    return () => document.removeEventListener('submit', handleFormSubmission);
+  }, [trackFormSubmissions, trackEvent]);
 
   // Performance monitoring
   useEffect(() => {
-    // Track page load performance
-    if (typeof window !== 'undefined' && 'performance' in window) {
-      window.addEventListener('load', () => {
-        setTimeout(() => {
-          const perfData = window.performance.timing;
-          const loadTime = perfData.loadEventEnd - perfData.navigationStart;
-          
-          trackEvent({
-            action: 'page_load_time',
-            category: 'performance',
-            label: router.asPath,
-            value: loadTime,
-            customParameters: {
-              load_time_ms: loadTime,
-              dom_content_loaded: perfData.domContentLoadedEventEnd - perfData.navigationStart,
-              first_paint: perfData.responseStart - perfData.navigationStart
-            }
-          });
-        }, 1000);
-      });
+    if (typeof window === 'undefined' || !('performance' in window)) return;
+
+    const trackPerformance = () => {
+      setTimeout(() => {
+        const perfData = window.performance.timing;
+        const loadTime = perfData.loadEventEnd - perfData.navigationStart;
+        const domContentLoaded = perfData.domContentLoadedEventEnd - perfData.navigationStart;
+        const firstPaint = perfData.responseStart - perfData.navigationStart;
+
+        trackEvent({
+          action: 'page_performance',
+          category: 'performance',
+          label: router.asPath,
+          value: loadTime,
+          customParameters: {
+            load_time_ms: loadTime,
+            dom_content_loaded_ms: domContentLoaded,
+            first_paint_ms: firstPaint,
+            dns_lookup_ms: perfData.domainLookupEnd - perfData.domainLookupStart,
+            tcp_connect_ms: perfData.connectEnd - perfData.connectStart,
+            server_response_ms: perfData.responseEnd - perfData.requestStart
+          }
+        });
+      }, 1000);
+    };
+
+    if (document.readyState === 'complete') {
+      trackPerformance();
+    } else {
+      window.addEventListener('load', trackPerformance);
+      return () => window.removeEventListener('load', trackPerformance);
     }
   }, [router.asPath, trackEvent]);
 
@@ -344,21 +309,125 @@ const Analytics: React.FC<AnalyticsProps> = ({
       trackEvent({
         action: 'javascript_error',
         category: 'errors',
-        label: event.message,
+        label: event.message.slice(0, 100),
         customParameters: {
           filename: event.filename,
           line_number: event.lineno,
           column_number: event.colno,
-          stack_trace: event.error?.stack
+          stack_trace: event.error?.stack?.slice(0, 500),
+          user_agent: navigator.userAgent
+        }
+      });
+    };
+
+    const handleUnhandledRejection = (event: PromiseRejectionEvent) => {
+      trackEvent({
+        action: 'promise_rejection',
+        category: 'errors',
+        label: String(event.reason).slice(0, 100),
+        customParameters: {
+          reason: String(event.reason),
+          stack: event.reason?.stack?.slice(0, 500)
         }
       });
     };
 
     window.addEventListener('error', handleError);
-    return () => window.removeEventListener('error', handleError);
+    window.addEventListener('unhandledrejection', handleUnhandledRejection);
+
+    return () => {
+      window.removeEventListener('error', handleError);
+      window.removeEventListener('unhandledrejection', handleUnhandledRejection);
+    };
   }, [trackEvent]);
 
-  // This component doesn't render anything visible
+  // User engagement tracking
+  useEffect(() => {
+    let engagementTimer: NodeJS.Timeout;
+    let scrollDepth = 0;
+    let timeOnPage = 0;
+
+    const trackEngagement = () => {
+      timeOnPage += 10; // Track every 10 seconds
+      
+      trackEvent({
+        action: 'user_engagement',
+        category: 'engagement',
+        label: router.asPath,
+        value: timeOnPage,
+        customParameters: {
+          time_on_page: timeOnPage,
+          scroll_depth: scrollDepth,
+          page_height: document.documentElement.scrollHeight,
+          viewport_height: window.innerHeight
+        }
+      });
+    };
+
+    const handleScroll = () => {
+      const currentScroll = Math.round(
+        (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100
+      );
+      scrollDepth = Math.max(scrollDepth, currentScroll);
+    };
+
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        clearInterval(engagementTimer);
+      } else {
+        engagementTimer = setInterval(trackEngagement, 10000);
+      }
+    };
+
+    // Start tracking
+    engagementTimer = setInterval(trackEngagement, 10000);
+    window.addEventListener('scroll', handleScroll);
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    return () => {
+      clearInterval(engagementTimer);
+      window.removeEventListener('scroll', handleScroll);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+  }, [router.asPath, trackEvent]);
+
+  // Batch send analytics data
+  useEffect(() => {
+    const sendBatchAnalytics = () => {
+      const events = JSON.parse(localStorage.getItem('analytics_events') || '[]');
+      if (events.length > 0) {
+        // In a real implementation, you would send this to your analytics API
+        if (enableDebugMode) {
+          console.log('📤 Batch sending analytics:', events.length, 'events');
+        }
+        // Clear sent events
+        localStorage.setItem('analytics_events', '[]');
+      }
+    };
+
+    // Send batch every 5 minutes
+    const batchInterval = setInterval(sendBatchAnalytics, 5 * 60 * 1000);
+
+    // Send on page unload
+    const handleBeforeUnload = () => {
+      sendBatchAnalytics();
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
+    return () => {
+      clearInterval(batchInterval);
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, [enableDebugMode]);
+
+  // Expose tracking function globally for manual tracking
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      (window as any).trackAnalyticsEvent = trackEvent;
+    }
+  }, [trackEvent]);
+
   return null;
 };
 
