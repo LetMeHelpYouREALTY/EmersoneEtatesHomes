@@ -16,6 +16,7 @@ interface Property {
 const RealScoutWidget = () => {
   const [properties, setProperties] = useState<Property[]>([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
   // Mock data for demonstration
   const mockProperties: Property[] = [
@@ -49,10 +50,16 @@ const RealScoutWidget = () => {
   ]
 
   useEffect(() => {
-    // Simulate API call
+    // Simulate API call with error handling
     const timer = setTimeout(() => {
-      setProperties(mockProperties)
-      setLoading(false)
+      try {
+        setProperties(mockProperties)
+        setLoading(false)
+        setError(null)
+      } catch (err) {
+        setError('Failed to load properties')
+        setLoading(false)
+      }
     }, 1000)
 
     return () => clearTimeout(timer)
@@ -63,6 +70,20 @@ const RealScoutWidget = () => {
       <div className="text-center py-12">
         <div className="loading mx-auto mb-4"></div>
         <p className="text-gray-600">Loading available properties...</p>
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="text-center py-12">
+        <p className="text-red-600 mb-4">{error}</p>
+        <button 
+          onClick={() => window.location.reload()} 
+          className="bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-lg"
+        >
+          Retry
+        </button>
       </div>
     )
   }
