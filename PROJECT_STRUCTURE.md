@@ -3,6 +3,7 @@
 
 ## 🏗️ Project Overview
 **Domain:** www.emersonestateshomes.com  
+**Address:** 2583 Regency Cove Ct, Las Vegas, NV 89121  
 **Type:** Luxury Real Estate Website  
 **Framework:** Next.js with TypeScript  
 **Deployment:** Replit Deployments  

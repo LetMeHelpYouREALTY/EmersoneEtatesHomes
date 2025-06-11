@@ -120,7 +120,7 @@ const Contact: NextPage = () => {
 
           <div className={styles.contactInfo}>
             <h3>Visit Our Sales Office</h3>
-            <p>123 Emerson Estates Blvd<br />Las Vegas, NV 89123</p>
+            <p>2583 Regency Cove Ct<br />Las Vegas, NV 89121</p>
             <p>Phone: (702) 555-0123<br />Email: sales@emersonestates.com</p>
             <p>Hours: Monday - Sunday, 9 AM - 6 PM</p>
           </div>

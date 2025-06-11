@@ -112,7 +112,7 @@ const Home: NextPage = () => {
           <div className={styles.contactInfo}>
             <div className={styles.contactCard}>
               <h3>Sales Office</h3>
-              <p>123 Emerson Estates Blvd<br />Las Vegas, NV 89123</p>
+              <p>2583 Regency Cove Ct<br />Las Vegas, NV 89121</p>
               <p>Phone: (702) 555-HOMES</p>
               <p>Email: info@emersonestates.com</p>
             </div>
