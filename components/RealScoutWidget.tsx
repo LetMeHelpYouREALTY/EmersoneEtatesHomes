@@ -1,5 +1,5 @@
 
-import { useEffect, useState } from 'react'
+import React from 'react'
 
 interface RealScoutWidgetProps {
   widgetId?: string;
@@ -10,20 +10,6 @@ const RealScoutWidget: React.FC<RealScoutWidgetProps> = ({
   widgetId = "realscout-widget", 
   className = "" 
 }) => {
-  const [isClient, setIsClient] = useState(false);
-
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
-
-  if (!isClient) {
-    return (
-      <div className={`realscout-loading ${className}`}>
-        <p>Loading property listings...</p>
-      </div>
-    );
-  }
-
   return (
     <div className={className}>
       <realscout-widget-embed 

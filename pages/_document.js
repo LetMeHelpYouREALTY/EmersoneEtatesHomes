@@ -1,14 +1,13 @@
 
 import { Html, Head, Main, NextScript } from 'next/document'
-import Script from 'next/script'
 
 export default function Document() {
   return (
     <Html>
       <Head>
-        <Script
+        <script
           src="https://em.realscout.com/widgets/realscout-web-components.umd.js"
-          strategy="beforeInteractive"
+          defer
         />
       </Head>
       <body>
