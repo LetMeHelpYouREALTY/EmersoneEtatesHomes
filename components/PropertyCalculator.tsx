@@ -59,11 +59,7 @@ const PropertyCalculator: React.FC = () => {
     }
   }, [values.downPayment, values.homePrice, values.downPaymentPercent]);
 
-  useEffect(() => {
-    calculatePayments();
-  }, [values]);
-
-  const calculatePayments = () => {
+  const calculatePayments = useCallback(() => {
     setIsCalculating(true);
 
     setTimeout(() => {
@@ -104,7 +100,11 @@ const PropertyCalculator: React.FC = () => {
 
       setIsCalculating(false);
     }, 500);
-  };
+  }, [values]);
+
+  useEffect(() => {
+    calculatePayments();
+  }, [calculatePayments]);
 
   const handleInputChange = (field: keyof CalculatorState, value: number) => {
     setValues(prev => ({ ...prev, [field]: value }));

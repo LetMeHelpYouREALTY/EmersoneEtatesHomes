@@ -344,12 +344,7 @@ const Layout: React.FC<LayoutProps> = React.memo(({
               >
                 ✕
               </button>
-              <ContactForm
-                onSuccess={() => {
-                  closeContactModal();
-                }}
-                showTitle={true}
-              />
+              <ContactForm onSubmitSuccess={closeContactModal} />
             </div>
           </div>
         )}

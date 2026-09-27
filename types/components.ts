@@ -1,5 +1,6 @@
-
 import type { ReactNode, HTMLAttributes, FormEvent } from 'react';
+import type { PropertySearchParams } from './api';
+import type { AgentInfo, ContactFormData, MarketStatistics } from './domain';
 
 export interface BaseComponentProps {
   readonly className?: string;

@@ -23,7 +23,7 @@ const MarketStats: React.FC<MarketStatsProps> = ({
   const [isVisible, setIsVisible] = useState(false);
   const [animatedValues, setAnimatedValues] = useState<Record<string, number>>({});
 
-  const marketStats = useMemo(() => [
+  const marketStats = useMemo<MarketStat[]>(() => [
     {
       label: 'Median Home Price',
       value: '$485,000',
@@ -123,6 +123,9 @@ const MarketStats: React.FC<MarketStatsProps> = ({
     }
 
     const animatedVal = animatedValues[stat.label];
+    if (animatedVal === undefined) {
+      return stat.value;
+    }
 
     if (stat.value.includes('$')) {
       return `$${Math.round(animatedVal).toLocaleString()}`;
@@ -250,8 +253,8 @@ const MarketStats: React.FC<MarketStatsProps> = ({
             className="cta-button"
             onClick={() => {
               // Track interaction
-              if (typeof window !== 'undefined' && (window as any).trackAnalyticsEvent) {
-                (window as any).trackAnalyticsEvent({
+              if (typeof window !== 'undefined' && window.trackAnalyticsEvent) {
+                window.trackAnalyticsEvent({
                   action: 'market_analysis_request',
                   category: 'conversion',
                   label: 'market_stats_widget'

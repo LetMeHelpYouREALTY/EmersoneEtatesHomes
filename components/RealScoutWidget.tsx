@@ -15,8 +15,8 @@ const RealScoutWidget: React.FC<RealScoutWidgetProps> = memo(({
   const widgetIdRef = useRef(`realscout-widget-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`);
 
   useEffect(() => {
+    const container = containerRef.current;
     let script: HTMLScriptElement;
-    let observer: MutationObserver;
 
     const loadWidget = () => {
       if (!document.getElementById('realscout-widget-script')) {
@@ -35,7 +35,7 @@ const RealScoutWidget: React.FC<RealScoutWidgetProps> = memo(({
       }
 
       script.onload = () => {
-        if (containerRef.current) {
+        if (container) {
           const widgetContainer = document.createElement('realscout-office-listings');
           widgetContainer.setAttribute('agent-encoded-id', agentId);
           widgetContainer.setAttribute('sort-order', 'STATUS_AND_SIGNIFICANT_CHANGE');
@@ -43,8 +43,8 @@ const RealScoutWidget: React.FC<RealScoutWidgetProps> = memo(({
           widgetContainer.setAttribute('property-types', 'SFR,MF');
           widgetContainer.id = widgetIdRef.current;
 
-          containerRef.current.innerHTML = '';
-          containerRef.current.appendChild(widgetContainer);
+          container.innerHTML = '';
+          container.appendChild(widgetContainer);
 
           setIsLoaded(true);
         }
@@ -58,17 +58,17 @@ const RealScoutWidget: React.FC<RealScoutWidgetProps> = memo(({
     const handleMutations = (mutations: MutationRecord[]) => {
       mutations.forEach(mutation => {
         if (mutation.type === 'attributes' && mutation.attributeName === 'data-rs-loaded') {
-          if (containerRef.current && mutation.target instanceof HTMLElement) {
+          if (container && mutation.target instanceof HTMLElement) {
             setIsLoaded(true);
           }
         }
       });
     };
 
-    observer = new MutationObserver(handleMutations);
+    const observer = new MutationObserver(handleMutations);
 
-    if (containerRef.current) {
-      observer.observe(containerRef.current, {
+    if (container) {
+      observer.observe(container, {
         attributes: true,
         attributeFilter: ['data-rs-loaded'],
         childList: false,
@@ -82,13 +82,11 @@ const RealScoutWidget: React.FC<RealScoutWidgetProps> = memo(({
         script.onerror = null;
       }
 
-      if (containerRef.current) {
-        containerRef.current.innerHTML = '';
+      if (container) {
+        container.innerHTML = '';
       }
 
-      if (observer) {
-        observer.disconnect();
-      }
+      observer.disconnect();
     };
   }, [agentId, error, isLoaded]);
 

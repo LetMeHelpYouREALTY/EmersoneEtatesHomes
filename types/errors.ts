@@ -25,7 +25,9 @@ export class ValidationError extends AppError {
 
   constructor(message: string, field?: string) {
     super(message, 'VALIDATION_ERROR', 400);
-    this.field = field;
+    if (field !== undefined) {
+      this.field = field;
+    }
     this.name = 'ValidationError';
   }
 }
@@ -49,7 +51,9 @@ export class RateLimitError extends AppError {
 
   constructor(message: string = 'Rate limit exceeded', retryAfter?: number) {
     super(message, 'RATE_LIMIT', 429);
-    this.retryAfter = retryAfter;
+    if (retryAfter !== undefined) {
+      this.retryAfter = retryAfter;
+    }
     this.name = 'RateLimitError';
   }
 }
@@ -75,25 +79,31 @@ export interface ErrorDetails {
 }
 
 export const createErrorDetails = (error: Error, path?: string): ErrorDetails => {
-  if (error instanceof AppError) {
-    return {
-      message: error.message,
-      code: error.code,
-      statusCode: error.statusCode,
-      timestamp: new Date().toISOString(),
-      path,
-      field: error instanceof ValidationError ? error.field : undefined,
-      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined,
-    };
-  }
+  const stack =
+    process.env.NODE_ENV === 'development' && error.stack ? error.stack : undefined;
+
+  const base =
+    error instanceof AppError
+      ? {
+          message: error.message,
+          code: error.code,
+          statusCode: error.statusCode,
+          timestamp: new Date().toISOString(),
+        }
+      : {
+          message: error.message || 'Internal server error',
+          code: 'UNKNOWN_ERROR',
+          statusCode: 500,
+          timestamp: new Date().toISOString(),
+        };
 
   return {
-    message: error.message || 'Internal server error',
-    code: 'UNKNOWN_ERROR',
-    statusCode: 500,
-    timestamp: new Date().toISOString(),
-    path,
-    stack: process.env.NODE_ENV === 'development' ? error.stack : undefined,
+    ...base,
+    ...(path !== undefined ? { path } : {}),
+    ...(error instanceof ValidationError && error.field !== undefined
+      ? { field: error.field }
+      : {}),
+    ...(stack ? { stack } : {}),
   };
 };
 

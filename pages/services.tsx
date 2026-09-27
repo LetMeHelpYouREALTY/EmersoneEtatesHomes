@@ -1,5 +1,6 @@
 
 import type { NextPage } from "next";
+import Link from "next/link";
 import Layout from "../components/Layout";
 import SEOHead from "../components/SEOHead";
 import styles from "../styles/Home.module.css";
@@ -61,7 +62,7 @@ const ServicesPage: NextPage = () => {
                 <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>💰</div>
                 <h3 style={{ fontSize: '1.8rem', marginBottom: '1rem', color: '#1e40af' }}>Luxury Home Selling</h3>
                 <p style={{ marginBottom: '1.5rem', lineHeight: '1.6' }}>
-                  Maximize your property's value with our comprehensive selling strategy. Professional marketing, 
+                  Maximize your property&apos;s value with our comprehensive selling strategy. Professional marketing, 
                   staging advice, and expert negotiation to achieve the best possible outcome.
                 </p>
                 <ul style={{ listStyle: 'none', padding: 0 }}>
@@ -77,7 +78,7 @@ const ServicesPage: NextPage = () => {
                 <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>📈</div>
                 <h3 style={{ fontSize: '1.8rem', marginBottom: '1rem', color: '#1e40af' }}>Investment Consulting</h3>
                 <p style={{ marginBottom: '1.5rem', lineHeight: '1.6' }}>
-                  Leverage Dr. Duffy's analytical expertise to make informed real estate investment decisions. 
+                  Leverage Dr. Duffy&apos;s analytical expertise to make informed real estate investment decisions. 
                   Data-driven insights for building and managing your property portfolio.
                 </p>
                 <ul style={{ listStyle: 'none', padding: 0 }}>
@@ -231,7 +232,7 @@ const ServicesPage: NextPage = () => {
               comprehensive services can help you achieve them.
             </p>
             <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
-              <a 
+              <Link 
                 href="/contact" 
                 style={{ 
                   background: 'white', 
@@ -244,7 +245,7 @@ const ServicesPage: NextPage = () => {
                 }}
               >
                 Schedule Consultation
-              </a>
+              </Link>
               <a 
                 href="tel:(702)555-1234" 
                 style={{ 

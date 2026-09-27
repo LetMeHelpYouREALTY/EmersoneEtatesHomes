@@ -1,14 +1,6 @@
-
 import React, { useEffect, useCallback } from 'react';
 import { useRouter } from 'next/router';
-
-declare global {
-  interface Window {
-    gtag: (...args: any[]) => void;
-    dataLayer: any[];
-    ga: (...args: any[]) => void;
-  }
-}
+import type { PropertyViewData } from '../types/domain';
 
 interface AnalyticsProps {
   trackPageViews?: boolean;
@@ -22,7 +14,7 @@ interface TrackEventProps {
   category: string;
   label?: string;
   value?: number;
-  customParameters?: Record<string, any>;
+  customParameters?: Record<string, unknown>;
 }
 
 const Analytics: React.FC<AnalyticsProps> = ({
@@ -33,98 +25,68 @@ const Analytics: React.FC<AnalyticsProps> = ({
 }) => {
   const router = useRouter();
 
-  // Initialize analytics
   useEffect(() => {
     const gaId = process.env.NEXT_PUBLIC_GA_ID;
-    const gtmId = process.env.NEXT_PUBLIC_GTM_ID;
-    
-    if (gaId) {
-      initializeGoogleAnalytics(gaId);
-    }
-    
-    if (gtmId) {
-      initializeGoogleTagManager(gtmId);
-    }
+    const gtmId = process.env['NEXT_PUBLIC_GTM_ID'];
 
-    initializeCustomAnalytics();
+    const initializeGoogleAnalytics = (measurementId: string) => {
+      if (typeof window === 'undefined') return;
+      if (window.gtag) return;
 
-    if (enableDebugMode) {
-      console.log('🔍 Analytics initialized', { gaId: !!gaId, gtmId: !!gtmId });
-    }
-  }, [enableDebugMode]);
+      const script = document.createElement('script');
+      script.src = `https://www.googletagmanager.com/gtag/js?id=${measurementId}`;
+      script.async = true;
+      document.head.appendChild(script);
 
-  // Initialize Google Analytics
-  const initializeGoogleAnalytics = (gaId: string) => {
-    if (typeof window === 'undefined') return;
+      window.dataLayer = window.dataLayer ?? [];
+      window.gtag = function gtag(...args: unknown[]) {
+        window.dataLayer?.push(args);
+      };
 
-    // Prevent duplicate initialization
-    if (window.gtag) return;
+      window.gtag('js', new Date());
+      window.gtag('config', measurementId, {
+        page_title: document.title,
+        page_location: window.location.href,
+        send_page_view: trackPageViews,
+        custom_map: {
+          custom_parameter_1: 'property_type',
+          custom_parameter_2: 'user_segment'
+        },
+        allow_enhanced_conversions: true,
+        automatic_screen_view: true
+      });
 
-    // Load GA script
-    const script = document.createElement('script');
-    script.src = `https://www.googletagmanager.com/gtag/js?id=${gaId}`;
-    script.async = true;
-    document.head.appendChild(script);
-
-    // Initialize gtag
-    window.dataLayer = window.dataLayer || [];
-    window.gtag = function gtag() {
-      window.dataLayer.push(arguments);
+      window.gtag('config', measurementId, {
+        custom_parameter_1: 'luxury_homes',
+        custom_parameter_2: 'las_vegas_market'
+      });
     };
 
-    window.gtag('js', new Date());
-    window.gtag('config', gaId, {
-      page_title: document.title,
-      page_location: window.location.href,
-      send_page_view: trackPageViews,
-      custom_map: {
-        'custom_parameter_1': 'property_type',
-        'custom_parameter_2': 'user_segment'
-      },
-      // Enhanced ecommerce for real estate
-      allow_enhanced_conversions: true,
-      automatic_screen_view: true
-    });
+    const initializeGoogleTagManager = (containerId: string) => {
+      if (typeof window === 'undefined') return;
 
-    // Set up enhanced measurement for real estate
-    window.gtag('config', gaId, {
-      custom_parameter_1: 'luxury_homes',
-      custom_parameter_2: 'las_vegas_market'
-    });
-  };
-
-  // Initialize Google Tag Manager
-  const initializeGoogleTagManager = (gtmId: string) => {
-    if (typeof window === 'undefined') return;
-
-    // GTM script
-    const script = document.createElement('script');
-    script.innerHTML = `
+      const script = document.createElement('script');
+      script.innerHTML = `
       (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
       new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
       j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
       'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-      })(window,document,'script','dataLayer','${gtmId}');
+      })(window,document,'script','dataLayer','${containerId}');
     `;
-    document.head.appendChild(script);
+      document.head.appendChild(script);
 
-    // GTM noscript
-    const noscript = document.createElement('noscript');
-    noscript.innerHTML = `
-      <iframe src="https://www.googletagmanager.com/ns.html?id=${gtmId}"
+      const noscript = document.createElement('noscript');
+      noscript.innerHTML = `
+      <iframe src="https://www.googletagmanager.com/ns.html?id=${containerId}"
       height="0" width="0" style="display:none;visibility:hidden"></iframe>
     `;
-    document.body.appendChild(noscript);
-  };
+      document.body.appendChild(noscript);
+    };
 
-  // Initialize custom analytics
-  const initializeCustomAnalytics = () => {
-    // Track user session
-    const sessionId = Date.now().toString();
-    sessionStorage.setItem('analytics_session', sessionId);
-    
-    // Track user agent and device info
-    if (typeof window !== 'undefined') {
+    const initializeCustomAnalytics = () => {
+      const sessionId = Date.now().toString();
+      sessionStorage.setItem('analytics_session', sessionId);
+
       const deviceInfo = {
         userAgent: navigator.userAgent,
         language: navigator.language,
@@ -136,8 +98,22 @@ const Analytics: React.FC<AnalyticsProps> = ({
       };
 
       localStorage.setItem('device_info', JSON.stringify(deviceInfo));
+    };
+
+    if (gaId) {
+      initializeGoogleAnalytics(gaId);
     }
-  };
+
+    if (gtmId) {
+      initializeGoogleTagManager(gtmId);
+    }
+
+    initializeCustomAnalytics();
+
+    if (enableDebugMode) {
+      console.log('🔍 Analytics initialized', { gaId: !!gaId, gtmId: !!gtmId });
+    }
+  }, [enableDebugMode, trackPageViews]);
 
   // Track events
   const trackEvent = useCallback(({
@@ -168,7 +144,7 @@ const Analytics: React.FC<AnalyticsProps> = ({
       // Special tracking for real estate events
       if (category === 'property') {
         window.gtag('event', 'property_interaction', {
-          property_type: customParameters.propertyType || 'luxury_home',
+          property_type: (customParameters['propertyType'] as string | undefined) || 'luxury_home',
           interaction_type: action,
           location: 'emerson_estates',
           agent: 'dr_jan_duffy'
@@ -195,8 +171,8 @@ const Analytics: React.FC<AnalyticsProps> = ({
       url: window.location.href,
       referrer: document.referrer,
       sessionId: sessionStorage.getItem('analytics_session'),
-      streamId: process.env.NEXT_PUBLIC_STREAM_ID,
-      streamUrl: process.env.NEXT_PUBLIC_STREAM_URL,
+      streamId: process.env['NEXT_PUBLIC_STREAM_ID'],
+      streamUrl: process.env['NEXT_PUBLIC_STREAM_URL'],
       ...customParameters
     };
 
@@ -339,12 +315,13 @@ const Analytics: React.FC<AnalyticsProps> = ({
       }, 1000);
     };
 
-    if (document.readyState === 'complete') {
-      trackPerformance();
-    } else {
+    if (document.readyState !== 'complete') {
       window.addEventListener('load', trackPerformance);
       return () => window.removeEventListener('load', trackPerformance);
     }
+
+    trackPerformance();
+    return undefined;
   }, [router.asPath, trackEvent]);
 
   // Error tracking
@@ -488,15 +465,16 @@ const Analytics: React.FC<AnalyticsProps> = ({
       // Track calculator usage
       const calculatorInputs = document.querySelectorAll('[data-analytics="calculator"] input');
       calculatorInputs.forEach(input => {
-        input.addEventListener('change', () => {
+        const field = input as HTMLInputElement;
+        field.addEventListener('change', () => {
           trackEvent({
             action: 'calculator_interaction',
             category: 'engagement',
-            label: input.name || 'calculator_field',
+            label: field.name || 'calculator_field',
             customParameters: {
               tool: 'mortgage_calculator',
-              fieldType: input.type,
-              value: input.value
+              fieldType: field.type,
+              value: field.value
             }
           });
         });
@@ -532,8 +510,8 @@ const Analytics: React.FC<AnalyticsProps> = ({
   // Expose tracking function globally for manual tracking
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      (window as any).trackAnalyticsEvent = trackEvent;
-      (window as any).trackPropertyView = (propertyId: string, propertyData: any) => {
+      window.trackAnalyticsEvent = trackEvent;
+      window.trackPropertyView = (propertyId: string, propertyData: PropertyViewData) => {
         trackEvent({
           action: 'property_view',
           category: 'property',

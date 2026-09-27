@@ -9,22 +9,54 @@ interface GalleryImage {
   category: 'exterior' | 'interior' | 'amenities' | 'community';
 }
 
+type GalleryImageInput = {
+  id?: number;
+  src: string;
+  alt: string;
+  title: string;
+  category?: string;
+};
+
+const normalizeCategory = (category?: string): GalleryImage['category'] => {
+  if (
+    category === 'exterior' ||
+    category === 'interior' ||
+    category === 'amenities' ||
+    category === 'community'
+  ) {
+    return category;
+  }
+  return 'amenities';
+};
+
+const normalizeImages = (items: GalleryImageInput[], startId = 1): GalleryImage[] =>
+  items.map((item, index) => ({
+    id: item.id ?? startId + index,
+    src: item.src,
+    alt: item.alt,
+    title: item.title,
+    category: normalizeCategory(item.category),
+  }));
+
 interface ImageGalleryProps {
   category?: 'all' | 'exterior' | 'interior' | 'amenities' | 'community';
   className?: string;
+  title?: string;
+  images?: GalleryImageInput[];
 }
 
 const ImageGallery: React.FC<ImageGalleryProps> = ({ 
   category = 'all', 
-  className = '' 
+  className = '',
+  title: galleryTitle,
+  images: imagesProp,
 }) => {
   const [selectedImage, setSelectedImage] = useState<GalleryImage | null>(null);
   const [activeCategory, setActiveCategory] = useState<string>(category);
   const [isLoading, setIsLoading] = useState(true);
   const [loadedImages, setLoadedImages] = useState<Set<number>>(new Set());
 
-  // Sample images - in production these would come from a CMS or API
-  const images: GalleryImage[] = [
+  const defaultImages: GalleryImage[] = [
     {
       id: 1,
       src: '/design 05_new 2_1749651606209.jpg',
@@ -55,6 +87,8 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({
       category: ['exterior', 'interior', 'amenities', 'community'][i % 4] as GalleryImage['category']
     }))
   ];
+
+  const images: GalleryImage[] = imagesProp ? normalizeImages(imagesProp) : defaultImages;
 
   const categories = [
     { key: 'all', label: 'All Photos', icon: '📸' },
@@ -91,7 +125,7 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({
     document.body.style.overflow = 'unset';
   };
 
-  const navigateImage = (direction: 'prev' | 'next') => {
+  const navigateImage = useCallback((direction: 'prev' | 'next') => {
     if (!selectedImage) return;
 
     const currentIndex = filteredImages.findIndex(img => img.id === selectedImage.id);
@@ -103,10 +137,13 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({
       newIndex = currentIndex < filteredImages.length - 1 ? currentIndex + 1 : 0;
     }
 
-    setSelectedImage(filteredImages[newIndex]);
-  };
+    const nextImage = filteredImages[newIndex];
+    if (nextImage) {
+      setSelectedImage(nextImage);
+    }
+  }, [selectedImage, filteredImages]);
 
-  const handleKeyPress = (e: KeyboardEvent) => {
+  const handleKeyPress = useCallback((e: KeyboardEvent) => {
     if (!selectedImage) return;
 
     switch (e.key) {
@@ -119,23 +156,21 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({
       case 'ArrowRight':
         navigateImage('next');
         break;
+      default:
+        break;
     }
-  };
-
-  const handleKeyPressCallback = useCallback((e: KeyboardEvent) => {
-    handleKeyPress(e);
-  }, [handleKeyPress]);
+  }, [selectedImage, navigateImage]);
 
   useEffect(() => {
-    document.addEventListener('keydown', handleKeyPressCallback);
-    return () => document.removeEventListener('keydown', handleKeyPressCallback);
-  }, [handleKeyPressCallback]);
+    document.addEventListener('keydown', handleKeyPress);
+    return () => document.removeEventListener('keydown', handleKeyPress);
+  }, [handleKeyPress]);
 
   return (
     <section className={`image-gallery ${className}`}>
       <div className="gallery-container">
         <div className="gallery-header">
-          <h2>Photo Gallery</h2>
+          <h2>{galleryTitle ?? 'Photo Gallery'}</h2>
           <p>Explore luxury living at Emerson Estates</p>
         </div>
 

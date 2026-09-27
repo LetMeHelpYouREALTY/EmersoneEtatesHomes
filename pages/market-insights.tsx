@@ -1,5 +1,6 @@
 
 import type { NextPage } from "next";
+import Link from "next/link";
 import Layout from "../components/Layout";
 import SEOHead from "../components/SEOHead";
 import MarketStats from "../components/MarketStats";
@@ -101,7 +102,7 @@ const MarketInsightsPage: NextPage = () => {
                 </h3>
                 <div style={{ marginBottom: '2rem' }}>
                   <h4 style={{ color: '#333', marginBottom: '0.5rem' }}>Tax Advantages</h4>
-                  <p style={{ marginBottom: '1rem' }}>Nevada's no state income tax policy makes it attractive for high-net-worth individuals and retirees.</p>
+                  <p style={{ marginBottom: '1rem' }}>Nevada&apos;s no state income tax policy makes it attractive for high-net-worth individuals and retirees.</p>
                   
                   <h4 style={{ color: '#333', marginBottom: '0.5rem' }}>Population Growth</h4>
                   <p style={{ marginBottom: '1rem' }}>Continued migration from California and other high-tax states drives housing demand.</p>
@@ -208,11 +209,11 @@ const MarketInsightsPage: NextPage = () => {
               Get Personalized Market Analysis
             </h2>
             <p style={{ fontSize: '1.2rem', marginBottom: '2rem', opacity: '0.9' }}>
-              Leverage Dr. Duffy's analytical expertise for customized market insights tailored to your 
+              Leverage Dr. Duffy&apos;s analytical expertise for customized market insights tailored to your 
               specific investment goals and property interests.
             </p>
             <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
-              <a 
+              <Link 
                 href="/contact" 
                 style={{ 
                   background: 'white', 
@@ -225,8 +226,8 @@ const MarketInsightsPage: NextPage = () => {
                 }}
               >
                 Request Analysis
-              </a>
-              <a 
+              </Link>
+              <Link 
                 href="/services" 
                 style={{ 
                   background: 'transparent', 
@@ -240,7 +241,7 @@ const MarketInsightsPage: NextPage = () => {
                 }}
               >
                 View Services
-              </a>
+              </Link>
             </div>
           </div>
         </section>

@@ -1,5 +1,6 @@
 
 import type { NextPage, GetStaticProps } from "next";
+import Parser from "rss-parser";
 import Layout from "../components/Layout";
 import SEOHead from "../components/SEOHead";
 import Link from "next/link";
@@ -338,14 +339,13 @@ const MarketTrends: NextPage<MarketTrendsProps> = ({ trends, error }) => {
 
 export const getStaticProps: GetStaticProps = async () => {
   try {
-    const Parser = require('rss-parser');
     const parser = new Parser();
 
     const feed = await parser.parseURL('https://www.simplifyingthemarket.com/en/feed?a=956758-ef2edda2f940e018328655620ea05f18');
     
-    const trends: TrendData[] = feed.items.slice(0, 6).map((item: any) => ({
+    const trends: TrendData[] = feed.items.slice(0, 6).map((item: Parser.Item) => ({
       title: item.title || 'Market Update',
-      description: item.contentSnippet || item.content || item.description || '',
+      description: item.contentSnippet || item.content || '',
       link: item.link || '#',
       pubDate: item.pubDate || item.isoDate || new Date().toISOString(),
       category: 'Market Analysis'

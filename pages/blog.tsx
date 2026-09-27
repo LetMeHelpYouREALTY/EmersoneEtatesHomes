@@ -1,7 +1,7 @@
 import { GetStaticProps } from 'next';
 import { useState, useEffect } from 'react';
 import Head from 'next/head';
-import Link from 'next/link';
+import Parser from 'rss-parser';
 import Layout from '../components/Layout';
 import styles from '../styles/Home.module.css';
 
@@ -442,9 +442,13 @@ const Blog = ({ posts, error }: BlogPageProps) => {
   );
 };
 
+type RssBlogItem = Parser.Item & {
+  creator?: string;
+  'dc:creator'?: string;
+};
+
 export const getStaticProps: GetStaticProps = async () => {
   try {
-    const Parser = require('rss-parser');
     const parser = new Parser({
       customFields: {
         item: ['creator', 'content', 'category']
@@ -454,7 +458,7 @@ export const getStaticProps: GetStaticProps = async () => {
     const rssUrl = 'https://www.simplifyingthemarket.com/en/feed?a=956758-ef2edda2f940e018328655620ea05f18';
     const feed = await parser.parseURL(rssUrl);
 
-    const posts = feed.items.map((item: any) => ({
+    const posts = feed.items.map((item: RssBlogItem) => ({
       title: item.title || '',
       link: item.link || '',
       pubDate: item.pubDate || '',

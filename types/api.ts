@@ -1,3 +1,4 @@
+import type { RealScoutProperty } from './domain';
 
 export interface ApiResponse<T = unknown> {
   readonly success: boolean;

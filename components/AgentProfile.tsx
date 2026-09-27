@@ -115,8 +115,8 @@ const AgentProfile: React.FC<AgentProfileProps> = ({
 
   const handleContactClick = () => {
     // Track interaction
-    if (typeof window !== 'undefined' && (window as any).trackAnalyticsEvent) {
-      (window as any).trackAnalyticsEvent({
+    if (typeof window !== 'undefined' && window.trackAnalyticsEvent) {
+      window.trackAnalyticsEvent({
         action: 'agent_contact_click',
         category: 'conversion',
         label: 'agent_profile_widget'
@@ -212,7 +212,7 @@ const AgentProfile: React.FC<AgentProfileProps> = ({
                   <p>
                     With over 6 years of dedicated service in Las Vegas real estate, Dr. Jan Duffy 
                     brings a unique combination of academic excellence and practical expertise to 
-                    every client relationship. Her commitment to understanding each client's unique 
+                    every client relationship. Her commitment to understanding each client&apos;s unique 
                     needs has earned her a reputation as one of the most trusted agents in the luxury market.
                   </p>
                   <p>
@@ -224,7 +224,7 @@ const AgentProfile: React.FC<AgentProfileProps> = ({
                   <p>
                     As a proud member of Berkshire Hathaway HomeServices Nevada Properties, 
                     Dr. Duffy leverages cutting-edge technology and extensive marketing resources 
-                    to provide her clients with a competitive advantage in today's dynamic market.
+                    to provide her clients with a competitive advantage in today&apos;s dynamic market.
                   </p>
                 </div>
 
@@ -277,7 +277,7 @@ const AgentProfile: React.FC<AgentProfileProps> = ({
                         </div>
                       </div>
                       <blockquote className="testimonial-content">
-                        "{testimonial.content}"
+                        &ldquo;{testimonial.content}&rdquo;
                       </blockquote>
                     </div>
                   ))}
@@ -291,7 +291,7 @@ const AgentProfile: React.FC<AgentProfileProps> = ({
           <div className="profile-footer">
             <div className="cta-section">
               <h3>Ready to Get Started?</h3>
-              <p>Let's discuss your real estate goals and create a personalized strategy for success.</p>
+              <p>Let&apos;s discuss your real estate goals and create a personalized strategy for success.</p>
               <div className="cta-buttons">
                 <button 
                   className="cta-button primary"

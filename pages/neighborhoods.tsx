@@ -1,5 +1,6 @@
 
 import type { NextPage } from "next";
+import Link from "next/link";
 import Layout from "../components/Layout";
 import SEOHead from "../components/SEOHead";
 import styles from "../styles/Home.module.css";
@@ -255,7 +256,7 @@ const NeighborhoodsPage: NextPage = () => {
               Let Dr. Duffy help you discover the ideal Las Vegas neighborhood for your lifestyle and goals. 
               Schedule a consultation to explore your options.
             </p>
-            <a 
+            <Link 
               href="/contact" 
               style={{ 
                 background: 'white', 
@@ -268,7 +269,7 @@ const NeighborhoodsPage: NextPage = () => {
               }}
             >
               Explore Neighborhoods with Dr. Duffy
-            </a>
+            </Link>
           </div>
         </section>
       </main>

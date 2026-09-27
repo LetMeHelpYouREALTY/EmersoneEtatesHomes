@@ -34,7 +34,7 @@ const Calculator: NextPage = () => {
           <div className={styles.infoGrid}>
             <div className={styles.infoCard}>
               <h3>🏦 Pre-Approval Benefits</h3>
-              <p>Get pre-approved to strengthen your offer and show sellers you're serious about purchasing.</p>
+              <p>Get pre-approved to strengthen your offer and show sellers you&apos;re serious about purchasing.</p>
             </div>
             <div className={styles.infoCard}>
               <h3>💰 Down Payment Options</h3>

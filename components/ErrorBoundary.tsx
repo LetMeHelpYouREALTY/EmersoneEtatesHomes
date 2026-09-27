@@ -15,7 +15,7 @@ interface State {
 }
 
 class ErrorBoundary extends Component<Props, State> {
-  public state: State = {
+  public override state: State = {
     hasError: false,
     error: null,
     errorInfo: null
@@ -30,10 +30,8 @@ class ErrorBoundary extends Component<Props, State> {
     };
   }
 
-  public componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+  public override componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
     console.error('ErrorBoundary caught an error:', error, errorInfo);
-
-    const errorData = error as { code?: string; statusCode?: number };
 
     this.setState({
       error,
@@ -46,8 +44,8 @@ class ErrorBoundary extends Component<Props, State> {
     }
 
     // Track error in analytics if available
-    if (typeof window !== 'undefined' && (window as any).trackAnalytics) {
-      (window as any).trackAnalytics.trackEvent({
+    if (typeof window !== 'undefined' && window.trackAnalytics) {
+      window.trackAnalytics.trackEvent({
         action: 'react_error',
         category: 'errors',
         label: error.message,
@@ -72,7 +70,7 @@ class ErrorBoundary extends Component<Props, State> {
     window.location.reload();
   };
 
-  public render() {
+  public override render() {
     if (this.state.hasError) {
       // Custom fallback UI
       if (this.props.fallback) {
