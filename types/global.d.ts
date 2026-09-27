@@ -11,6 +11,8 @@ declare global {
       readonly NEXT_PUBLIC_SITE_URL?: string;
       readonly NEXT_PUBLIC_GA_ID?: string;
       readonly NEXT_PUBLIC_REALSCOUT_API_KEY?: string;
+      readonly NEXT_PUBLIC_GOOGLE_MAPS_API_KEY?: string;
+      readonly NEXT_PUBLIC_GOOGLE_MAPS_MAP_ID?: string;
       readonly CONTACT_EMAIL?: string;
       readonly SMTP_HOST?: string;
       readonly SMTP_PORT?: string;

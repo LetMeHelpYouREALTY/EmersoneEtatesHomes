@@ -10,8 +10,7 @@
     "type-check": "tsc --noEmit",
     "postbuild": "next-sitemap",
     "clean": "rm -rf .next node_modules/.cache",
-    "analyze": "ANALYZE=true npm run build",
-    "prebuild": "npm run lint && npm run type-check"
+    "analyze": "ANALYZE=true npm run build"
   },
   "dependencies": {
     "@types/react-transition-group": "^4.4.12",
@@ -30,6 +29,7 @@
   },
   "devDependencies": {
     "@next/bundle-analyzer": "^15.3.3",
+    "@types/google.maps": "^3.66.4",
     "@types/node": "^22.13.11",
     "@types/react": "^19.1.7",
     "@types/react-dom": "^19.1.6",

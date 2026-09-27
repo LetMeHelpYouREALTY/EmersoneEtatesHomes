@@ -2,6 +2,7 @@ import type { NextPage } from "next";
 import Head from "next/head";
 import Layout from "../components/Layout";
 import RealScoutWidget from "../components/RealScoutWidget";
+import NearbyAmenitiesSection from "../components/NearbyAmenitiesSection";
 import styles from "../styles/Home.module.css";
 import PropertyCalculator from "../components/PropertyCalculator";
 
@@ -32,6 +33,8 @@ const Homes: NextPage = () => {
             <RealScoutWidget />
           </div>
         </section>
+
+        <NearbyAmenitiesSection compact />
 
         <PropertyCalculator />
 

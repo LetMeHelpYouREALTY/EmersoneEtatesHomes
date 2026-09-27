@@ -1,6 +1,7 @@
 import type { NextPage } from "next";
 import Layout from "../components/Layout";
 import ImageGallery from "../components/ImageGallery";
+import NearbyAmenitiesSection from "../components/NearbyAmenitiesSection";
 import styles from "../styles/Home.module.css";
 
 const Community: NextPage = () => {
@@ -38,6 +39,11 @@ const Community: NextPage = () => {
             </div>
           </div>
         </section>
+
+        <NearbyAmenitiesSection
+          heading="What's Nearby Emerson Estates"
+          description="See groceries, parks, golf, healthcare, and everyday services around our gated community in east Las Vegas."
+        />
 
         <ImageGallery
           title="Community Gallery"

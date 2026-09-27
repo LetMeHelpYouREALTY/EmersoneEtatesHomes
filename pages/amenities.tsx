@@ -1,4 +1,5 @@
 import type { NextPage } from "next";
+import Link from "next/link";
 import Layout from "../components/Layout";
 import ImageGallery from "../components/ImageGallery";
 import styles from "../styles/Home.module.css";
@@ -23,6 +24,10 @@ const Amenities: NextPage = () => {
 
         <section className={styles.amenitiesList}>
           <h2>Premium Amenities</h2>
+          <p style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
+            Explore off-site dining, groceries, healthcare, and recreation on our{" "}
+            <Link href="/nearby-amenities">Nearby Amenities map</Link>.
+          </p>
           <div className={styles.amenityGrid}>
             <div className={styles.amenityCard}>
               <h3>Resort-Style Pool</h3>
