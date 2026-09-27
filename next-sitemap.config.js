@@ -17,6 +17,8 @@ module.exports = {
     await config.transform(config, '/neighborhoods'),
     await config.transform(config, '/market-insights'),
     await config.transform(config, '/community'),
+    await config.transform(config, '/amenities'),
+    await config.transform(config, '/nearby-amenities'),
   ],
   robotsTxtOptions: {
     policies: [

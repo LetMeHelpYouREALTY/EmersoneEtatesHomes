@@ -69,6 +69,7 @@ const Layout: React.FC<LayoutProps> = React.memo(({
     { name: 'Neighborhoods', href: '/neighborhoods' },
     { name: 'Community', href: '/community' },
     { name: 'Amenities', href: '/amenities' },
+    { name: 'Nearby Amenities', href: '/nearby-amenities' },
     { name: 'Market Insights', href: '/blog' },
     { name: 'Contact', href: '/contact' }
   ], []);

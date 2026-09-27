@@ -2,6 +2,7 @@
 import type { NextPage } from "next";
 import Layout from "../components/Layout";
 import SEOHead from "../components/SEOHead";
+import NearbyAmenitiesSection from "../components/NearbyAmenitiesSection";
 import styles from "../styles/Home.module.css";
 
 const NeighborhoodsPage: NextPage = () => {
@@ -97,6 +98,8 @@ const NeighborhoodsPage: NextPage = () => {
             </div>
           </div>
         </section>
+
+        <NearbyAmenitiesSection />
 
         {/* Other Premium Neighborhoods */}
         <section className={styles.section} style={{ background: '#f8fafc' }}>

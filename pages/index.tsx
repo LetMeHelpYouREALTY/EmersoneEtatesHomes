@@ -5,6 +5,7 @@ import Link from "next/link";
 import { memo, useMemo } from "react";
 import Layout from "../components/Layout";
 import RealScoutWidget from "../components/RealScoutWidget";
+import NearbyAmenitiesSection from "../components/NearbyAmenitiesSection";
 import styles from "../styles/Home.module.css";
 
 const Home: NextPage = memo(() => {
@@ -114,6 +115,8 @@ const Home: NextPage = memo(() => {
             </Link>
           </div>
         </section>
+
+        <NearbyAmenitiesSection />
 
         {/* Quick Links */}
         <section id="quick-links" className={styles.section} key="quick-links-section">

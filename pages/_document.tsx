@@ -28,7 +28,7 @@ export default function Document() {
         <meta property="twitter:description" content="Discover luxury homes at Emerson Estates, located at 2583 Regency Cove Ct, Las Vegas, NV 89121. Premium properties with modern amenities and community features." />
 
         {/* RealScout Web Components */}
-        <script src="https://em.realscout.com/widgets/realscout-web-components.umd.js" type="module"></script>
+        <script src="https://em.realscout.com/widgets/realscout-web-components.umd.js" type="module" async />
         <style dangerouslySetInnerHTML={{
           __html: `
             realscout-office-listings {

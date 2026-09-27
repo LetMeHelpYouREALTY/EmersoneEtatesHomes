@@ -3,9 +3,11 @@ User-agent: *
 Allow: /
 Disallow: /api/
 Disallow: /admin/
+Disallow: /_next/
+Disallow: /static/
 
 # Host
-Host: https://www.emersonestateshomes.com
+Host: https://emersonestateshomes.com
 
 # Sitemaps
-Sitemap: https://www.emersonestateshomes.com/sitemap.xml
+Sitemap: https://emersonestateshomes.com/sitemap.xml
