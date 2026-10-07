@@ -1,6 +1,7 @@
 
 import type { NextPage, GetStaticProps } from "next";
-import Parser from "rss-parser";
+import Parser from 'rss-parser';
+import { fetchKcmFeed, KCM_RSS_URL } from '../lib/kcm-rss';
 import Layout from "../components/Layout";
 import SEOHead from "../components/SEOHead";
 import Link from "next/link";
@@ -339,9 +340,7 @@ const MarketTrends: NextPage<MarketTrendsProps> = ({ trends, error }) => {
 
 export const getStaticProps: GetStaticProps = async () => {
   try {
-    const parser = new Parser();
-
-    const feed = await parser.parseURL('https://www.simplifyingthemarket.com/en/feed?a=956758-ef2edda2f940e018328655620ea05f18');
+    const feed = await fetchKcmFeed();
     
     const trends: TrendData[] = feed.items.slice(0, 6).map((item: Parser.Item) => ({
       title: item.title || 'Market Update',
@@ -358,7 +357,7 @@ export const getStaticProps: GetStaticProps = async () => {
       revalidate: 3600
     };
   } catch (error) {
-    console.error('Error fetching market trends:', error);
+    console.error(`Error fetching market trends (${KCM_RSS_URL}):`, error);
     
     return {
       props: {

@@ -1,5 +1,5 @@
-
 import Head from 'next/head';
+import { absoluteUrl, getSiteUrl } from '../lib/site';
 
 interface SEOHeadProps {
   title?: string;
@@ -18,8 +18,8 @@ export default function SEOHead({
   pathname = "",
   url
 }: SEOHeadProps) {
-  const siteUrl = "https://www.emersonestateshomes.com";
-  const fullUrl = url || `${siteUrl}${pathname}`;
+  const siteUrl = getSiteUrl();
+  const fullUrl = url || absoluteUrl(pathname || '/');
 
   return (
     <Head>

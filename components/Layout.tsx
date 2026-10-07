@@ -4,6 +4,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import ContactForm from './ContactForm';
+import { absoluteAssetUrl, absoluteUrl } from '../lib/site';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -93,6 +94,9 @@ const Layout: React.FC<LayoutProps> = React.memo(({
     setIsContactModalOpen(false);
   };
 
+  const pageUrl = absoluteUrl(router.asPath);
+  const defaultOgImage = absoluteAssetUrl('/design 05_new 2_1749651606209.jpg');
+
   return (
     <>
       <Head>
@@ -105,20 +109,20 @@ const Layout: React.FC<LayoutProps> = React.memo(({
         <meta property="og:title" content={title} />
         <meta property="og:description" content={description} />
         <meta property="og:type" content="website" />
-        <meta property="og:url" content={process.env.NEXT_PUBLIC_SITE_URL + router.asPath} />
-        <meta property="og:image" content={`${process.env.NEXT_PUBLIC_SITE_URL}/design 05_new 2_1749651606209.jpg`} />
+        <meta property="og:url" content={pageUrl} />
+        <meta property="og:image" content={defaultOgImage} />
 
         {/* Twitter Card */}
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={title} />
         <meta name="twitter:description" content={description} />
-        <meta name="twitter:image" content={`${process.env.NEXT_PUBLIC_SITE_URL}/design 05_new 2_1749651606209.jpg`} />
+        <meta name="twitter:image" content={defaultOgImage} />
 
         {/* Additional SEO */}
         <meta name="robots" content="index, follow" />
         <meta name="author" content="Dr. Jan Duffy" />
         <meta name="keywords" content="luxury homes, Las Vegas real estate, Emerson Estates, Dr. Jan Duffy, BHHS Nevada Properties" />
-        <link rel="canonical" href={process.env.NEXT_PUBLIC_SITE_URL + router.asPath} />
+        <link rel="canonical" href={pageUrl} />
       </Head>
 
       <div className={`layout ${className}`}>

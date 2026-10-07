@@ -7,7 +7,7 @@ Disallow: /_next/
 Disallow: /static/
 
 # Host
-Host: https://emersonestateshomes.com
+Host: https://emersone-etates-homes-janet-duffys-projects.vercel.app
 
 # Sitemaps
-Sitemap: https://emersonestateshomes.com/sitemap.xml
+Sitemap: https://emersone-etates-homes-janet-duffys-projects.vercel.app/sitemap.xml

@@ -1,8 +1,13 @@
 import { GetStaticProps } from 'next';
 import { useState, useEffect } from 'react';
 import Head from 'next/head';
-import Parser from 'rss-parser';
 import Layout from '../components/Layout';
+import {
+  extractFirstImageUrl,
+  fetchKcmFeed,
+  KCM_RSS_URL,
+  type KcmRssItem,
+} from '../lib/kcm-rss';
 import styles from '../styles/Home.module.css';
 
 interface BlogPost {
@@ -19,6 +24,7 @@ interface BlogPost {
     url: string;
     type: string;
   };
+  image?: string;
 }
 
 interface BlogPageProps {
@@ -133,9 +139,13 @@ const Blog = ({ posts, error }: BlogPageProps) => {
               <div className="blog-grid">
                 {filteredPosts.map((post, index) => (
                   <article key={post.guid || index} className="blog-card">
-                    {post.enclosure?.url && (
+                    {(post.image || post.enclosure?.url) && (
                       <div className="blog-image">
-                        <img src={post.enclosure.url} alt={post.title} />
+                        <img
+                          src={post.image || post.enclosure?.url}
+                          alt={post.title}
+                          loading="lazy"
+                        />
                       </div>
                     )}
 
@@ -442,34 +452,29 @@ const Blog = ({ posts, error }: BlogPageProps) => {
   );
 };
 
-type RssBlogItem = Parser.Item & {
-  creator?: string;
-  'dc:creator'?: string;
-};
-
 export const getStaticProps: GetStaticProps = async () => {
   try {
-    const parser = new Parser({
-      customFields: {
-        item: ['creator', 'content', 'category']
-      }
+    const feed = await fetchKcmFeed();
+
+    const posts = feed.items.map((item: KcmRssItem) => {
+      const htmlContent =
+        item['content:encoded'] || item.content || item.contentSnippet || '';
+      const image = extractFirstImageUrl(htmlContent);
+
+      return {
+        title: item.title || '',
+        link: item.link || '',
+        pubDate: item.pubDate || '',
+        creator: item.creator || item['dc:creator'] || '',
+        content: htmlContent,
+        contentSnippet: item.contentSnippet || '',
+        guid: item.guid || item.link || '',
+        categories: item.categories || [],
+        isoDate: item.isoDate || '',
+        enclosure: item.enclosure || null,
+        image,
+      };
     });
-
-    const rssUrl = 'https://www.simplifyingthemarket.com/en/feed?a=956758-ef2edda2f940e018328655620ea05f18';
-    const feed = await parser.parseURL(rssUrl);
-
-    const posts = feed.items.map((item: RssBlogItem) => ({
-      title: item.title || '',
-      link: item.link || '',
-      pubDate: item.pubDate || '',
-      creator: item.creator || item['dc:creator'] || '',
-      content: item.content || '',
-      contentSnippet: item.contentSnippet || '',
-      guid: item.guid || item.link || '',
-      categories: item.categories || [],
-      isoDate: item.isoDate || '',
-      enclosure: item.enclosure || null
-    }));
 
     return {
       props: {
@@ -478,7 +483,7 @@ export const getStaticProps: GetStaticProps = async () => {
       revalidate: 3600 // Revalidate every hour
     };
   } catch (error) {
-    console.error('Error fetching RSS feed:', error);
+    console.error(`Error fetching RSS feed (${KCM_RSS_URL}):`, error);
 
     return {
       props: {
