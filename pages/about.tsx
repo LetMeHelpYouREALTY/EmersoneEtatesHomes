@@ -62,7 +62,7 @@ const AboutPage: NextPage = () => {
                   <p style={{ margin: '0.5rem 0 0', fontSize: '0.9rem' }}>Academic approach to real estate</p>
                 </div>
                 <div style={{ padding: '1rem', background: '#f8fafc', borderRadius: '8px' }}>
-                  <strong style={{ color: '#1e40af' }}>🏆 Top 1% Producer</strong>
+                  <strong style={{ color: '#1e40af' }}>🏆 5.0★ on Realtor.com</strong>
                   <p style={{ margin: '0.5rem 0 0', fontSize: '0.9rem' }}>Proven track record of success</p>
                 </div>
               </div>
