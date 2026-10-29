@@ -93,7 +93,7 @@ const ContactPage: NextPage = () => {
               <h3 style={{ color: '#fbbf24', marginBottom: '1rem' }}>Why Choose Our Team?</h3>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '2rem', marginTop: '2rem' }}>
                 <div>
-                  <strong>🏆 Top 1% Producer</strong>
+                  <strong>🏆 5.0★ on Realtor.com</strong>
                   <p style={{ fontSize: '0.9rem', opacity: '0.8' }}>Consistently in the top tier of luxury home sales</p>
                 </div>
                 <div>
