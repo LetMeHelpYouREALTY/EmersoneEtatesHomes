@@ -51,7 +51,7 @@ const Home: NextPage = memo(() => {
     {
       icon: "📍",
       title: "Prime Location",
-      description: "Minutes from the Las Vegas Strip, premium shopping, and top-rated schools. Easy access to I-215 and major highways."
+      description: "Minutes from the Las Vegas Strip, premium shopping, and nearby public schools. Easy access to I-215 and major highways."
     },
     {
       icon: "🔒",
@@ -74,7 +74,7 @@ const Home: NextPage = memo(() => {
     <Layout>
       <Head>
         <title>Emerson Estates - Luxury Homes in Las Vegas</title>
-        <meta name="description" content="Discover luxury living at Emerson Estates. Premium homes, world-class amenities, and an exclusive community in Las Vegas, Nevada." />
+        <meta name="description" content="Discover luxury living at Emerson Estates. Premium homes, world-class amenities, and a private setting in Las Vegas, Nevada." />
         <link rel="icon" href="/favicon.ico" />
       </Head>
 

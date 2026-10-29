@@ -135,7 +135,7 @@ const MarketInsightsPage: NextPage = () => {
                 <div style={{ marginBottom: '1.5rem' }}>
                   <strong>Fix and Flip</strong>
                   <p style={{ fontSize: '0.9rem', margin: '0.5rem 0', color: '#666' }}>
-                    Renovation opportunities in established neighborhoods
+                    Renovation opportunities in older neighborhoods
                   </p>
                 </div>
                 

@@ -12,7 +12,7 @@ interface SEOHeadProps {
 
 export default function SEOHead({
   title = "Emerson Estates - Luxury Homes in Las Vegas",
-  description = "Discover luxury living at Emerson Estates. Premium homes, world-class amenities, and an exclusive community in Las Vegas, Nevada.",
+  description = "Discover luxury living at Emerson Estates. Premium homes, world-class amenities, and a private setting in Las Vegas, Nevada.",
   keywords = "luxury homes las vegas, emerson estates, real estate nevada, gated community, premium properties",
   ogImage = "/bhhs-logo.jpg",
   pathname = "",
