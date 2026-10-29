@@ -91,7 +91,7 @@ const NeighborhoodsPage: NextPage = () => {
                   </div>
                   <div>
                     <strong>Playground</strong>
-                    <p style={{ fontSize: '0.9rem', margin: '0.5rem 0' }}>Family-friendly areas</p>
+                    <p style={{ fontSize: '0.9rem', margin: '0.5rem 0' }}>Areas</p>
                   </div>
                 </div>
               </div>
@@ -112,7 +112,7 @@ const NeighborhoodsPage: NextPage = () => {
                 <h3 style={{ color: '#1e40af', marginBottom: '1rem' }}>Summerlin</h3>
                 <p style={{ marginBottom: '1.5rem', lineHeight: '1.6' }}>
                   Master-planned community on the west side of Las Vegas, known for its parks, golf courses, 
-                  and family-friendly atmosphere. Home to Red Rock Casino and excellent schools.
+                  and parks. Home to Red Rock Casino and nearby public schools.
                 </p>
                 <div style={{ fontSize: '0.9rem', color: '#666' }}>
                   <p><strong>Average Home Price:</strong> $500K - $2M+</p>
@@ -125,12 +125,12 @@ const NeighborhoodsPage: NextPage = () => {
               <div style={{ background: 'white', padding: '2rem', borderRadius: '12px', boxShadow: '0 4px 16px rgba(0,0,0,0.1)' }}>
                 <h3 style={{ color: '#1e40af', marginBottom: '1rem' }}>Henderson</h3>
                 <p style={{ marginBottom: '1.5rem', lineHeight: '1.6' }}>
-                  Affluent suburb southeast of Las Vegas with excellent schools, low crime rates, 
+                  Suburb southeast of Las Vegas with public schools, parks, 
                   and beautiful master-planned communities. Close to Lake Las Vegas.
                 </p>
                 <div style={{ fontSize: '0.9rem', color: '#666' }}>
                   <p><strong>Average Home Price:</strong> $400K - $1.5M+</p>
-                  <p><strong>Notable Features:</strong> Top schools, safety, Lake Las Vegas</p>
+                  <p><strong>Notable Features:</strong> Nearby public schools, safety, Lake Las Vegas</p>
                   <p><strong>Best For:</strong> Families, professionals</p>
                 </div>
               </div>
@@ -154,7 +154,7 @@ const NeighborhoodsPage: NextPage = () => {
                 <h3 style={{ color: '#1e40af', marginBottom: '1rem' }}>Spanish Hills</h3>
                 <p style={{ marginBottom: '1.5rem', lineHeight: '1.6' }}>
                   Upscale community in southwest Las Vegas featuring large lots, 
-                  custom homes, and proximity to top-rated schools and shopping.
+                  custom homes, and proximity to public schools and shopping.
                 </p>
                 <div style={{ fontSize: '0.9rem', color: '#666' }}>
                   <p><strong>Average Home Price:</strong> $600K - $2M+</p>

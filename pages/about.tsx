@@ -84,7 +84,7 @@ const AboutPage: NextPage = () => {
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem', marginTop: '3rem' }}>
               <div style={{ padding: '2rem', background: 'white', borderRadius: '12px', boxShadow: '0 4px 16px rgba(0,0,0,0.1)' }}>
                 <h3 style={{ color: '#1e40af', marginBottom: '1rem' }}>🏘️ Premium Location</h3>
-                <p>Strategically positioned in one of Las Vegas&apos;s most desirable neighborhoods, with easy access to the Strip, shopping, and top-rated schools.</p>
+                <p>Strategically positioned in one of Las Vegas&apos;s most desirable neighborhoods, with easy access to the Strip, shopping, and nearby public schools.</p>
               </div>
               <div style={{ padding: '2rem', background: 'white', borderRadius: '12px', boxShadow: '0 4px 16px rgba(0,0,0,0.1)' }}>
                 <h3 style={{ color: '#1e40af', marginBottom: '1rem' }}>🛡️ Secure Community</h3>
