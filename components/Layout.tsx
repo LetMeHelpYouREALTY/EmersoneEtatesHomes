@@ -134,7 +134,7 @@ const Layout: React.FC<LayoutProps> = React.memo(({
               <Link href="/" className="logo-link" onClick={closeMenu}>
                 <Image 
                   src="/bhhs-logo.jpg" 
-                  alt="Berkshire Hathaway HomeServices Nevada Properties"
+                  alt="Dr. Jan Duffy Real Estate"
                   className="logo-image"
                   width={60}
                   height={60}
@@ -301,23 +301,6 @@ const Layout: React.FC<LayoutProps> = React.memo(({
               </ul>
             </div>
 
-            {/* Company Info */}
-            <div className="footer-section">
-              <h4 className="footer-title">Brokerage</h4>
-              <div className="brokerage-info">
-                <Image 
-                  src="/bhhs-logo.jpg" 
-                  alt="BHHS Nevada Properties"
-                  className="brokerage-logo"
-                  width={60}
-                  height={60}
-                />
-                <div className="brokerage-details">
-                  <p className="brokerage-name">Berkshire Hathaway<br />HomeServices Nevada Properties</p>
-                  <p className="brokerage-address">Las Vegas, NV</p>
-                </div>
-              </div>
-            </div>
           </div>
 
           {/* Footer Bottom */}
@@ -325,7 +308,7 @@ const Layout: React.FC<LayoutProps> = React.memo(({
             <div className="footer-container">
               <div className="footer-bottom-content">
                 <p className="copyright">
-                  © {new Date().getFullYear()} Dr. Jan Duffy - Berkshire Hathaway HomeServices Nevada Properties. All rights reserved.
+                  © {new Date().getFullYear()} Dr. Jan Duffy. All rights reserved. Berkshire Hathaway HomeServices Nevada Properties since September 2008 · License S.0197614.LLC
                 </p>
                 <div className="footer-links-bottom">
                   <span className="footer-link">Privacy Policy</span>
