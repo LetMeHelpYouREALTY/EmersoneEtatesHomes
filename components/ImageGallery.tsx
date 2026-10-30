@@ -74,7 +74,7 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({
     {
       id: 3,
       src: '/bhhs-logo.jpg',
-      alt: 'Berkshire Hathaway HomeServices logo',
+      alt: 'Brokerage logo',
       title: 'Trusted Real Estate Partner',
       category: 'community'
     },

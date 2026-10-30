@@ -47,13 +47,13 @@ const AboutPage: NextPage = () => {
                 Meet Dr. Duffy
               </h2>
               <p style={{ fontSize: '1.2rem', marginBottom: '1.5rem', lineHeight: '1.6' }}>
-                With a PhD in his field and years of experience in luxury real estate, Dr. Duffy brings an analytical approach 
+                With a Ph.D. in Research, licensed since 2008 · 35 years in Las Vegas, Dr. Duffy brings an analytical approach 
                 and academic rigor to every transaction. His unique background allows him to understand market dynamics, 
                 negotiate effectively, and provide clients with data-driven insights.
               </p>
               <p style={{ fontSize: '1.2rem', marginBottom: '1.5rem', lineHeight: '1.6' }}>
                 Specializing in luxury properties throughout Las Vegas, Dr. Duffy has built a reputation for exceptional 
-                service, attention to detail, and results that exceed expectations. As a top 1% producer, he combines 
+                service, attention to detail, and results that exceed expectations. He combines 
                 professional expertise with personal dedication to every client.
               </p>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1rem', marginTop: '2rem' }}>
@@ -62,7 +62,7 @@ const AboutPage: NextPage = () => {
                   <p style={{ margin: '0.5rem 0 0', fontSize: '0.9rem' }}>Academic approach to real estate</p>
                 </div>
                 <div style={{ padding: '1rem', background: '#f8fafc', borderRadius: '8px' }}>
-                  <strong style={{ color: '#1e40af' }}>🏆 5.0★ on Realtor.com</strong>
+                  <strong style={{ color: '#1e40af' }}>🏆 5.0★ on Realtor.com (50 reviews)</strong>
                   <p style={{ margin: '0.5rem 0 0', fontSize: '0.9rem' }}>Proven track record of success</p>
                 </div>
               </div>

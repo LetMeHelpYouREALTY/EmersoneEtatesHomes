@@ -59,7 +59,7 @@ const AgentProfile: React.FC<AgentProfileProps> = ({
     },
     {
       title: 'Relocation Services Certified',
-      organization: 'BHHS Nevada Properties',
+      organization: 'Nevada Properties',
       year: '2019',
       description: 'Expertise in assisting clients with local and national relocations',
       icon: '🚚'
@@ -152,16 +152,16 @@ const AgentProfile: React.FC<AgentProfileProps> = ({
             
             <div className="agent-stats">
               <div className="stat">
-                <div className="stat-number">150+</div>
+                <div className="stat-number">500+</div>
                 <div className="stat-label">Homes Sold</div>
               </div>
               <div className="stat">
-                <div className="stat-number">$50M+</div>
+                <div className="stat-number">$127M+</div>
                 <div className="stat-label">In Sales</div>
               </div>
               <div className="stat">
-                <div className="stat-number">5★</div>
-                <div className="stat-label">Client Rating</div>
+                <div className="stat-number">5.0★</div>
+                <div className="stat-label">Realtor.com · 50 reviews</div>
               </div>
             </div>
 
@@ -210,7 +210,7 @@ const AgentProfile: React.FC<AgentProfileProps> = ({
                 <h3>About Dr. Jan Duffy</h3>
                 <div className="bio-text">
                   <p>
-                    With over 6 years of dedicated service in Las Vegas real estate, Dr. Jan Duffy 
+                    Licensed since 2008 · 35 years in Las Vegas, Dr. Jan Duffy 
                     brings a unique combination of academic excellence and practical expertise to 
                     every client relationship. Her commitment to understanding each client&apos;s unique 
                     needs has earned her a reputation as one of the most trusted agents in the luxury market.
@@ -222,7 +222,6 @@ const AgentProfile: React.FC<AgentProfileProps> = ({
                     ensures her clients receive exceptional service and optimal results.
                   </p>
                   <p>
-                    As a proud member of Berkshire Hathaway HomeServices Nevada Properties, 
                     Dr. Duffy leverages cutting-edge technology and extensive marketing resources 
                     to provide her clients with a competitive advantage in today&apos;s dynamic market.
                   </p>
